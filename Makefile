@@ -29,7 +29,7 @@
 # Get custom Xi2p data path + set appropriate CMake generator.
 # If no path is given, set default path
 system := $(shell uname)
-ifeq ($(KOVRI_DATA_PATH),)
+ifeq ($(XI2P_DATA_PATH),)
   ifeq ($(system), Linux)
     data-path = $(HOME)/.xi2p
   endif
@@ -47,7 +47,7 @@ ifeq ($(KOVRI_DATA_PATH),)
     cmake-gen = -G 'MSYS Makefiles'
   endif
 else
-  data-path = $(KOVRI_DATA_PATH)
+  data-path = $(XI2P_DATA_PATH)
 endif
 
 # Our base cmake command
@@ -59,7 +59,7 @@ cmake-release = $(cmake) -D CMAKE_BUILD_TYPE=Release
 
 # TODO(unassigned): cmake-release when we're out of alpha
 cmake-xi2p = $(cmake-debug)
-cmake-xi2p-util = -D WITH_KOVRI_UTIL=ON
+cmake-xi2p-util = -D WITH_XI2P_UTIL=ON
 
 # Current off-by-default Xi2p build options
 cmake-upnp       = -D WITH_UPNP=ON
@@ -79,7 +79,7 @@ cmake-cpp-netlib-static = -D CPP-NETLIB_STATIC_OPENSSL=ON -D CPP-NETLIB_STATIC_B
 cmake-cpp-netlib-shared = -D CPP-NETLIB_BUILD_SHARED_LIBS=ON
 
 # Android-specific
-cmake-android = -D ANDROID=1 -D KOVRI_DATA_PATH="/data/local/tmp/.xi2p"
+cmake-android = -D ANDROID=1 -D XI2P_DATA_PATH="/data/local/tmp/.xi2p"
 
 # Native
 cmake-native = -DCMAKE_CXX_FLAGS="-march=native"

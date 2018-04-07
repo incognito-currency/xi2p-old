@@ -152,8 +152,8 @@ boost::filesystem::path GetPath(Path path)
 
     auto get_default_data_path = []() {
       static std::string data_dir("xi2p");
-#ifdef KOVRI_CUSTOM_DATA_PATH
-      return boost::filesystem::path(std::string(KOVRI_CUSTOM_DATA_PATH));
+#ifdef XI2P_CUSTOM_DATA_PATH
+      return boost::filesystem::path(std::string(XI2P_CUSTOM_DATA_PATH));
 #else
 #ifdef _WIN32
       char local_app_data[MAX_PATH];

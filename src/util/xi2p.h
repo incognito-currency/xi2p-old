@@ -28,8 +28,8 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               //
  */
 
-#ifndef SRC_UTIL_KOVRI_H_
-#define SRC_UTIL_KOVRI_H_
+#ifndef SRC_UTIL_XI2P_H_
+#define SRC_UTIL_XI2P_H_
 
 #include <memory>
 #include <string>
@@ -72,4 +72,4 @@ class Xi2pCommand : public Command
   static void Signal(int signal);
 };
 
-#endif  // SRC_UTIL_KOVRI_H_
+#endif  // SRC_UTIL_XI2P_H_

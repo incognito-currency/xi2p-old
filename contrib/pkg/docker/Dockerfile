@@ -28,12 +28,12 @@
 
 # Example:
 # $ docker build -t geti2p/xi2p .
-# $ export KOVRI_PORT=$((9111 + RANDOM & 30777))
-# $ docker run -p ${KOVRI_PORT}:${KOVRI_PORT} --env KOVRI_PORT=${KOVRI_PORT} geti2p/xi2p
+# $ export XI2P_PORT=$((9111 + RANDOM & 30777))
+# $ docker run -p ${XI2P_PORT}:${XI2P_PORT} --env XI2P_PORT=${XI2P_PORT} geti2p/xi2p
 
 FROM alpine:3.6
-ENV KOVRI_HOST 0.0.0.0
-ENV KOVRI_PORT 24085
+ENV XI2P_HOST 0.0.0.0
+ENV XI2P_PORT 24085
 ADD . xi2p/
 RUN apk add --update --no-cache \
       binutils \
@@ -75,4 +75,4 @@ RUN apk add --update --no-cache \
     rm -rf /var/cache/*
 USER xi2p
 RUN /usr/bin/xi2p-tests
-CMD /usr/bin/xi2p --host ${KOVRI_HOST} --port ${KOVRI_PORT}
+CMD /usr/bin/xi2p --host ${XI2P_HOST} --port ${XI2P_PORT}

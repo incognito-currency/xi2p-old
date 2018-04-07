@@ -81,12 +81,12 @@ gid="docker" # Assumes user is in docker group
 #Note: sequence limit [2:254]
 # Sequence for base instances (included in reseed)
 seq_start=10  # Not 0 because of port assignments, not 1 because we can't use IP ending in .1 (assigned to gateway)
-seq_base_nb=${KOVRI_NB_BASE:-20}  # TODO(unassigned): arbitrary end amount
+seq_base_nb=${XI2P_NB_BASE:-20}  # TODO(unassigned): arbitrary end amount
 seq_base_end=$((${seq_start} + ${seq_base_nb} - 1))
 base_sequence="seq -f "%03g" $seq_start $seq_base_end"
 
 # Sequence for firewalled instances (not include in reseed and firewalled)
-seq_fw_nb=${KOVRI_NB_FW:-0}
+seq_fw_nb=${XI2P_NB_FW:-0}
 seq_fw_start=$((${seq_base_end} + 1))
 seq_fw_end=$((${seq_fw_start} + ${seq_fw_nb} - 1))
 fw_sequence="seq -f "%03g" $seq_fw_start $seq_fw_end"
@@ -108,32 +108,32 @@ PrintUsage()
   echo ""
   echo "strings:"
   echo ""
-  echo "KOVRI_WORKSPACE         = testnet output directory"
-  echo "KOVRI_NETWORK           = docker network name"
-  echo "KOVRI_REPO              = xi2p source repository (location of binaries)"
-  echo "KOVRI_IMAGE             = xi2p docker image repository:tag"
-  echo "KOVRI_WEB_IMAGE         = xi2p docker webserver image repository:tag"
-  echo "KOVRI_DOCKERFILE        = Dockerfile to build xi2p image"
-  echo "KOVRI_WEB_DOCKERFILE    = Dockerfile to build xi2p image"
-  echo "KOVRI_BIN_ARGS          = daemon binary arguments"
-  echo "KOVRI_FW_BIN_ARGS       = firewalled daemon binary arguments"
-  echo "KOVRI_UTIL_ARGS         = utility binary arguments"
+  echo "XI2P_WORKSPACE         = testnet output directory"
+  echo "XI2P_NETWORK           = docker network name"
+  echo "XI2P_REPO              = xi2p source repository (location of binaries)"
+  echo "XI2P_IMAGE             = xi2p docker image repository:tag"
+  echo "XI2P_WEB_IMAGE         = xi2p docker webserver image repository:tag"
+  echo "XI2P_DOCKERFILE        = Dockerfile to build xi2p image"
+  echo "XI2P_WEB_DOCKERFILE    = Dockerfile to build xi2p image"
+  echo "XI2P_BIN_ARGS          = daemon binary arguments"
+  echo "XI2P_FW_BIN_ARGS       = firewalled daemon binary arguments"
+  echo "XI2P_UTIL_ARGS         = utility binary arguments"
   echo ""
   echo "integrals:"
   echo ""
-  echo "KOVRI_NB_BASE           = number of xi2p instances to run"
-  echo "KOVRI_NB_FW             = number of firewalled xi2p instances"
-  echo "KOVRI_STOP_TIMEOUT      = interval in seconds to stop container (0 for immediate)"
+  echo "XI2P_NB_BASE           = number of xi2p instances to run"
+  echo "XI2P_NB_FW             = number of firewalled xi2p instances"
+  echo "XI2P_STOP_TIMEOUT      = interval in seconds to stop container (0 for immediate)"
   echo ""
   echo "booleans:"
   echo ""
-  echo "KOVRI_BUILD_IMAGE       = build xi2p image"
-  echo "KOVRI_BUILD_WEB_IMAGE   = build xi2p webserver image"
-  echo "KOVRI_USE_REPO_BINS     = use repo-built binaries"
-  echo "KOVRI_BUILD_REPO_BINS   = build repo binaries from *within* the container"
-  echo "KOVRI_CLEANUP           = cleanup/destroy previous testnet"
-  echo "KOVRI_USE_NAMED_PIPES   = use named pipes for logging"
-  echo "KOVRI_DISABLE_MONITORING= disable logging"
+  echo "XI2P_BUILD_IMAGE       = build xi2p image"
+  echo "XI2P_BUILD_WEB_IMAGE   = build xi2p webserver image"
+  echo "XI2P_USE_REPO_BINS     = use repo-built binaries"
+  echo "XI2P_BUILD_REPO_BINS   = build repo binaries from *within* the container"
+  echo "XI2P_CLEANUP           = cleanup/destroy previous testnet"
+  echo "XI2P_USE_NAMED_PIPES   = use named pipes for logging"
+  echo "XI2P_DISABLE_MONITORING= disable logging"
   echo ""
   echo "Log monitoring"
   echo "--------------"
@@ -166,8 +166,8 @@ Prepare()
   catch "zip not installed, please install"
 
   # Cleanup for new testnet
-  if [[ $KOVRI_WORKSPACE || $KOVRI_NETWORK ]]; then
-    read_bool_input "Xi2p testnet environment detected. Attempt to destroy previous testnet?" KOVRI_CLEANUP cleanup_testnet
+  if [[ $XI2P_WORKSPACE || $XI2P_NETWORK ]]; then
+    read_bool_input "Xi2p testnet environment detected. Attempt to destroy previous testnet?" XI2P_CLEANUP cleanup_testnet
   fi
 
   # Set environment
@@ -177,7 +177,7 @@ Prepare()
   set_workspace
   set_args
   set_network
-  read_bool_input "Use named pipes for logging?" KOVRI_USE_NAMED_PIPES ""
+  read_bool_input "Use named pipes for logging?" XI2P_USE_NAMED_PIPES ""
 }
 
 cleanup_testnet()
@@ -191,13 +191,13 @@ cleanup_testnet()
 set_repo()
 {
   # Set Xi2p repo location
-  if [[ -z $KOVRI_REPO ]]; then
-    KOVRI_REPO="/tmp/xi2p"
-    read_input "Change location of Xi2p repo? [KOVRI_REPO=${KOVRI_REPO}]" KOVRI_REPO
+  if [[ -z $XI2P_REPO ]]; then
+    XI2P_REPO="/tmp/xi2p"
+    read_input "Change location of Xi2p repo? [XI2P_REPO=${XI2P_REPO}]" XI2P_REPO
   fi
 
   # Ensure repo
-  if [[ ! -d $KOVRI_REPO ]]; then
+  if [[ ! -d $XI2P_REPO ]]; then
     false
     catch "Xi2p not found. See building instructions."
   fi
@@ -206,8 +206,8 @@ set_repo()
 set_images()
 {
   # Build Xi2p image if applicable
-  pushd $KOVRI_REPO
-  catch "Could not access $KOVRI_REPO"
+  pushd $XI2P_REPO
+  catch "Could not access $XI2P_REPO"
 
   # Set tag
   hash git 2>/dev/null
@@ -220,60 +220,60 @@ set_images()
 
   # If image name not set, provide name options + build options
   local _default_image="geti2p/xi2p${_docker_tag}"
-  if [[ -z $KOVRI_IMAGE ]]; then
-    KOVRI_IMAGE=${_default_image}
-    read_input "Change xi2p image name?: [KOVRI_IMAGE=\"${KOVRI_IMAGE}\"]" KOVRI_IMAGE
+  if [[ -z $XI2P_IMAGE ]]; then
+    XI2P_IMAGE=${_default_image}
+    read_input "Change xi2p image name?: [XI2P_IMAGE=\"${XI2P_IMAGE}\"]" XI2P_IMAGE
     # If input was null
-    if [[ -z $KOVRI_IMAGE ]]; then
-      KOVRI_IMAGE=${_default_image}
+    if [[ -z $XI2P_IMAGE ]]; then
+      XI2P_IMAGE=${_default_image}
     fi
   fi
 
   # Web server image
   local _default_web_image="httpd:2.4"
-  if [[ -z $KOVRI_WEB_IMAGE ]]; then
-    KOVRI_WEB_IMAGE=${_default_web_image}
-    read_input "Change xi2p web image name?: [KOVRI_WEB_IMAGE=\"${KOVRI_WEB_IMAGE}\"]" KOVRI_WEB_IMAGE
+  if [[ -z $XI2P_WEB_IMAGE ]]; then
+    XI2P_WEB_IMAGE=${_default_web_image}
+    read_input "Change xi2p web image name?: [XI2P_WEB_IMAGE=\"${XI2P_WEB_IMAGE}\"]" XI2P_WEB_IMAGE
     # If input was null
-    if [[ -z $KOVRI_WEB_IMAGE ]]; then
-      KOVRI_WEB_IMAGE=${_default_web_image}
+    if [[ -z $XI2P_WEB_IMAGE ]]; then
+      XI2P_WEB_IMAGE=${_default_web_image}
     fi
   fi
 
   # Select Xi2p Dockerfile
   local _default_dockerfile="Dockerfile.alpine"
-  if [[ -z $KOVRI_DOCKERFILE ]]; then
-    KOVRI_DOCKERFILE=${_default_dockerfile}
-    read_input "Change Dockerfile?: [KOVRI_DOCKERFILE=${KOVRI_DOCKERFILE}]" KOVRI_DOCKERFILE
+  if [[ -z $XI2P_DOCKERFILE ]]; then
+    XI2P_DOCKERFILE=${_default_dockerfile}
+    read_input "Change Dockerfile?: [XI2P_DOCKERFILE=${XI2P_DOCKERFILE}]" XI2P_DOCKERFILE
   fi
-  local _xi2p_dockerfile_path="${KOVRI_REPO}/${docker_dir}/Dockerfiles/${KOVRI_DOCKERFILE}"
-  read_bool_input "Build Xi2p Docker image? [$KOVRI_IMAGE]" KOVRI_BUILD_IMAGE "docker build -t $KOVRI_IMAGE -f $_xi2p_dockerfile_path $KOVRI_REPO"
+  local _xi2p_dockerfile_path="${XI2P_REPO}/${docker_dir}/Dockerfiles/${XI2P_DOCKERFILE}"
+  read_bool_input "Build Xi2p Docker image? [$XI2P_IMAGE]" XI2P_BUILD_IMAGE "docker build -t $XI2P_IMAGE -f $_xi2p_dockerfile_path $XI2P_REPO"
 
   # Select Xi2p Webserver Dockerfile
   local _default_web_dockerfile="Dockerfile.apache"
-  if [[ -z $KOVRI_WEB_DOCKERFILE ]]; then
-    KOVRI_WEB_DOCKERFILE=${_default_web_dockerfile}
-    read_input "Change Dockerfile?: [KOVRI_WEB_DOCKERFILE=${KOVRI_WEB_DOCKERFILE}]" KOVRI_WEB_DOCKERFILE
+  if [[ -z $XI2P_WEB_DOCKERFILE ]]; then
+    XI2P_WEB_DOCKERFILE=${_default_web_dockerfile}
+    read_input "Change Dockerfile?: [XI2P_WEB_DOCKERFILE=${XI2P_WEB_DOCKERFILE}]" XI2P_WEB_DOCKERFILE
   fi
-  local _web_dockerfile_path="${KOVRI_REPO}/${docker_dir}/Dockerfiles/${KOVRI_WEB_DOCKERFILE}"
-  read_bool_input "Build Web Docker image? [$KOVRI_WEB_IMAGE]" KOVRI_BUILD_WEB_IMAGE "docker build -t $KOVRI_WEB_IMAGE -f $_web_dockerfile_path $KOVRI_REPO"
+  local _web_dockerfile_path="${XI2P_REPO}/${docker_dir}/Dockerfiles/${XI2P_WEB_DOCKERFILE}"
+  read_bool_input "Build Web Docker image? [$XI2P_WEB_IMAGE]" XI2P_BUILD_WEB_IMAGE "docker build -t $XI2P_WEB_IMAGE -f $_web_dockerfile_path $XI2P_REPO"
 
   popd
 }
 
 set_bins()
 {
-  read_bool_input "Use binaries from repo?" KOVRI_USE_REPO_BINS ""
+  read_bool_input "Use binaries from repo?" XI2P_USE_REPO_BINS ""
 
-  if [[ $KOVRI_USE_REPO_BINS = true ]]; then
-    echo "Using binaries in ${KOVRI_REPO}/build"
+  if [[ $XI2P_USE_REPO_BINS = true ]]; then
+    echo "Using binaries in ${XI2P_REPO}/build"
 
-    mount_repo_bins="-v ${KOVRI_REPO}/build/xi2p:/usr/bin/xi2p \
-      -v ${KOVRI_REPO}/build/xi2p-util:/usr/bin/xi2p-util"
+    mount_repo_bins="-v ${XI2P_REPO}/build/xi2p:/usr/bin/xi2p \
+      -v ${XI2P_REPO}/build/xi2p-util:/usr/bin/xi2p-util"
 
-    read_bool_input "Build repo binaries from within the container?" KOVRI_BUILD_REPO_BINS "Exec make release-static"
+    read_bool_input "Build repo binaries from within the container?" XI2P_BUILD_REPO_BINS "Exec make release-static"
 
-    if [[ $KOVRI_BUILD_REPO_BINS = false ]]; then
+    if [[ $XI2P_BUILD_REPO_BINS = false ]]; then
       echo "Please ensure that the binaries are built statically if not built within a container"
     fi
   fi
@@ -282,15 +282,15 @@ set_bins()
 set_workspace()
 {
   # Set testnet workspace
-  if [[ -z $KOVRI_WORKSPACE ]]; then
-    KOVRI_WORKSPACE="${KOVRI_REPO}/build/testnet"
-    read_input "Change workspace for testnet output? [KOVRI_WORKSPACE=${KOVRI_WORKSPACE}]" KOVRI_WORKSPACE
+  if [[ -z $XI2P_WORKSPACE ]]; then
+    XI2P_WORKSPACE="${XI2P_REPO}/build/testnet"
+    read_input "Change workspace for testnet output? [XI2P_WORKSPACE=${XI2P_WORKSPACE}]" XI2P_WORKSPACE
   fi
 
   # Ensure workspace
-  if [[ ! -d $KOVRI_WORKSPACE ]]; then
-    echo "$KOVRI_WORKSPACE does not exist, creating"
-    mkdir -p $KOVRI_WORKSPACE 2>/dev/null
+  if [[ ! -d $XI2P_WORKSPACE ]]; then
+    echo "$XI2P_WORKSPACE does not exist, creating"
+    mkdir -p $XI2P_WORKSPACE 2>/dev/null
     catch "Could not create workspace"
   fi
 }
@@ -299,21 +299,21 @@ set_args()
 {
   # TODO(unassigned): *all* arguments (including sequence count, etc.)
   # Set utility binary arguments
-  if [[ -z $KOVRI_UTIL_ARGS ]]; then
-    KOVRI_UTIL_ARGS="--floodfill 1 --bandwidth P"
-    read_input "Change utility binary arguments? [KOVRI_UTIL_ARGS=\"${KOVRI_UTIL_ARGS}\"]" KOVRI_UTIL_ARGS
+  if [[ -z $XI2P_UTIL_ARGS ]]; then
+    XI2P_UTIL_ARGS="--floodfill 1 --bandwidth P"
+    read_input "Change utility binary arguments? [XI2P_UTIL_ARGS=\"${XI2P_UTIL_ARGS}\"]" XI2P_UTIL_ARGS
   fi
 
   # Set daemon binary arguments
-  if [[ -z $KOVRI_BIN_ARGS ]]; then
-    KOVRI_BIN_ARGS="--floodfill 1 --enable-su3-verification 0 --log-auto-flush 1 --enable-https 0"
-    read_input "Change xi2p binary arguments? [KOVRI_BIN_ARGS=\"${KOVRI_BIN_ARGS}\"]" KOVRI_BIN_ARGS
+  if [[ -z $XI2P_BIN_ARGS ]]; then
+    XI2P_BIN_ARGS="--floodfill 1 --enable-su3-verification 0 --log-auto-flush 1 --enable-https 0"
+    read_input "Change xi2p binary arguments? [XI2P_BIN_ARGS=\"${XI2P_BIN_ARGS}\"]" XI2P_BIN_ARGS
   fi
 
   # Set firewalled daemon binary arguments
-  if [[ $KOVRI_NB_FW -gt 0 && -z $KOVRI_FW_BIN_ARGS ]]; then
-    KOVRI_FW_BIN_ARGS="--floodfill 0 --enable-su3-verification 0 --log-auto-flush 1"
-    read_input "Change firewalled xi2p binary arguments? [KOVRI_FW_BIN_ARGS=\"${KOVRI_FW_BIN_ARGS}\"]" KOVRI_FW_BIN_ARGS
+  if [[ $XI2P_NB_FW -gt 0 && -z $XI2P_FW_BIN_ARGS ]]; then
+    XI2P_FW_BIN_ARGS="--floodfill 0 --enable-su3-verification 0 --log-auto-flush 1"
+    read_input "Change firewalled xi2p binary arguments? [XI2P_FW_BIN_ARGS=\"${XI2P_FW_BIN_ARGS}\"]" XI2P_FW_BIN_ARGS
   fi
 }
 
@@ -321,9 +321,9 @@ set_network()
 {
   # Create network
   # TODO(anonimal): we splitup octet segments as a hack for later setting RI addresses
-  if [[ -z $KOVRI_NETWORK ]]; then
+  if [[ -z $XI2P_NETWORK ]]; then
     # TODO(anonimal): read input
-    KOVRI_NETWORK="xi2p-testnet"
+    XI2P_NETWORK="xi2p-testnet"
   fi
   if [[ -z $network_octets ]]; then
     network_octets="172.18.0"
@@ -337,7 +337,7 @@ Create()
   create_network
 
   # Create workspace
-  pushd $KOVRI_WORKSPACE
+  pushd $XI2P_WORKSPACE
 
   # Create unfirewalled testnet
   for _seq in $($base_sequence); do
@@ -348,7 +348,7 @@ Create()
     create_ri $_seq
 
     # Create instance
-    create_instance $_seq "" "$KOVRI_BIN_ARGS"
+    create_instance $_seq "" "$XI2P_BIN_ARGS"
 
     # Create publisher webserver instance for first xi2p instance only
     # TODO(unassigned): we create the instance with the first instance in mind
@@ -360,22 +360,22 @@ Create()
     fi
   done
 
-  if [[ $KOVRI_NB_FW -gt 0 ]]; then
+  if [[ $XI2P_NB_FW -gt 0 ]]; then
     # Create instances that are not in reseed file and not directly accessible
-    echo "Create $KOVRI_NB_FW firewalled instances"
+    echo "Create $XI2P_NB_FW firewalled instances"
 
-    local _extra_opts="-v ${KOVRI_REPO}/${docker_dir}/entrypoints/${fw_entrypoint}:/${fw_entrypoint} \
+    local _extra_opts="-v ${XI2P_REPO}/${docker_dir}/entrypoints/${fw_entrypoint}:/${fw_entrypoint} \
       --entrypoint /${fw_entrypoint} \
       --user 0 --cap-add=NET_ADMIN"
 
     for _seq in $($fw_sequence); do
       create_data_dir $_seq
-      create_instance $_seq "$_extra_opts" "$KOVRI_FW_BIN_ARGS"
+      create_instance $_seq "$_extra_opts" "$XI2P_FW_BIN_ARGS"
     done
   fi
 
   ## ZIP RIs to create unsigned reseed file
-  zip -j ${KOVRI_WORKSPACE}/${reseed_file} $(ls router_*/routerInfo* | grep -v key)
+  zip -j ${XI2P_WORKSPACE}/${reseed_file} $(ls router_*/routerInfo* | grep -v key)
   catch "Could not ZIP RI's"
 
   for _seq in $($base_sequence); do
@@ -396,8 +396,8 @@ Create()
 
 create_network()
 {
-  echo "Creating $KOVRI_NETWORK"
-  docker network create --subnet=${network_subnet} $KOVRI_NETWORK
+  echo "Creating $XI2P_NETWORK"
+  docker network create --subnet=${network_subnet} $XI2P_NETWORK
 
   if [[ $? -ne 0 ]]; then
     read -r -p "Create a new network? [Y/n] " REPLY
@@ -408,7 +408,7 @@ create_network()
         ;;
       *)
         read -r -p "Set network name: " REPLY
-        KOVRI_NETWORK=${REPLY}
+        XI2P_NETWORK=${REPLY}
         read -r -p "Set first 3 octets: " REPLY
         network_octets=${REPLY}
         set_network
@@ -416,11 +416,11 @@ create_network()
     esac
 
     # Fool me once, shame on you. Fool me twice, ...
-    docker network create --subnet=${network_subnet} $KOVRI_NETWORK
+    docker network create --subnet=${network_subnet} $XI2P_NETWORK
     catch "Docker could not create network"
   fi
 
-  echo "Created network: $KOVRI_NETWORK"
+  echo "Created network: $XI2P_NETWORK"
 }
 
 # Create data directory
@@ -437,11 +437,11 @@ create_data_dir()
   catch "Could not create $_data_dir"
 
   # Set permissions
-  chown -R ${pid}:${gid} "${KOVRI_WORKSPACE}/${_host_router_dir}"
+  chown -R ${pid}:${gid} "${XI2P_WORKSPACE}/${_host_router_dir}"
   catch "Could not set ownership ${pid}:${gid}"
 
   # Create data-dir + copy only what's needed from pkg
-  mkdir -p ${_host_data_dir}/core && cp -r ${KOVRI_REPO}/{pkg/client,pkg/config,contrib/utils/xi2p-bash.sh} "$_host_data_dir"
+  mkdir -p ${_host_data_dir}/core && cp -r ${XI2P_REPO}/{pkg/client,pkg/config,contrib/utils/xi2p-bash.sh} "$_host_data_dir"
 
   # Set webserver IP
   local _web_host="${network_octets}${web_host_octet}"
@@ -451,7 +451,7 @@ create_data_dir()
   #   If we continue to keep a webserver in a separate container,
   #   we would need to forward the traffic from the xi2p instance to the webserver.
   if [[ $((10#${_seq})) -eq $seq_start ]]; then
-    local _dest_dir="${KOVRI_WORKSPACE}/${_host_data_dir}/${web_dir}"
+    local _dest_dir="${XI2P_WORKSPACE}/${_host_data_dir}/${web_dir}"
 
     # TODO(unassigned): enable TLS/SSL + key copy
 
@@ -487,7 +487,7 @@ create_ri()
 {
   local _seq=${1}
 
-  local _host_dir="${KOVRI_WORKSPACE}/${router_base_name}${_seq}"
+  local _host_dir="${XI2P_WORKSPACE}/${router_base_name}${_seq}"
   local _volume="${_host_dir}:${mount}"
 
   local _host="${network_octets}.$((10#${_seq}))"
@@ -496,13 +496,13 @@ create_ri()
   docker run -w $mount -it --rm \
     -v $_volume \
     $mount_repo_bins \
-    $KOVRI_IMAGE /usr/bin/xi2p-util routerinfo --create \
+    $XI2P_IMAGE /usr/bin/xi2p-util routerinfo --create \
       --host $_host \
       --port $_port \
-      $KOVRI_UTIL_ARGS
+      $XI2P_UTIL_ARGS
   catch "Docker could not run"
 
-  echo "Created RI | host: $_host | port: $_port | args: $KOVRI_UTIL_ARGS | volume: $_volume"
+  echo "Created RI | host: $_host | port: $_port | args: $XI2P_UTIL_ARGS | volume: $_volume"
 }
 
 # Create xi2p container instance
@@ -515,9 +515,9 @@ create_instance()
   local _docker_opts=${2}
 
   # Create named pipe for logging
-  local _pipe="${KOVRI_WORKSPACE}/${xi2p_base_name}${_seq}/${pipe_base_name}"
+  local _pipe="${XI2P_WORKSPACE}/${xi2p_base_name}${_seq}/${pipe_base_name}"
 
-  if [[ $KOVRI_USE_NAMED_PIPES = false ]]; then
+  if [[ $XI2P_USE_NAMED_PIPES = false ]]; then
     touch "$_pipe"
     catch "Could not create file $_pipe"
   else
@@ -534,7 +534,7 @@ create_instance()
   local _host="${network_octets}.$((10#${_seq}))"
   local _port="${seq_start}${_seq}"
 
-  local _volume="${KOVRI_WORKSPACE}:${mount_testnet}"
+  local _volume="${XI2P_WORKSPACE}:${mount_testnet}"
 
   local _bin_args="
     --data-dir $_data_dir
@@ -547,13 +547,13 @@ create_instance()
   docker create -w $mount \
     --name $_container_name \
     --hostname $_container_name \
-    --net $KOVRI_NETWORK \
+    --net $XI2P_NETWORK \
     --ip $_host \
     -p ${_port}:${_port} \
     -v $_volume \
     $mount_repo_bins \
     $_docker_opts \
-    $KOVRI_IMAGE \
+    $XI2P_IMAGE \
     /usr/bin/xi2p $_bin_args
   catch "Docker could not create container"
 
@@ -566,18 +566,18 @@ create_webserver_instance()
 {
   local _seq=${1}
   local _web_host="${network_octets}${web_host_octet}"
-  local _dest_dir="${KOVRI_WORKSPACE}/${xi2p_base_name}${_seq}/${web_dir}"
+  local _dest_dir="${XI2P_WORKSPACE}/${xi2p_base_name}${_seq}/${web_dir}"
 
-  local _entrypoint="-v ${KOVRI_REPO}/${docker_dir}/entrypoints/${web_entrypoint}:/${web_entrypoint} --entrypoint /${web_entrypoint}"
+  local _entrypoint="-v ${XI2P_REPO}/${docker_dir}/entrypoints/${web_entrypoint}:/${web_entrypoint} --entrypoint /${web_entrypoint}"
 
   # TODO(unassigned): this is Apache-specific
   local _cmd="sed -i -e 's/#ServerName .*/ServerName ${_web_host}:80/' ${web_system_dir}/${web_conf_dir}/${web_conf} && httpd-foreground"
 
   # Start publisher instance
-  docker create -it --network=${KOVRI_NETWORK} --ip=${_web_host} --name $web_name \
+  docker create -it --network=${XI2P_NETWORK} --ip=${_web_host} --name $web_name \
     $_entrypoint \
     -v ${_dest_dir}/${web_root_dir}/:${web_system_dir}/${web_root_dir}/ \
-    $KOVRI_WEB_IMAGE \
+    $XI2P_WEB_IMAGE \
     "$_cmd"
 
   catch "Docker could not run webserver"
@@ -585,14 +585,14 @@ create_webserver_instance()
 
 create_monitoring()
 {
-  read_bool_input "Disable monitoring?" KOVRI_DISABLE_MONITORING ""
-  if [[ $KOVRI_DISABLE_MONITORING = false ]]; then
+  read_bool_input "Disable monitoring?" XI2P_DISABLE_MONITORING ""
+  if [[ $XI2P_DISABLE_MONITORING = false ]]; then
     # Set db IP
     local _db_host="${network_octets}${db_host_octet}"
     local _db_uri="${_db_host}:8086"
 
     # Create DB container
-    docker create -it --name ${db_container_name} --network=${KOVRI_NETWORK} --ip=${_db_host} \
+    docker create -it --name ${db_container_name} --network=${XI2P_NETWORK} --ip=${_db_host} \
       ${db_image}
     catch "Could not create $db_container_name"
 
@@ -610,7 +610,7 @@ create_monitoring()
 
     # Create container stats collector
     local _stats_container_host="${network_octets}${stats_container_host_octet}"
-    docker create --name ${stats_container_name} --network=${KOVRI_NETWORK} --ip=${_stats_container_host} \
+    docker create --name ${stats_container_name} --network=${XI2P_NETWORK} --ip=${_stats_container_host} \
       --volume=/:/rootfs:ro --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro \
       --volume=/var/lib/docker/:/var/lib/docker:ro \
       --volume=/dev/disk/:/dev/disk:ro \
@@ -620,10 +620,10 @@ create_monitoring()
 
     # Create xi2p stats collector
     local _collector_host="${network_octets}${stats_xi2p_host_octet}"
-    docker create -it  --name ${stats_xi2p_name} --network=${KOVRI_NETWORK} --ip=${_collector_host} \
-      -v ${KOVRI_REPO}/${docker_dir}/monitoring/collect.sh:/collect.sh \
+    docker create -it  --name ${stats_xi2p_name} --network=${XI2P_NETWORK} --ip=${_collector_host} \
+      -v ${XI2P_REPO}/${docker_dir}/monitoring/collect.sh:/collect.sh \
       $mount_repo_bins \
-      $KOVRI_IMAGE \
+      $XI2P_IMAGE \
       /collect.sh "${sequence}" "${network_octets}" "${_db_uri}" "${db_name}" "${docker_base_name}"
     catch "Could not create $stats_xi2p_name"
     echo "Created xi2p stats collector ${stats_xi2p_name}"
@@ -631,7 +631,7 @@ create_monitoring()
     # Create UI container
     local _grafana_host="${network_octets}${grafana_host_octet}"
     local _grafana_uri="http://admin:${grafana_password}@${_grafana_host}:3000"
-    docker run -d --name ${grafana_base_name} --network=${KOVRI_NETWORK} --ip=${_grafana_host} \
+    docker run -d --name ${grafana_base_name} --network=${XI2P_NETWORK} --ip=${_grafana_host} \
       -p ${grafana_host_port}:3000 -e "GF_SECURITY_ADMIN_PASSWORD=${grafana_password}" ${grafana_image}
     catch "Could not create ${grafana_base_name}"
     echo "Created monitoring UI ${stats_xi2p_name}"
@@ -652,7 +652,7 @@ create_monitoring()
     echo "Grafana: Created api key $_apiKey"
 
     # Grafana: add dashboards
-    for dashboard in ${KOVRI_REPO}/contrib/testnet/monitoring/dashboards/*.json; do
+    for dashboard in ${XI2P_REPO}/contrib/testnet/monitoring/dashboards/*.json; do
       echo "Importing dashboard ${dashboard}... " && curl -X POST --insecure \
         -H "Authorization: Bearer $_apiKey" \
         -H "Content-Type: application/json" \
@@ -679,7 +679,7 @@ Start()
     catch "Could not start docker: $_seq"
   done
 
-  if [[ $KOVRI_DISABLE_MONITORING = false ]]; then
+  if [[ $XI2P_DISABLE_MONITORING = false ]]; then
     echo -n "Starting monitoring database... " && docker start $db_container_name
     echo -n "Starting container stats collector... " && docker start $stats_container_name
     echo -n "Starting xi2p stats collector... " && docker start $stats_xi2p_name
@@ -690,17 +690,17 @@ Start()
 Stop()
 {
   # Set timeout
-  if [[ -z $KOVRI_STOP_TIMEOUT ]]; then
-    read_input "Set container timeout interval (in seconds)?" KOVRI_STOP_TIMEOUT
-    if [[ -z $KOVRI_STOP_TIMEOUT ]]; then
-      KOVRI_STOP_TIMEOUT=10  # Set to 0 for immediate timeout
+  if [[ -z $XI2P_STOP_TIMEOUT ]]; then
+    read_input "Set container timeout interval (in seconds)?" XI2P_STOP_TIMEOUT
+    if [[ -z $XI2P_STOP_TIMEOUT ]]; then
+      XI2P_STOP_TIMEOUT=10  # Set to 0 for immediate timeout
     fi
   fi
 
-  local _stop="docker stop -t $KOVRI_STOP_TIMEOUT"
+  local _stop="docker stop -t $XI2P_STOP_TIMEOUT"
 
   # Stop testnet
-  if [[ $KOVRI_DISABLE_MONITORING = false ]]; then
+  if [[ $XI2P_DISABLE_MONITORING = false ]]; then
     echo -n "Stopping monitoring collector " && $_stop $stats_xi2p_name
     echo -n "Stopping container stats collector... " && $_stop $stats_container_name
     echo -n "Stopping monitoring database... " && $_stop $db_container_name
@@ -723,17 +723,17 @@ Stop()
 
 Destroy()
 {
-  echo "Destroying... [Workspace: $KOVRI_WORKSPACE | Network: $KOVRI_NETWORK]"
+  echo "Destroying... [Workspace: $XI2P_WORKSPACE | Network: $XI2P_NETWORK]"
 
   # TODO(unassigned): error handling?
-  if [[ -z $KOVRI_WORKSPACE ]]; then
+  if [[ -z $XI2P_WORKSPACE ]]; then
     read -r -p "Enter workspace to remove: " REPLY
-    KOVRI_WORKSPACE=${REPLY}
+    XI2P_WORKSPACE=${REPLY}
   fi
 
   Stop
 
-  if [[ $KOVRI_DISABLE_MONITORING = false ]]; then
+  if [[ $XI2P_DISABLE_MONITORING = false ]]; then
     echo -n "Removing monitoring collector... " && docker rm -v $stats_xi2p_name
     echo -n "Removing container stats collector... " && docker rm -v $stats_container_name
     echo -n "Removing monitoring database... " && docker rm -v $db_container_name
@@ -747,23 +747,23 @@ Destroy()
   done
 
   # Remove the entire the workspace
-  rm -fr ${KOVRI_WORKSPACE}
+  rm -fr ${XI2P_WORKSPACE}
 
-  if [[ -z $KOVRI_NETWORK ]]; then
+  if [[ -z $XI2P_NETWORK ]]; then
     read -r -p "Enter network name to remove: " REPLY
-    KOVRI_NETWORK=${REPLY}
+    XI2P_NETWORK=${REPLY}
   fi
 
-  docker network rm $KOVRI_NETWORK && echo "Removed network: $KOVRI_NETWORK"
+  docker network rm $XI2P_NETWORK && echo "Removed network: $XI2P_NETWORK"
 }
 
 Exec()
 {
   docker run -i -t \
     --rm \
-    -v $KOVRI_REPO:/home/xi2p/xi2p \
+    -v $XI2P_REPO:/home/xi2p/xi2p \
     -w /home/xi2p/xi2p \
-    $KOVRI_IMAGE \
+    $XI2P_IMAGE \
     $@
   catch "Docker: run failed"
 }

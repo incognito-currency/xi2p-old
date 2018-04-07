@@ -29,7 +29,7 @@ if(WITH_FUZZ_TESTS)
 endif()
 
 if(WITH_BINARY)
-  if (WITH_KOVRI_UTIL)
+  if (WITH_XI2P_UTIL)
     ConfigureBinary(${UTIL_NAME} "${UTIL_SRC}" ${UTIL_NAME})
   endif()
   if(WITH_FUZZ_TESTS)

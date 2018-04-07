@@ -42,7 +42,7 @@
 #include "core/util/exception.h"
 #include "core/util/filesystem.h"
 
-namespace kovri
+namespace xi2p
 {
 namespace core
 {
@@ -73,17 +73,17 @@ class Configuration
   /// @warning Config file must first be parsed
   const boost::filesystem::path GetConfigPath() const
   {
-    std::string kovri_config = m_Map["kovriconf"].defaulted()
-                                   ? "kovri.conf"
-                                   : m_Map["kovriconf"].as<std::string>();
-    boost::filesystem::path file(kovri_config);
+    std::string xi2p_config = m_Map["xi2pconf"].defaulted()
+                                   ? "xi2p.conf"
+                                   : m_Map["xi2pconf"].as<std::string>();
+    boost::filesystem::path file(xi2p_config);
     if (!file.is_complete())
       file = core::GetPath(core::Path::Config) / file;
     return file;
   }
 
   /// @brief Gets core config variable map
-  /// @return Reference to kovri config member variable map
+  /// @return Reference to xi2p config member variable map
   const boost::program_options::variables_map& GetMap() const noexcept
   {
     return m_Map;
@@ -113,6 +113,6 @@ class Configuration
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_UTIL_CONFIG_H_

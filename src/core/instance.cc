@@ -62,8 +62,8 @@ Instance::Instance(const std::vector<std::string>& args) try
 
     // Log the banner
     LOG(info) << "The Xi2p I2P Router Project";
-    LOG(info) << KOVRI_VERSION << "-" << KOVRI_GIT_REVISION << " \""
-              << KOVRI_CODENAME << "\"";
+    LOG(info) << XI2P_VERSION << "-" << XI2P_GIT_REVISION << " \""
+              << XI2P_CODENAME << "\"";
 
     // Log args (if applicable)
     for (auto const& arg : args)

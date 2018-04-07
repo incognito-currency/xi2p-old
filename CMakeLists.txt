@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 2.8.12)
 project("xi2p" C CXX)
 
-set(KOVRI_PROJECT "The Xi2p I2P Router Project")
+set(XI2P_PROJECT "The Xi2p I2P Router Project")
 
 # Versioning
-set(KOVRI_VERSION "0.1.0-pre-alpha")
-set(KOVRI_CODENAME "In the beginning")
+set(XI2P_VERSION "0.1.0-pre-alpha")
+set(XI2P_CODENAME "In the beginning")
 
 # Get git revision
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
@@ -14,16 +14,16 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
     execute_process(
       COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD  # use short hash for now
       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-      OUTPUT_VARIABLE "KOVRI_GIT_REVISION"
+      OUTPUT_VARIABLE "XI2P_GIT_REVISION"
       ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
   else()
-    set(KOVRI_GIT_REVISION " ")
+    set(XI2P_GIT_REVISION " ")
   endif()
 endif()
 
 message(STATUS "")
-message(STATUS "${KOVRI_PROJECT}")
-message(STATUS "${KOVRI_VERSION}-${KOVRI_GIT_REVISION} \"${KOVRI_CODENAME}\"")
+message(STATUS "${XI2P_PROJECT}")
+message(STATUS "${XI2P_VERSION}-${XI2P_GIT_REVISION} \"${XI2P_CODENAME}\"")
 message(STATUS "")
 
 # I2NP/NetDb RI properties (used internally)
@@ -37,9 +37,9 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.h.in" "${CMAKE_BINARY_
 include_directories("${CMAKE_BINARY_DIR}")
 
 # Configurable options
-option(KOVRI_DATA_PATH "The path to the xi2p data folder")
+option(XI2P_DATA_PATH "The path to the xi2p data folder")
 option(WITH_BINARY     "Build xi2p binary" ON)
-option(WITH_KOVRI_UTIL "Build xi2p utility binary" OFF)
+option(WITH_XI2P_UTIL "Build xi2p utility binary" OFF)
 option(WITH_COVERAGE   "Build with coverage" OFF)
 option(WITH_CRYPTOPP   "Build with Crypto++" ON)  # Default ON unless we switch libraries
 option(WITH_CPPNETLIB  "Build with cpp-netlib" ON)
@@ -339,8 +339,8 @@ endif()
 include_directories(${CMAKE_SOURCE_DIR})
 
 # Use data-path set in Makefile. Code must call upon this definition.
-if(KOVRI_DATA_PATH)
-  add_definitions(-DKOVRI_CUSTOM_DATA_PATH="${KOVRI_DATA_PATH}")
+if(XI2P_DATA_PATH)
+  add_definitions(-DXI2P_CUSTOM_DATA_PATH="${XI2P_DATA_PATH}")
 endif()
 
 # Show summary
@@ -350,10 +350,10 @@ message(STATUS "Compiler vendor    : ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "Compiler version   : ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "Compiler path      : ${CMAKE_CXX_COMPILER}")
 message(STATUS "Install prefix:    : ${CMAKE_INSTALL_PREFIX}")
-message(STATUS "Xi2p data directory: ${KOVRI_DATA_DIR}")
+message(STATUS "Xi2p data directory: ${XI2P_DATA_DIR}")
 message(STATUS "Options:")
 message(STATUS "  BINARY           : ${WITH_BINARY}")
-message(STATUS "  KOVRI UTIL       : ${WITH_KOVRI_UTIL}")
+message(STATUS "  XI2P UTIL       : ${WITH_XI2P_UTIL}")
 message(STATUS "  COVERAGE         : ${WITH_COVERAGE}")
 message(STATUS "  CRYPTOPP         : ${WITH_CRYPTOPP}")
 message(STATUS "  DOXYGEN          : ${WITH_DOXYGEN}")

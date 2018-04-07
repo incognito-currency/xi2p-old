@@ -255,8 +255,8 @@ void I2PControlSession::HandleRouterInfo(
           case RouterInfo::Version:
             response->SetParam(
                 pair.first,
-                std::string(KOVRI_VERSION) + "-" + KOVRI_GIT_REVISION + "-"
-                    + KOVRI_CODENAME);
+                std::string(XI2P_VERSION) + "-" + XI2P_GIT_REVISION + "-"
+                    + XI2P_CODENAME);
             break;
 
           case RouterInfo::BWIn1S:

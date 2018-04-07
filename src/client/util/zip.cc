@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -40,7 +40,7 @@
 
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 /**
@@ -195,7 +195,7 @@ bool ZIP::DecompressLocalFile() {
       case static_cast<std::size_t>(Method::deflate): {
         LOG(debug) << "ZIP: file uses compression method 'deflate'";
         // Instantiate decompressor
-        kovri::core::DeflateDecompressor decompressor;
+        xi2p::core::DeflateDecompressor decompressor;
         // Put in data to decompress
         decompressor.Put(
             m_Data->compressed.data(),
@@ -248,4 +248,4 @@ bool ZIP::DecompressLocalFile() {
 }
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p

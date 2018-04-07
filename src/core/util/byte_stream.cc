@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2015-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -44,7 +44,7 @@
 // TODO(anonimal): a secure bytestream implementation that ensures wiped memory when needed.
 //   Otherwise, and preferably, use existing standard library containers with crypto++.
 
-namespace kovri
+namespace xi2p
 {
 namespace core
 {
@@ -227,4 +227,4 @@ boost::asio::ip::address BytesToAddress(
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

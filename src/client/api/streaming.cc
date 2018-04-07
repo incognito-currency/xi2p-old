@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -45,13 +45,13 @@
 #include "core/util/log.h"
 #include "core/util/timestamp.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 Stream::Stream(
     boost::asio::io_service& service,
     StreamingDestination& local,
-    std::shared_ptr<const kovri::core::LeaseSet> remote,
+    std::shared_ptr<const xi2p::core::LeaseSet> remote,
     std::uint16_t port)
     : m_Service(service),
       m_SendStreamID(0),
@@ -73,7 +73,7 @@ Stream::Stream(
       m_LastWindowSizeIncreaseTime(0),
       m_NumResendAttempts(0),
       m_Exception(__func__) {
-        m_RecvStreamID = kovri::core::Rand<std::uint32_t>();
+        m_RecvStreamID = xi2p::core::Rand<std::uint32_t>();
         m_RemoteIdentity = remote->GetIdentity();
         // TODO(unassigned):
         // This type of initialization is a friendly reminder of overall poor design.
@@ -118,7 +118,7 @@ Stream::Stream(
       m_LastWindowSizeIncreaseTime(0),
       m_NumResendAttempts(0),
       m_Exception(__func__) {
-        m_RecvStreamID = kovri::core::Rand<std::uint32_t>();
+        m_RecvStreamID = xi2p::core::Rand<std::uint32_t>();
       }
 
 Stream::~Stream() {
@@ -306,7 +306,7 @@ void Stream::ProcessPacket(
 void Stream::ProcessAck(
     Packet * packet) {
   bool acknowledged = false;
-  auto ts = kovri::core::GetMillisecondsSinceEpoch();
+  auto ts = xi2p::core::GetMillisecondsSinceEpoch();
   std::uint32_t ack_through = packet->GetAckThrough();
   int nack_count = packet->GetNACKCount();
   for (auto it = m_SentPackets.begin(); it != m_SentPackets.end();) {
@@ -476,7 +476,7 @@ void Stream::SendBuffer() {
     m_IsAckSendScheduled = false;
     m_AckSendTimer.cancel();
     bool is_empty = m_SentPackets.empty();
-    auto ts = kovri::core::GetMillisecondsSinceEpoch();
+    auto ts = xi2p::core::GetMillisecondsSinceEpoch();
     for (auto it : packets) {
       it->send_time = ts;
       m_SentPackets.insert(it);
@@ -685,21 +685,21 @@ void Stream::SendPackets(
     LOG(error) << "Stream: no outbound tunnels in the pool";
     return;
   }
-  auto ts = kovri::core::GetMillisecondsSinceEpoch();
+  auto ts = xi2p::core::GetMillisecondsSinceEpoch();
   if (!m_CurrentRemoteLease.end_date ||
       ts >= m_CurrentRemoteLease.end_date -
-      kovri::core::TUNNEL_EXPIRATION_THRESHOLD * 1000)
+      xi2p::core::TUNNEL_EXPIRATION_THRESHOLD * 1000)
     UpdateCurrentRemoteLease(true);
   if (ts < m_CurrentRemoteLease.end_date) {
-    std::vector<kovri::core::TunnelMessageBlock> msgs;
+    std::vector<xi2p::core::TunnelMessageBlock> msgs;
     for (auto it : packets) {
       auto msg = m_RoutingSession->WrapSingleMessage(
           CreateDataMessage(
             it->GetBuffer(),
             it->GetLength()));
       msgs.push_back(
-          kovri::core::TunnelMessageBlock {
-            kovri::core::e_DeliveryTypeTunnel,
+          xi2p::core::TunnelMessageBlock {
+            xi2p::core::e_DeliveryTypeTunnel,
             m_CurrentRemoteLease.tunnel_gateway,
             m_CurrentRemoteLease.tunnel_ID,
             msg
@@ -737,7 +737,7 @@ void Stream::HandleResendTimer(
       return;
     }
     // collect packets to resend
-    auto ts = kovri::core::GetMillisecondsSinceEpoch();
+    auto ts = xi2p::core::GetMillisecondsSinceEpoch();
     std::vector<Packet *> packets;
     for (auto it : m_SentPackets) {
       if (ts >= it->send_time + m_RTO) {
@@ -835,7 +835,7 @@ void Stream::UpdateCurrentRemoteLease(
       }
       if (!updated) {
         std::uint32_t i =
-          kovri::core::RandInRange32(
+          xi2p::core::RandInRange32(
               0, leases.size() - 1);
         if (m_CurrentRemoteLease.end_date &&
             leases[i].tunnel_ID == m_CurrentRemoteLease.tunnel_ID)
@@ -853,13 +853,13 @@ void Stream::UpdateCurrentRemoteLease(
   }
 }
 
-std::shared_ptr<kovri::core::I2NPMessage> Stream::CreateDataMessage(
+std::shared_ptr<xi2p::core::I2NPMessage> Stream::CreateDataMessage(
     const std::uint8_t* payload,
     std::size_t len) {
-  auto msg = kovri::core::ToSharedI2NPMessage(kovri::core::NewI2NPShortMessage());
+  auto msg = xi2p::core::ToSharedI2NPMessage(xi2p::core::NewI2NPShortMessage());
   try {
-    kovri::core::Gzip compressor;
-    if (len <= kovri::client::COMPRESSION_THRESHOLD_SIZE)
+    xi2p::core::Gzip compressor;
+    if (len <= xi2p::client::COMPRESSION_THRESHOLD_SIZE)
       compressor.SetDeflateLevel(
           compressor.GetMinDeflateLevel());
     else
@@ -880,9 +880,9 @@ std::shared_ptr<kovri::core::I2NPMessage> Stream::CreateDataMessage(
     // destination port
     core::OutputByteStream::Write<std::uint16_t>(buf + 6, m_Port);
     // streaming protocol
-    buf[9] = kovri::client::PROTOCOL_TYPE_STREAMING;
+    buf[9] = xi2p::client::PROTOCOL_TYPE_STREAMING;
     msg->len += size + 4;
-    msg->FillI2NPMessageHeader(kovri::core::I2NPData);
+    msg->FillI2NPMessageHeader(xi2p::core::I2NPData);
   } catch (...) {
     m_Exception.Dispatch(__func__);
     // TODO(anonimal): review if we need to safely break control, ensure exception handling by callers
@@ -941,7 +941,7 @@ void StreamingDestination::HandleNextPacket(
 }
 
 std::shared_ptr<Stream> StreamingDestination::CreateNewOutgoingStream(
-    std::shared_ptr<const kovri::core::LeaseSet> remote,
+    std::shared_ptr<const xi2p::core::LeaseSet> remote,
     std::uint16_t port) {
   auto s = std::make_shared<Stream>(m_Owner.GetService(), *this, remote, port);
   std::unique_lock<std::mutex> l(m_StreamsMutex);
@@ -971,7 +971,7 @@ void StreamingDestination::HandleDataMessagePayload(
     std::size_t len) {
   Packet* uncompressed = new Packet;
   try {
-    kovri::core::Gunzip decompressor;
+    xi2p::core::Gunzip decompressor;
     decompressor.Put(buf, len);
     uncompressed->offset = 0;
     uncompressed->len = decompressor.MaxRetrievable();
@@ -991,4 +991,4 @@ void StreamingDestination::HandleDataMessagePayload(
 }
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p

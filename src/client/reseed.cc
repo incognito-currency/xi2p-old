@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -48,7 +48,7 @@
 
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 /**
@@ -98,7 +98,7 @@ bool Reseed::Start() {
   }
   // Insert extracted RI's into NetDb
   for (auto const& router : su3.m_RouterInfos)
-    if (!kovri::core::netdb.AddRouterInfo(
+    if (!xi2p::core::netdb.AddRouterInfo(
           router.second.data(),
           router.second.size()))
       return false;
@@ -107,7 +107,7 @@ bool Reseed::Start() {
 }
 
 bool Reseed::ProcessCerts(
-    std::map<std::string, kovri::core::PublicKey>* keys,
+    std::map<std::string, xi2p::core::PublicKey>* keys,
     const boost::filesystem::path& path)
 {
   // Test if directory exists
@@ -123,7 +123,7 @@ bool Reseed::ProcessCerts(
     }
   boost::filesystem::directory_iterator it(path), end;
   // Instantiate X.509 object
-  kovri::core::X509 x509;
+  xi2p::core::X509 x509;
   // Iterate through directory and get signing key from each certificate
   std::size_t num_certs = 0;
   BOOST_FOREACH(boost::filesystem::path const& cert, std::make_pair(it, end)) {
@@ -182,7 +182,7 @@ bool Reseed::FetchStream() {
   } else {
     m_Stream =
       m_Hosts.at(
-          kovri::core::RandInRange32(0, m_Hosts.size() - 1)) +
+          xi2p::core::RandInRange32(0, m_Hosts.size() - 1)) +
       m_Filename;
     if (FetchStream(m_Stream))
       return true;
@@ -286,14 +286,14 @@ bool SU3::PrepareStream() {
     // Prepare signature type
     m_Stream.Read(&m_Data->signature_type, Size::signature_type);
     boost::endian::big_to_native_inplace(m_Data->signature_type);
-    if (m_Data->signature_type != kovri::core::SIGNING_KEY_TYPE_RSA_SHA512_4096) {  // Temporary (see #160)
+    if (m_Data->signature_type != xi2p::core::SIGNING_KEY_TYPE_RSA_SHA512_4096) {  // Temporary (see #160)
       LOG(error) << "SU3: signature type not supported";
       return false;
     }
     // Prepare signature length
     m_Stream.Read(&m_Data->signature_length, Size::signature_length);
     boost::endian::big_to_native_inplace(m_Data->signature_length);
-    if (m_Data->signature_length != sizeof(kovri::core::PublicKey)) {  // Temporary (see #160)
+    if (m_Data->signature_length != sizeof(xi2p::core::PublicKey)) {  // Temporary (see #160)
       LOG(error) << "SU3: invalid signature length";
       return false;
     }
@@ -414,8 +414,8 @@ bool SU3::VerifySignature() {
   }
   // Verify hash of content data and signature
   switch (m_Data->signature_type) {
-    case kovri::core::SIGNING_KEY_TYPE_RSA_SHA512_4096: {
-      kovri::core::RSASHA5124096RawVerifier verifier(signing_key_it->second);
+    case xi2p::core::SIGNING_KEY_TYPE_RSA_SHA512_4096: {
+      xi2p::core::RSASHA5124096RawVerifier verifier(signing_key_it->second);
       verifier.Update(m_Data->content.data(), m_Data->content.size());
       if (!verifier.Verify(m_Data->signature.data())) {
         LOG(error) << "SU3: signature failed";
@@ -438,7 +438,7 @@ bool SU3::VerifySignature() {
 
 bool SU3::ExtractContent() {
   LOG(debug) << "SU3: unzipping stream";
-  kovri::client::ZIP zip(
+  xi2p::client::ZIP zip(
       m_Stream.Str(),
       m_Data->content_length,
       m_Data->content_position);
@@ -452,7 +452,7 @@ bool SU3::ExtractContent() {
   return true;
 }
 
-bool SU3::Extract(kovri::core::OutputFileStream* output)
+bool SU3::Extract(xi2p::core::OutputFileStream* output)
 {
   LOG(debug) << "SU3: extracting payload";
   std::size_t content_length =
@@ -502,4 +502,4 @@ const std::string SU3::ContentTypeToString(std::uint8_t type)
 }
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p

@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -42,7 +42,7 @@
 // FIPS 197 (AES)
 // http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 /// @note Initialize once to avoid repeated tests for AES-NI
@@ -78,7 +78,7 @@ struct CipherBlock {
   }
 };
 
-typedef kovri::core::Tag<32> AESKey;
+typedef xi2p::core::Tag<32> AESKey;
 
 /// @enum AESSize
 /// @brief Sizes for, specifically, AES-256
@@ -252,6 +252,6 @@ class CBCDecryption {
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_CRYPTO_AES_H_

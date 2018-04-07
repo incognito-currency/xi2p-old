@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -43,7 +43,7 @@
 #include "core/util/log.h"
 #include "core/util/timestamp.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 // TODO(anonimal): bytestream refactor
@@ -74,7 +74,7 @@ void Tunnel::Build(
     std::vector<int> record_indicies;
     for (int i = 0; i < num_records; i++)
       record_indicies.push_back(i);
-    kovri::core::Shuffle(record_indicies.begin(), record_indicies.end());
+    xi2p::core::Shuffle(record_indicies.begin(), record_indicies.end());
     // create real records
     std::uint8_t* records = msg->GetPayload() + 1;
     TunnelHopConfig* hop = m_Config->GetFirstHop();
@@ -92,12 +92,12 @@ void Tunnel::Build(
     // fill up fake records with random data
     for (int i = num_hops; i < num_records; i++) {
       int idx = record_indicies[i];
-      kovri::core::RandBytes(
+      xi2p::core::RandBytes(
           records + idx * TUNNEL_BUILD_RECORD_SIZE,
           TUNNEL_BUILD_RECORD_SIZE);
     }
     // decrypt real records
-    kovri::core::CBCDecryption decryption;
+    xi2p::core::CBCDecryption decryption;
     hop = m_Config->GetLastHop()->GetPreviousHop();
     while (hop) {
       decryption.SetKey(hop->GetAESAttributes().reply_key.data());
@@ -120,7 +120,7 @@ void Tunnel::Build(
           0,
           ToSharedI2NPMessage(std::move(msg)));
     else
-      kovri::core::transports.SendMessage(
+      xi2p::core::transports.SendMessage(
           GetNextIdentHash(),
           ToSharedI2NPMessage(std::move(msg)));
   } catch (...) {
@@ -138,7 +138,7 @@ bool Tunnel::HandleTunnelBuildResponse(
   try {
     LOG(debug)
       << "Tunnel: TunnelBuildResponse " << static_cast<int>(msg[0]) << " records.";
-    kovri::core::CBCDecryption decryption;
+    xi2p::core::CBCDecryption decryption;
     TunnelHopConfig* hop = m_Config->GetLastHop();
     while (hop) {
       decryption.SetKey(hop->GetAESAttributes().reply_key.data());
@@ -210,7 +210,7 @@ void Tunnel::EncryptTunnelMsg(
 }
 
 void Tunnel::SendTunnelDataMsg(
-    std::shared_ptr<kovri::core::I2NPMessage>) {
+    std::shared_ptr<xi2p::core::I2NPMessage>) {
   // TODO(unassigned): review for missing code
   LOG(debug) << "Tunnel: can't send I2NP messages without delivery instructions";
 }
@@ -229,7 +229,7 @@ void InboundTunnel::HandleTunnelDataMsg(
 void OutboundTunnel::SendTunnelDataMsg(
     const std::uint8_t* gw_hash,
     std::uint32_t gw_tunnel,
-    std::shared_ptr<kovri::core::I2NPMessage> msg) {
+    std::shared_ptr<xi2p::core::I2NPMessage> msg) {
   TunnelMessageBlock block;
   if (gw_hash) {
     block.hash = gw_hash;
@@ -256,7 +256,7 @@ void OutboundTunnel::SendTunnelDataMsg(
 }
 
 void OutboundTunnel::HandleTunnelDataMsg(
-    std::shared_ptr<const kovri::core::I2NPMessage>) {
+    std::shared_ptr<const xi2p::core::I2NPMessage>) {
   LOG(error)
     << "OutboundTunnel: incoming message for outbound tunnel "
     << GetTunnelID();
@@ -339,7 +339,7 @@ std::shared_ptr<InboundTunnel> Tunnels::GetNextInboundTunnel() {
 std::shared_ptr<OutboundTunnel> Tunnels::GetNextOutboundTunnel() {
   // TODO(unassigned): integer size
   std::uint32_t s = m_OutboundTunnels.size();
-  std::uint32_t ind = kovri::core::RandInRange32(0, s - 1);
+  std::uint32_t ind = xi2p::core::RandInRange32(0, s - 1);
   std::uint32_t i = 0;
   std::shared_ptr<OutboundTunnel> tunnel;
   for (auto it : m_OutboundTunnels) {
@@ -354,7 +354,7 @@ std::shared_ptr<OutboundTunnel> Tunnels::GetNextOutboundTunnel() {
 }
 
 std::shared_ptr<TunnelPool> Tunnels::CreateTunnelPool(
-    kovri::core::GarlicDestination* local_destination,
+    xi2p::core::GarlicDestination* local_destination,
     int num_inbound_hops,
     int num_outbound_hops,
     int num_inbound_tunnels,
@@ -479,7 +479,7 @@ void Tunnels::Run() {
         }
         while (msg);
       }
-      std::uint64_t ts = kovri::core::GetSecondsSinceEpoch();
+      std::uint64_t ts = xi2p::core::GetSecondsSinceEpoch();
       if (ts - last_ts >= 15) {  // manage tunnels every 15 seconds
         ManageTunnels();
         last_ts = ts;
@@ -511,7 +511,7 @@ void Tunnels::HandleTunnelGatewayMsg(
   if (type_ID == I2NPDatabaseStore || type_ID == I2NPDatabaseSearchReply)
     // transit DatabaseStore my contain new/updated RI
     // or DatabaseSearchReply with new routers
-    kovri::core::netdb.PostI2NPMsg(msg);
+    xi2p::core::netdb.PostI2NPMsg(msg);
   tunnel->SendTunnelDataMsg(msg);
 }
 
@@ -532,7 +532,7 @@ template<class PendingTunnels>
 void Tunnels::ManagePendingTunnels(
     PendingTunnels& pending_tunnels) {
   // check pending tunnel. delete failed or timeout
-  std::uint64_t ts = kovri::core::GetSecondsSinceEpoch();
+  std::uint64_t ts = xi2p::core::GetSecondsSinceEpoch();
   for (auto it = pending_tunnels.begin(); it != pending_tunnels.end();) {
     auto tunnel = it->second;
     switch (tunnel->GetState()) {
@@ -578,7 +578,7 @@ void Tunnels::ManagePendingTunnels(
 }
 
 void Tunnels::ManageOutboundTunnels() {
-  std::uint64_t ts = kovri::core::GetSecondsSinceEpoch(); {
+  std::uint64_t ts = xi2p::core::GetSecondsSinceEpoch(); {
     for (auto it = m_OutboundTunnels.begin(); it != m_OutboundTunnels.end();) {
       auto tunnel = *it;
       if (ts > tunnel->GetCreationTime() + TUNNEL_EXPIRATION_TIMEOUT) {
@@ -608,19 +608,19 @@ void Tunnels::ManageOutboundTunnels() {
   if (m_OutboundTunnels.size() < 5) {
     // trying to create one more outbound tunnel
     auto inbound_tunnel = GetNextInboundTunnel();
-    auto router = kovri::core::netdb.GetRandomRouter();
+    auto router = xi2p::core::netdb.GetRandomRouter();
     if (!inbound_tunnel || !router)
       return;
     LOG(debug) << "Tunnels: creating one hop outbound tunnel";
     CreateTunnel<OutboundTunnel> (
         std::make_shared<TunnelConfig> (
-          std::vector<std::shared_ptr<const kovri::core::RouterInfo> > { router },
+          std::vector<std::shared_ptr<const xi2p::core::RouterInfo> > { router },
           inbound_tunnel->GetTunnelConfig()));
   }
 }
 
 void Tunnels::ManageInboundTunnels() {
-  std::uint64_t ts = kovri::core::GetSecondsSinceEpoch(); {
+  std::uint64_t ts = xi2p::core::GetSecondsSinceEpoch(); {
     for (auto it = m_InboundTunnels.begin(); it != m_InboundTunnels.end();) {
       auto tunnel = it->second;
       if (ts > tunnel->GetCreationTime() + TUNNEL_EXPIRATION_TIMEOUT) {
@@ -658,16 +658,16 @@ void Tunnels::ManageInboundTunnels() {
   }
   if (m_OutboundTunnels.empty() || m_InboundTunnels.size() < 5) {
     // trying to create one more inbound tunnel
-    auto router = kovri::core::netdb.GetRandomRouter();
+    auto router = xi2p::core::netdb.GetRandomRouter();
     LOG(debug) << "Tunnels: creating one hop inbound tunnel";
     CreateTunnel<InboundTunnel> (
         std::make_shared<TunnelConfig> (
-          std::vector<std::shared_ptr<const kovri::core::RouterInfo> > {router}));
+          std::vector<std::shared_ptr<const xi2p::core::RouterInfo> > {router}));
   }
 }
 
 void Tunnels::ManageTransitTunnels() {
-  std::uint64_t ts = kovri::core::GetSecondsSinceEpoch();
+  std::uint64_t ts = xi2p::core::GetSecondsSinceEpoch();
   for (auto it = m_TransitTunnels.begin(); it != m_TransitTunnels.end();) {
     if (ts > it->second->GetCreationTime() + TUNNEL_EXPIRATION_TIMEOUT) {
       auto tmp = it->second;
@@ -709,7 +709,7 @@ std::shared_ptr<TTunnel> Tunnels::CreateTunnel(
     std::shared_ptr<TunnelConfig> config,
     std::shared_ptr<OutboundTunnel> outbound_tunnel) {
   auto new_tunnel = std::make_shared<TTunnel> (config);
-  std::uint32_t reply_msg_ID = kovri::core::Rand<std::uint32_t>();
+  std::uint32_t reply_msg_ID = xi2p::core::Rand<std::uint32_t>();
   AddPendingTunnel(reply_msg_ID, new_tunnel);
   new_tunnel->Build(reply_msg_ID, outbound_tunnel);
   return new_tunnel;
@@ -757,7 +757,7 @@ void Tunnels::AddInboundTunnel(
 void Tunnels::CreateZeroHopsInboundTunnel() {
   CreateTunnel<InboundTunnel> (
       std::make_shared<TunnelConfig> (
-        std::vector<std::shared_ptr<const kovri::core::RouterInfo> > {
+        std::vector<std::shared_ptr<const xi2p::core::RouterInfo> > {
         context.GetSharedRouterInfo()
       }));
 }
@@ -765,7 +765,7 @@ void Tunnels::CreateZeroHopsInboundTunnel() {
 std::uint64_t Tunnels::GetTransitTunnelsExpirationTimeout()
 {
   std::uint64_t timeout = 0;
-  std::uint64_t timestamp = kovri::core::GetSecondsSinceEpoch();
+  std::uint64_t timestamp = xi2p::core::GetSecondsSinceEpoch();
   std::unique_lock<std::mutex> l(m_TransitTunnelsMutex);
   for (auto tunnel : m_TransitTunnels)
     {
@@ -778,4 +778,4 @@ std::uint64_t Tunnels::GetTransitTunnelsExpirationTimeout()
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

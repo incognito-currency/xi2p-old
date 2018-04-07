@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -43,7 +43,7 @@
 #include "core/util/exception.h"
 #include "core/util/filesystem.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 /**
@@ -152,15 +152,15 @@ class ZIP {
   };
 
   // ZIP stream
-  kovri::core::StringStream m_Stream;
+  xi2p::core::StringStream m_Stream;
 
   // ZIP spec-defined data
   std::unique_ptr<Data> m_Data;
 
-  kovri::core::Exception m_Exception;
+  xi2p::core::Exception m_Exception;
 };
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_UTIL_ZIP_H_

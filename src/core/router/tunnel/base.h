@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -42,7 +42,7 @@
 
 #include "core/util/timestamp.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 const std::size_t TUNNEL_DATA_MSG_SIZE = 1028;
@@ -57,7 +57,7 @@ enum TunnelDeliveryType {
 
 struct TunnelMessageBlock {
   TunnelDeliveryType delivery_type;
-  kovri::core::IdentHash hash;
+  xi2p::core::IdentHash hash;
   std::uint32_t tunnel_ID;
   std::shared_ptr<I2NPMessage> data;
 };
@@ -65,15 +65,15 @@ struct TunnelMessageBlock {
 class TunnelBase {
  public:
   TunnelBase()
-      : m_CreationTime(kovri::core::GetSecondsSinceEpoch()) {}
+      : m_CreationTime(xi2p::core::GetSecondsSinceEpoch()) {}
 
   virtual ~TunnelBase() {}
 
   virtual void HandleTunnelDataMsg(
-      std::shared_ptr<const kovri::core::I2NPMessage> tunnel_msg) = 0;
+      std::shared_ptr<const xi2p::core::I2NPMessage> tunnel_msg) = 0;
 
   virtual void SendTunnelDataMsg(
-      std::shared_ptr<kovri::core::I2NPMessage> msg) = 0;
+      std::shared_ptr<xi2p::core::I2NPMessage> msg) = 0;
 
   virtual void FlushTunnelDataMsgs() {}
 
@@ -83,7 +83,7 @@ class TunnelBase {
 
   virtual std::uint32_t GetNextTunnelID() const = 0;
 
-  virtual const kovri::core::IdentHash& GetNextIdentHash() const = 0;
+  virtual const xi2p::core::IdentHash& GetNextIdentHash() const = 0;
 
   virtual std::uint32_t GetTunnelID() const = 0;  // as known at our side
 
@@ -107,6 +107,6 @@ struct TunnelCreationTimeCmp {
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_TUNNEL_BASE_H_

@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = "The Kovri I2P Router Project"
+PROJECT_NAME           = "The Xi2p I2P Router Project"
 PROJECT_NUMBER         = "@PROJECT_VERSION@"
 PROJECT_BRIEF          =
 PROJECT_LOGO           =

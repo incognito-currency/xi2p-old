@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -43,13 +43,13 @@
 #include "core/util/exception.h"
 #include "core/util/tag.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 const std::uint64_t IPAD = 0x3636363636363636;
 const std::uint64_t OPAD = 0x5C5C5C5C5C5C5C5C;
 
-typedef kovri::core::Tag<32> MACKey;
+typedef xi2p::core::Tag<32> MACKey;
 
 inline void HMACMD5Digest(
     std::uint8_t* msg,
@@ -75,7 +75,7 @@ inline void HMACMD5Digest(
     memcpy(buf + 8, msg, len);
     // calculate first hash
     std::uint8_t hash[16];  // MD5
-    kovri::core::MD5().CalculateDigest(
+    xi2p::core::MD5().CalculateDigest(
         hash,
         reinterpret_cast<std::uint8_t *>(buf),
         len + 64);
@@ -93,7 +93,7 @@ inline void HMACMD5Digest(
     // fill next 16 bytes with zeros (first hash size assumed 32 bytes in I2P)
     memset(buf + 10, 0, 16);
     // calculate digest
-    kovri::core::MD5().CalculateDigest(
+    xi2p::core::MD5().CalculateDigest(
         digest,
         reinterpret_cast<std::uint8_t *>(buf),
         96);
@@ -106,6 +106,6 @@ inline void HMACMD5Digest(
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_CRYPTO_HMAC_H_

@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -45,7 +45,7 @@
 
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 // TODO(unassigned): identity implementation needs a big refactor
@@ -73,7 +73,7 @@ IdentHash Identity::Hash() const {
   IdentHash hash;
   // TODO(anonimal): this try block should be handled entirely by caller
   try {
-    kovri::core::SHA256().CalculateDigest(
+    xi2p::core::SHA256().CalculateDigest(
         hash,
         public_key,
         DEFAULT_IDENTITY_SIZE);
@@ -109,66 +109,66 @@ IdentityEx::IdentityEx(
       switch (type) {
         case SIGNING_KEY_TYPE_ECDSA_SHA256_P256: {
           std::size_t padding =
-            128 - kovri::core::ECDSAP256_KEY_LENGTH;  // 64 = 128 - 64
-          kovri::core::RandBytes(
+            128 - xi2p::core::ECDSAP256_KEY_LENGTH;  // 64 = 128 - 64
+          xi2p::core::RandBytes(
               m_StandardIdentity.signing_key,
               padding);
           memcpy(
               m_StandardIdentity.signing_key + padding,
               signing_key,
-              kovri::core::ECDSAP256_KEY_LENGTH);
+              xi2p::core::ECDSAP256_KEY_LENGTH);
           break;
         }
         case SIGNING_KEY_TYPE_ECDSA_SHA384_P384: {
           std::size_t padding =
-            128 - kovri::core::ECDSAP384_KEY_LENGTH;  // 32 = 128 - 96
-          kovri::core::RandBytes(
+            128 - xi2p::core::ECDSAP384_KEY_LENGTH;  // 32 = 128 - 96
+          xi2p::core::RandBytes(
               m_StandardIdentity.signing_key,
               padding);
           memcpy(
               m_StandardIdentity.signing_key + padding,
               signing_key,
-              kovri::core::ECDSAP384_KEY_LENGTH);
+              xi2p::core::ECDSAP384_KEY_LENGTH);
           break;
         }
         case SIGNING_KEY_TYPE_ECDSA_SHA512_P521: {
           memcpy(m_StandardIdentity.signing_key, signing_key, 128);
-          excess_len = kovri::core::ECDSAP521_KEY_LENGTH - 128;  // 4 = 132 - 128
+          excess_len = xi2p::core::ECDSAP521_KEY_LENGTH - 128;  // 4 = 132 - 128
           excess_buf = std::make_unique<std::uint8_t[]>(excess_len);
           memcpy(excess_buf.get(), signing_key + 128, excess_len);
           break;
         }
         case SIGNING_KEY_TYPE_RSA_SHA256_2048: {
           memcpy(m_StandardIdentity.signing_key, signing_key, 128);
-          excess_len = kovri::core::RSASHA2562048_KEY_LENGTH - 128;  // 128 = 256 - 128
+          excess_len = xi2p::core::RSASHA2562048_KEY_LENGTH - 128;  // 128 = 256 - 128
           excess_buf = std::make_unique<std::uint8_t[]>(excess_len);
           memcpy(excess_buf.get(), signing_key + 128, excess_len);
           break;
         }
         case SIGNING_KEY_TYPE_RSA_SHA384_3072: {
           memcpy(m_StandardIdentity.signing_key, signing_key, 128);
-          excess_len = kovri::core::RSASHA3843072_KEY_LENGTH - 128;  // 256 = 384 - 128
+          excess_len = xi2p::core::RSASHA3843072_KEY_LENGTH - 128;  // 256 = 384 - 128
           excess_buf = std::make_unique<std::uint8_t[]>(excess_len);
           memcpy(excess_buf.get(), signing_key + 128, excess_len);
           break;
         }
         case SIGNING_KEY_TYPE_RSA_SHA512_4096: {
           memcpy(m_StandardIdentity.signing_key, signing_key, 128);
-          excess_len = kovri::core::RSASHA5124096_KEY_LENGTH - 128;  // 384 = 512 - 128
+          excess_len = xi2p::core::RSASHA5124096_KEY_LENGTH - 128;  // 384 = 512 - 128
           excess_buf = std::make_unique<std::uint8_t[]>(excess_len);
           memcpy(excess_buf.get(), signing_key + 128, excess_len);
           break;
         }
         case SIGNING_KEY_TYPE_EDDSA_SHA512_ED25519: {
           std::size_t padding =
-            128 - kovri::core::EDDSA25519_PUBLIC_KEY_LENGTH;  // 96 = 128 - 32
-          kovri::core::RandBytes(
+            128 - xi2p::core::EDDSA25519_PUBLIC_KEY_LENGTH;  // 96 = 128 - 32
+          xi2p::core::RandBytes(
               m_StandardIdentity.signing_key,
               padding);
           memcpy(
               m_StandardIdentity.signing_key + padding,
               signing_key,
-              kovri::core::EDDSA25519_PUBLIC_KEY_LENGTH);
+              xi2p::core::EDDSA25519_PUBLIC_KEY_LENGTH);
           break;
         }
         default:
@@ -192,7 +192,7 @@ IdentityEx::IdentityEx(
       // calculate ident hash
       auto buf = std::make_unique<std::uint8_t[]>(GetFullLen());
       ToBuffer(buf.get(), GetFullLen());
-      kovri::core::SHA256().CalculateDigest(m_IdentHash, buf.get(), GetFullLen());
+      xi2p::core::SHA256().CalculateDigest(m_IdentHash, buf.get(), GetFullLen());
     } else {  // DSA-SHA1
       memcpy(
           m_StandardIdentity.signing_key,
@@ -283,7 +283,7 @@ std::size_t IdentityEx::FromBuffer(
   }
   // TODO(anonimal): this try block should be larger or handled entirely by caller
   try {
-    kovri::core::SHA256().CalculateDigest(m_IdentHash, buf, GetFullLen());
+    xi2p::core::SHA256().CalculateDigest(m_IdentHash, buf, GetFullLen());
   } catch (...) {
     m_Exception.Dispatch(__func__);
     // TODO(anonimal): review if we need to safely break control, ensure exception handling by callers
@@ -368,25 +368,25 @@ std::string IdentityEx::GetDescription(const std::string& tabs) const
   switch (GetSigningKeyType())
     {
       case SIGNING_KEY_TYPE_ECDSA_SHA256_P256:  // 64 = 128 - 64
-        ss << "Padding: " << (128 - kovri::core::ECDSAP256_KEY_LENGTH);
+        ss << "Padding: " << (128 - xi2p::core::ECDSAP256_KEY_LENGTH);
         break;
       case SIGNING_KEY_TYPE_ECDSA_SHA384_P384:  // 32 = 128 - 96
-        ss << "Padding: " << (128 - kovri::core::ECDSAP384_KEY_LENGTH);
+        ss << "Padding: " << (128 - xi2p::core::ECDSAP384_KEY_LENGTH);
         break;
       case SIGNING_KEY_TYPE_ECDSA_SHA512_P521:  // 4 = 132 - 128
-        ss << "Excess: " << (kovri::core::ECDSAP521_KEY_LENGTH - 128);
+        ss << "Excess: " << (xi2p::core::ECDSAP521_KEY_LENGTH - 128);
         break;
       case SIGNING_KEY_TYPE_RSA_SHA256_2048:  // 128 = 256 - 128
-        ss << "Excess: " << (kovri::core::RSASHA2562048_KEY_LENGTH - 128);
+        ss << "Excess: " << (xi2p::core::RSASHA2562048_KEY_LENGTH - 128);
         break;
       case SIGNING_KEY_TYPE_RSA_SHA384_3072:  // 256 = 384 - 128
-        ss << "Excess: " << (kovri::core::RSASHA3843072_KEY_LENGTH - 128);
+        ss << "Excess: " << (xi2p::core::RSASHA3843072_KEY_LENGTH - 128);
         break;
       case SIGNING_KEY_TYPE_RSA_SHA512_4096:  // 384 = 512 - 128
-        ss << "Excess: " << (kovri::core::RSASHA5124096_KEY_LENGTH - 128);
+        ss << "Excess: " << (xi2p::core::RSASHA5124096_KEY_LENGTH - 128);
         break;
       case SIGNING_KEY_TYPE_EDDSA_SHA512_ED25519:  // 96 = 128 - 32
-        ss << "Padding: " << (128 - kovri::core::EDDSA25519_PUBLIC_KEY_LENGTH);
+        ss << "Padding: " << (128 - xi2p::core::EDDSA25519_PUBLIC_KEY_LENGTH);
         break;
       default:
         LOG(warning) << "IdentityEx: signing key type "
@@ -420,7 +420,7 @@ std::size_t IdentityEx::GetSignatureLen() const {
     CreateVerifier();
   if (m_Verifier)
     return m_Verifier->GetSignatureLen();
-  return kovri::core::DSA_SIGNATURE_LENGTH;
+  return xi2p::core::DSA_SIGNATURE_LENGTH;
 }
 
 bool IdentityEx::Verify(
@@ -463,58 +463,58 @@ void IdentityEx::CreateVerifier() const  {
   auto key_type = GetSigningKeyType();
   switch (key_type) {
     case SIGNING_KEY_TYPE_DSA_SHA1:
-      m_Verifier = std::make_unique<kovri::core::DSAVerifier>(m_StandardIdentity.signing_key);
+      m_Verifier = std::make_unique<xi2p::core::DSAVerifier>(m_StandardIdentity.signing_key);
     break;
     case SIGNING_KEY_TYPE_ECDSA_SHA256_P256: {
-      std::size_t padding = 128 - kovri::core::ECDSAP256_KEY_LENGTH;  // 64 = 128 - 64
+      std::size_t padding = 128 - xi2p::core::ECDSAP256_KEY_LENGTH;  // 64 = 128 - 64
       m_Verifier =
-        std::make_unique<kovri::core::ECDSAP256Verifier>(
+        std::make_unique<xi2p::core::ECDSAP256Verifier>(
             m_StandardIdentity.signing_key + padding);
       break;
     }
     case SIGNING_KEY_TYPE_ECDSA_SHA384_P384: {
-      std::size_t padding = 128 - kovri::core::ECDSAP384_KEY_LENGTH;  // 32 = 128 - 96
+      std::size_t padding = 128 - xi2p::core::ECDSAP384_KEY_LENGTH;  // 32 = 128 - 96
       m_Verifier =
-        std::make_unique<kovri::core::ECDSAP384Verifier>(
+        std::make_unique<xi2p::core::ECDSAP384Verifier>(
             m_StandardIdentity.signing_key + padding);
       break;
     }
     case SIGNING_KEY_TYPE_ECDSA_SHA512_P521: {
-      std::uint8_t signing_key[kovri::core::ECDSAP521_KEY_LENGTH];
+      std::uint8_t signing_key[xi2p::core::ECDSAP521_KEY_LENGTH];
       memcpy(signing_key, m_StandardIdentity.signing_key, 128);
-      std::size_t excess_len = kovri::core::ECDSAP521_KEY_LENGTH - 128;  // 4 = 132- 128
+      std::size_t excess_len = xi2p::core::ECDSAP521_KEY_LENGTH - 128;  // 4 = 132- 128
       memcpy(signing_key + 128, m_ExtendedBuffer.get() + 4, excess_len);  // right after signing and crypto key types
-      m_Verifier = std::make_unique<kovri::core::ECDSAP521Verifier>(signing_key);
+      m_Verifier = std::make_unique<xi2p::core::ECDSAP521Verifier>(signing_key);
       break;
     }
     case SIGNING_KEY_TYPE_RSA_SHA256_2048: {
-      std::uint8_t signing_key[kovri::core::RSASHA2562048_KEY_LENGTH];
+      std::uint8_t signing_key[xi2p::core::RSASHA2562048_KEY_LENGTH];
       memcpy(signing_key, m_StandardIdentity.signing_key, 128);
-      std::size_t excess_len = kovri::core::RSASHA2562048_KEY_LENGTH - 128;  // 128 = 256- 128
+      std::size_t excess_len = xi2p::core::RSASHA2562048_KEY_LENGTH - 128;  // 128 = 256- 128
       memcpy(signing_key + 128, m_ExtendedBuffer.get() + 4, excess_len);
-      m_Verifier = std::make_unique<kovri::core::RSASHA2562048Verifier>(signing_key);
+      m_Verifier = std::make_unique<xi2p::core::RSASHA2562048Verifier>(signing_key);
       break;
     }
     case SIGNING_KEY_TYPE_RSA_SHA384_3072: {
-      std::uint8_t signing_key[kovri::core::RSASHA3843072_KEY_LENGTH];
+      std::uint8_t signing_key[xi2p::core::RSASHA3843072_KEY_LENGTH];
       memcpy(signing_key, m_StandardIdentity.signing_key, 128);
-      std::size_t excess_len = kovri::core::RSASHA3843072_KEY_LENGTH - 128;  // 256 = 384- 128
+      std::size_t excess_len = xi2p::core::RSASHA3843072_KEY_LENGTH - 128;  // 256 = 384- 128
       memcpy(signing_key + 128, m_ExtendedBuffer.get() + 4, excess_len);
-      m_Verifier = std::make_unique<kovri::core::RSASHA3843072Verifier>(signing_key);
+      m_Verifier = std::make_unique<xi2p::core::RSASHA3843072Verifier>(signing_key);
       break;
     }
     case SIGNING_KEY_TYPE_RSA_SHA512_4096: {
-      std::uint8_t signing_key[kovri::core::RSASHA5124096_KEY_LENGTH];
+      std::uint8_t signing_key[xi2p::core::RSASHA5124096_KEY_LENGTH];
       memcpy(signing_key, m_StandardIdentity.signing_key, 128);
-      std::size_t excess_len = kovri::core::RSASHA5124096_KEY_LENGTH - 128;  // 384 = 512- 128
+      std::size_t excess_len = xi2p::core::RSASHA5124096_KEY_LENGTH - 128;  // 384 = 512- 128
       memcpy(signing_key + 128, m_ExtendedBuffer.get() + 4, excess_len);
-      m_Verifier = std::make_unique<kovri::core::RSASHA5124096Verifier>(signing_key);
+      m_Verifier = std::make_unique<xi2p::core::RSASHA5124096Verifier>(signing_key);
       break;
     }
     case SIGNING_KEY_TYPE_EDDSA_SHA512_ED25519: {
-      std::size_t padding = 128 - kovri::core::EDDSA25519_PUBLIC_KEY_LENGTH;  // 96 = 128 - 32
+      std::size_t padding = 128 - xi2p::core::EDDSA25519_PUBLIC_KEY_LENGTH;  // 96 = 128 - 32
       m_Verifier =
-        std::make_unique<kovri::core::EDDSA25519Verifier>(
+        std::make_unique<xi2p::core::EDDSA25519Verifier>(
             m_StandardIdentity.signing_key + padding);
       break;
     }
@@ -607,28 +607,28 @@ void PrivateKeys::Sign(
 void PrivateKeys::CreateSigner() {
   switch (m_Public.GetSigningKeyType()) {
     case SIGNING_KEY_TYPE_DSA_SHA1:
-      m_Signer = std::make_unique<kovri::core::DSASigner>(m_SigningPrivateKey);
+      m_Signer = std::make_unique<xi2p::core::DSASigner>(m_SigningPrivateKey);
     break;
     case SIGNING_KEY_TYPE_ECDSA_SHA256_P256:
-      m_Signer = std::make_unique<kovri::core::ECDSAP256Signer>(m_SigningPrivateKey);
+      m_Signer = std::make_unique<xi2p::core::ECDSAP256Signer>(m_SigningPrivateKey);
     break;
     case SIGNING_KEY_TYPE_ECDSA_SHA384_P384:
-      m_Signer = std::make_unique<kovri::core::ECDSAP384Signer>(m_SigningPrivateKey);
+      m_Signer = std::make_unique<xi2p::core::ECDSAP384Signer>(m_SigningPrivateKey);
     break;
     case SIGNING_KEY_TYPE_ECDSA_SHA512_P521:
-      m_Signer = std::make_unique<kovri::core::ECDSAP521Signer>(m_SigningPrivateKey);
+      m_Signer = std::make_unique<xi2p::core::ECDSAP521Signer>(m_SigningPrivateKey);
     break;
     case SIGNING_KEY_TYPE_RSA_SHA256_2048:
-      m_Signer = std::make_unique<kovri::core::RSASHA2562048Signer>(m_SigningPrivateKey);
+      m_Signer = std::make_unique<xi2p::core::RSASHA2562048Signer>(m_SigningPrivateKey);
     break;
     case SIGNING_KEY_TYPE_RSA_SHA384_3072:
-      m_Signer = std::make_unique<kovri::core::RSASHA3843072Signer>(m_SigningPrivateKey);
+      m_Signer = std::make_unique<xi2p::core::RSASHA3843072Signer>(m_SigningPrivateKey);
     break;
     case SIGNING_KEY_TYPE_RSA_SHA512_4096:
-      m_Signer = std::make_unique<kovri::core::RSASHA5124096Signer>(m_SigningPrivateKey);
+      m_Signer = std::make_unique<xi2p::core::RSASHA5124096Signer>(m_SigningPrivateKey);
     break;
     case SIGNING_KEY_TYPE_EDDSA_SHA512_ED25519:
-      m_Signer = std::make_unique<kovri::core::EDDSA25519Signer>(m_SigningPrivateKey);
+      m_Signer = std::make_unique<xi2p::core::EDDSA25519Signer>(m_SigningPrivateKey);
     break;
     default:
       LOG(warning)
@@ -646,40 +646,40 @@ PrivateKeys PrivateKeys::CreateRandomKeys(SigningKeyType type) {
     std::uint8_t signing_public_key[512];  // signing public key is 512 bytes max
     switch (type) {
       case SIGNING_KEY_TYPE_ECDSA_SHA256_P256:
-        kovri::core::CreateECDSAP256RandomKeys(
+        xi2p::core::CreateECDSAP256RandomKeys(
             keys.m_SigningPrivateKey,
             signing_public_key);
       break;
       case SIGNING_KEY_TYPE_ECDSA_SHA384_P384:
-        kovri::core::CreateECDSAP384RandomKeys(
+        xi2p::core::CreateECDSAP384RandomKeys(
             keys.m_SigningPrivateKey,
             signing_public_key);
       break;
       case SIGNING_KEY_TYPE_ECDSA_SHA512_P521:
-        kovri::core::CreateECDSAP521RandomKeys(
+        xi2p::core::CreateECDSAP521RandomKeys(
             keys.m_SigningPrivateKey,
             signing_public_key);
       break;
       case SIGNING_KEY_TYPE_RSA_SHA256_2048:
-        kovri::core::CreateRSARandomKeys(
-            kovri::core::RSASHA2562048_KEY_LENGTH,
+        xi2p::core::CreateRSARandomKeys(
+            xi2p::core::RSASHA2562048_KEY_LENGTH,
             keys.m_SigningPrivateKey,
             signing_public_key);
       break;
       case SIGNING_KEY_TYPE_RSA_SHA384_3072:
-        kovri::core::CreateRSARandomKeys(
-            kovri::core::RSASHA3843072_KEY_LENGTH,
+        xi2p::core::CreateRSARandomKeys(
+            xi2p::core::RSASHA3843072_KEY_LENGTH,
             keys.m_SigningPrivateKey,
             signing_public_key);
       break;
       case SIGNING_KEY_TYPE_RSA_SHA512_4096:
-        kovri::core::CreateRSARandomKeys(
-            kovri::core::RSASHA5124096_KEY_LENGTH,
+        xi2p::core::CreateRSARandomKeys(
+            xi2p::core::RSASHA5124096_KEY_LENGTH,
             keys.m_SigningPrivateKey,
             signing_public_key);
       break;
       case SIGNING_KEY_TYPE_EDDSA_SHA512_ED25519:
-        kovri::core::CreateEDDSARandomKeys(
+        xi2p::core::CreateEDDSARandomKeys(
             keys.m_SigningPrivateKey,
             signing_public_key);
       break;
@@ -689,11 +689,11 @@ PrivateKeys PrivateKeys::CreateRandomKeys(SigningKeyType type) {
           << static_cast<int>(type) << " is not supported, creating DSA-SHA1";
         // fall-through
       case SIGNING_KEY_TYPE_DSA_SHA1:
-        return PrivateKeys(kovri::core::CreateRandomKeys());  // DSA-SHA1
+        return PrivateKeys(xi2p::core::CreateRandomKeys());  // DSA-SHA1
     }
     // encryption
     std::uint8_t public_key[256];
-    kovri::core::GenerateElGamalKeyPair(keys.m_PrivateKey, public_key);
+    xi2p::core::GenerateElGamalKeyPair(keys.m_PrivateKey, public_key);
     // identity
     keys.m_Public = IdentityEx(public_key, signing_public_key, type);
     keys.CreateSigner();
@@ -711,11 +711,11 @@ Keys CreateRandomKeys() {
   // TODO(anonimal): this try block should be handled entirely by caller
   try {
     // encryption
-    kovri::core::GenerateElGamalKeyPair(
+    xi2p::core::GenerateElGamalKeyPair(
         keys.private_key,
         keys.public_key);
     // signing
-    kovri::core::CreateDSARandomKeys(
+    xi2p::core::CreateDSARandomKeys(
         keys.signing_private_key,
         keys.signing_key);
   } catch (...) {
@@ -755,7 +755,7 @@ IdentHash CreateRoutingKey(
   IdentHash key;
   // TODO(anonimal): this try block should be larger or handled entirely by caller
   try {
-    kovri::core::SHA256().CalculateDigest((std::uint8_t *)key, buf, 40);
+    xi2p::core::SHA256().CalculateDigest((std::uint8_t *)key, buf, 40);
   } catch (...) {
     core::Exception ex;
     ex.Dispatch(__func__);
@@ -804,4 +804,4 @@ const std::string GetSigningKeyTypeName(const std::uint16_t key)
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

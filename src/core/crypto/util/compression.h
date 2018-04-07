@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -34,7 +34,7 @@
 #include <memory>
 #include <cstdint>
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 /// @class DeflateDecompressor
@@ -166,6 +166,6 @@ class Gunzip {
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_CRYPTO_UTIL_COMPRESSION_H_

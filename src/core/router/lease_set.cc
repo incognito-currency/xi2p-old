@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -42,7 +42,7 @@
 #include "core/util/log.h"
 #include "core/util/timestamp.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 LeaseSet::LeaseSet(
@@ -56,10 +56,10 @@ LeaseSet::LeaseSet(
 }
 
 LeaseSet::LeaseSet(
-    const kovri::core::TunnelPool& pool)
+    const xi2p::core::TunnelPool& pool)
     : m_IsValid(true) {
   // header
-  const kovri::core::LocalDestination* local_destination = pool.GetLocalDestination();
+  const xi2p::core::LocalDestination* local_destination = pool.GetLocalDestination();
   if (!local_destination) {
     m_Buffer.reset(nullptr);
     m_BufferLen = 0;
@@ -91,10 +91,10 @@ LeaseSet::LeaseSet(
     m_BufferLen += 4;  // tunnel id
     std::uint64_t ts =
       it->GetCreationTime() +
-      kovri::core::TUNNEL_EXPIRATION_TIMEOUT -
-      kovri::core::TUNNEL_EXPIRATION_THRESHOLD;  // 1 minute before expiration
+      xi2p::core::TUNNEL_EXPIRATION_TIMEOUT -
+      xi2p::core::TUNNEL_EXPIRATION_THRESHOLD;  // 1 minute before expiration
     ts *= 1000;  // in milliseconds
-    ts += kovri::core::RandInRange32(0, 5);  // + random milliseconds
+    ts += xi2p::core::RandInRange32(0, 5);  // + random milliseconds
     core::OutputByteStream::Write<std::uint64_t>(
         m_Buffer.get() + m_BufferLen, ts);
     m_BufferLen += 8;  // end date
@@ -159,12 +159,12 @@ void LeaseSet::ReadFromBuffer() {
 
 const std::vector<Lease> LeaseSet::GetNonExpiredLeases(
     bool with_threshold) const {
-  auto ts = kovri::core::GetMillisecondsSinceEpoch();
+  auto ts = xi2p::core::GetMillisecondsSinceEpoch();
   std::vector<Lease> leases;
   for (auto& it : m_Leases) {
     auto end_date = it.end_date;
     if (!with_threshold)
-      end_date -= kovri::core::TUNNEL_EXPIRATION_THRESHOLD * 1000;
+      end_date -= xi2p::core::TUNNEL_EXPIRATION_THRESHOLD * 1000;
     if (ts < end_date)
       leases.push_back(it);
   }
@@ -172,7 +172,7 @@ const std::vector<Lease> LeaseSet::GetNonExpiredLeases(
 }
 
 bool LeaseSet::HasExpiredLeases() const {
-  auto ts = kovri::core::GetMillisecondsSinceEpoch();
+  auto ts = xi2p::core::GetMillisecondsSinceEpoch();
   for (auto& it : m_Leases)
     if (ts >= it.end_date)
       return true;
@@ -180,7 +180,7 @@ bool LeaseSet::HasExpiredLeases() const {
 }
 
 bool LeaseSet::HasNonExpiredLeases() const {
-  auto ts = kovri::core::GetMillisecondsSinceEpoch();
+  auto ts = xi2p::core::GetMillisecondsSinceEpoch();
   for (auto& it : m_Leases)
     if (ts < it.end_date)
       return true;
@@ -188,4 +188,4 @@ bool LeaseSet::HasNonExpiredLeases() const {
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

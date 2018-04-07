@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -45,7 +45,7 @@
 
 #include "core/util/exception.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 class ClientDestination;  // TODO(unassigned): remove forward declaration
@@ -54,7 +54,7 @@ const std::size_t MAX_DATAGRAM_SIZE = 32768;
 
 class DatagramDestination {
   typedef std::function<void (
-      const kovri::core::IdentityEx& from,
+      const xi2p::core::IdentityEx& from,
       std::uint16_t from_port,
       std::uint16_t to_port,
       const std::uint8_t* buf,
@@ -63,13 +63,13 @@ class DatagramDestination {
 
  public:
   explicit DatagramDestination(
-      kovri::client::ClientDestination& owner);
+      xi2p::client::ClientDestination& owner);
   ~DatagramDestination() {}
 
   void SendDatagramTo(
       const std::uint8_t* payload,
       std::size_t len,
-      const kovri::core::IdentHash& ident,
+      const xi2p::core::IdentHash& ident,
       std::uint16_t from_port = 0,
       std::uint16_t to_port = 0);
 
@@ -101,18 +101,18 @@ class DatagramDestination {
 
  private:
   void HandleLeaseSetRequestComplete(
-      std::shared_ptr<kovri::core::LeaseSet> lease_set,
-      std::unique_ptr<kovri::core::I2NPMessage> msg);
+      std::shared_ptr<xi2p::core::LeaseSet> lease_set,
+      std::unique_ptr<xi2p::core::I2NPMessage> msg);
 
-  std::unique_ptr<kovri::core::I2NPMessage> CreateDataMessage(
+  std::unique_ptr<xi2p::core::I2NPMessage> CreateDataMessage(
       const std::uint8_t* payload,
       std::size_t len,
       std::uint16_t from_port,
       std::uint16_t to_port);
 
   void SendMsg(
-      std::unique_ptr<kovri::core::I2NPMessage> msg,
-      std::shared_ptr<const kovri::core::LeaseSet> remote);
+      std::unique_ptr<xi2p::core::I2NPMessage> msg,
+      std::shared_ptr<const xi2p::core::LeaseSet> remote);
 
   void HandleDatagram(
       std::uint16_t from_port,
@@ -121,13 +121,13 @@ class DatagramDestination {
       std::size_t len);
 
  private:
-  kovri::client::ClientDestination& m_Owner;
+  xi2p::client::ClientDestination& m_Owner;
   Receiver m_Receiver;  // default
   std::map<std::uint16_t, Receiver> m_ReceiversByPorts;
-  kovri::core::Exception m_Exception;
+  xi2p::core::Exception m_Exception;
 };
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_API_DATAGRAM_H_

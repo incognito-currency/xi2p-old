@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015-2017, The Kovri I2P Router Project
+# Copyright (c) 2017-2018, The Xi2p I2P Router Project
 #
 # All rights reserved.
 #
@@ -38,4 +38,4 @@ iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 iptables -P INPUT DROP
 
 _args="$@"
-exec su kovri -s /bin/sh -c "$_args"
+exec su xi2p -s /bin/sh -c "$_args"

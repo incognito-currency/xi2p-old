@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright (c) 2015-2017, The Kovri I2P Router Project
+# Copyright (c) 2017-2018, The Xi2p I2P Router Project
 #
 # All rights reserved.
 #
@@ -29,7 +29,7 @@
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #
-# Kovri installer script: installs or packages binary/resources for nightly/branch-tip builds
+# Xi2p installer script: installs or packages binary/resources for nightly/branch-tip builds
 #
 
 PrintUsage()
@@ -41,33 +41,33 @@ PrintUsage()
   echo ""
   echo -e "End-users:\n\n$0\n\n"
   echo -e "Uninstall existing installation:\n\n$0 -u\n\n"
-  echo -e "Specify resources:\n\n$0 -r \"client config kovri kovri-util\"\n\n"
-  echo -e "Create package with default output file path:\n\n$0 [-r \"client config kovri kovri-util\"] -p\n\n"
-  echo -e "Create package with specified file path:\n\n$0 [-r \"client config kovri kovri-util\"] -p -f /tmp/kovri-package.tar.bz2\n\n"
-  echo -e "Create package with accompanying checksum file:\n\n$0 [-r \"client config kovri kovri-util\"] -p -c [-f /tmp/kovri-package.tar.bz2]\n\n"
+  echo -e "Specify resources:\n\n$0 -r \"client config xi2p xi2p-util\"\n\n"
+  echo -e "Create package with default output file path:\n\n$0 [-r \"client config xi2p xi2p-util\"] -p\n\n"
+  echo -e "Create package with specified file path:\n\n$0 [-r \"client config xi2p xi2p-util\"] -p -f /tmp/xi2p-package.tar.bz2\n\n"
+  echo -e "Create package with accompanying checksum file:\n\n$0 [-r \"client config xi2p xi2p-util\"] -p -c [-f /tmp/xi2p-package.tar.bz2]\n\n"
 }
 
 # Path for binaries
 bin_path=$HOME/bin
-bins=(kovri kovri-util)
+bins=(xi2p xi2p-util)
 
 # Get platform
 case $OSTYPE in
   linux*)
-    kovri_data_dir="$HOME/.kovri"
+    xi2p_data_dir="$HOME/.xi2p"
     is_linux=true
     ;;
   freebsd* | dragonfly*)
-    kovri_data_dir="$HOME/.kovri"
+    xi2p_data_dir="$HOME/.xi2p"
     is_bsd=true
     ;;
   openbsd*)
-    kovri_data_dir="$HOME/.kovri"
+    xi2p_data_dir="$HOME/.xi2p"
     is_bsd=true
     is_openbsd=true
     ;;
   darwin*)
-    kovri_data_dir="$HOME/Library/Application Support/Kovri"
+    xi2p_data_dir="$HOME/Library/Application Support/Xi2p"
     is_osx=true
     ;;
   msys)
@@ -107,14 +107,14 @@ shift "$(($OPTIND -1))"
 
 # Set default resources if needed
 if [[ -z $resources ]]; then
-  resources="pkg/client pkg/config contrib/utils/kovri-bash.sh build/${bins[0]} build/${bins[1]}"
+  resources="pkg/client pkg/config contrib/utils/xi2p-bash.sh build/${bins[0]} build/${bins[1]}"
 fi
 
 # Test if resources are available
 for _resource in ${resources[@]}; do
   if [[ ! -e $_resource ]]; then
     false
-    catch "$_resource is unavailable, did you build Kovri?"
+    catch "$_resource is unavailable, did you build Xi2p?"
   fi
 done
 
@@ -127,13 +127,13 @@ Uninstall()
   fi
 
   # Backup existing installation
-  local _config=${kovri_data_dir}/config
-  local _kovri_conf=${_config}/kovri.conf
+  local _config=${xi2p_data_dir}/config
+  local _xi2p_conf=${_config}/xi2p.conf
   local _tunnels_conf=${_config}/tunnels.conf
-  if [[ -d $kovri_data_dir ]]; then
+  if [[ -d $xi2p_data_dir ]]; then
     echo -n "Backing up existing configuration files"
-    if [[ -f $_kovri_conf ]]; then
-      mv "$_kovri_conf" "${_kovri_conf}.bak" 2>/dev/null
+    if [[ -f $_xi2p_conf ]]; then
+      mv "$_xi2p_conf" "${_xi2p_conf}.bak" 2>/dev/null
     fi
     if [[ -f $_tunnels_conf ]]; then
       mv "$_tunnels_conf" "${_tunnels_conf}.bak" 2>/dev/null
@@ -142,8 +142,8 @@ Uninstall()
   fi
 
   # Remove existing install
-  local _core=${kovri_data_dir}/core
-  local _client=${kovri_data_dir}/client
+  local _core=${xi2p_data_dir}/core
+  local _client=${xi2p_data_dir}/client
   local _resources=($_core $_client/address_book/addresses $_client/address_book/addresses.csv $_client/certificates)
   for _resource in ${_resources[@]}; do
     if [[ -e $_resource ]]; then
@@ -180,10 +180,10 @@ Install()
   fi
 
   # Ensure paths for new install
-  if [[ ! -d $kovri_data_dir ]]; then
-    echo -n "Creating $kovri_data_dir"
-    mkdir "$kovri_data_dir" 2>/dev/null
-    catch "could not create $kovri_data_dir"
+  if [[ ! -d $xi2p_data_dir ]]; then
+    echo -n "Creating $xi2p_data_dir"
+    mkdir "$xi2p_data_dir" 2>/dev/null
+    catch "could not create $xi2p_data_dir"
   fi
   if [[ ! -d $bin_path ]]; then
     echo -n "Creating $bin_path"
@@ -194,8 +194,8 @@ Install()
   # Install resources
   for _resource in ${resources[@]}; do
     if [[ -d $_resource ]]; then
-      echo -n "Copying $_resource to $kovri_data_dir"
-      cp -fR $_resource "$kovri_data_dir" 2>/dev/null
+      echo -n "Copying $_resource to $xi2p_data_dir"
+      cp -fR $_resource "$xi2p_data_dir" 2>/dev/null
     else  # Implies binaries
       echo -n "Copying $_resource to $bin_path"
       cp -f $_resource "$bin_path" 2>/dev/null
@@ -222,7 +222,7 @@ CreatePackage()
     if [[ $_is_git == true ]]; then
       local _rev="-"$(git rev-parse --short HEAD 2>/dev/null)
     fi
-    staging_path="kovri${_rev}-$(uname -s)-$(uname -m)-$(date +%Y.%m.%d)"
+    staging_path="xi2p${_rev}-$(uname -s)-$(uname -m)-$(date +%Y.%m.%d)"
     # Set package file if none supplied
     if [[ -z $package_file ]]; then
       local _ext=".tar.bz2"
@@ -251,9 +251,9 @@ CreatePackage()
     if [[ $bitness == 64 ]]; then
       _program_files="$PROGRAMFILES (x86)"
     fi
-    "${_program_files}"/Inno\ Setup\ 5/ISCC.exe pkg/installers/windows/Kovri${bitness}.iss
+    "${_program_files}"/Inno\ Setup\ 5/ISCC.exe pkg/installers/windows/Xi2p${bitness}.iss
     catch "could not create Inno Setup installer"
-    local _setup_bin="build/KovriSetup${bitness}.exe"
+    local _setup_bin="build/Xi2pSetup${bitness}.exe"
     echo -n "Moving $_setup_bin to $package_file"
     mv $_setup_bin $package_file
     catch "could not move package file"
@@ -281,7 +281,7 @@ CreatePackage()
 
     # Add ourself to the package
     echo -n "Copying installer"
-    cp pkg/installers/kovri-install.sh $staging_path
+    cp pkg/installers/xi2p-install.sh $staging_path
     catch "could not copy installer"
 
     # Add the install guide
@@ -342,7 +342,7 @@ catch()
   echo " ${green}[OK]${normal}"
 }
 
-echo "${yellow}The Kovri I2P Router Project (c) 2015-2017${normal}"
+echo "${yellow}The Xi2p I2P Router Project (c) 2017-2018${normal}"
 
 if [[ $package_option == true ]]; then
   CreatePackage
@@ -354,7 +354,7 @@ else
   Uninstall
   Install
   if [[ $is_windows != true ]]; then
-    echo "Data directory is $kovri_data_dir"
+    echo "Data directory is $xi2p_data_dir"
     echo "Binaries are located in $bin_path"
     echo "${green}Installation success!${normal}"
   fi

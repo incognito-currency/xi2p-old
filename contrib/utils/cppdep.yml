@@ -1,5 +1,5 @@
 internal:
-    - name: kovri
+    - name: xi2p
       path: src
       packages:
           - name: include

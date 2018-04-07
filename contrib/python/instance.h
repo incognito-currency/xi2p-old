@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2017, The Kovri I2P Router Project
+// Copyright (c) 2017-2018, The Xi2p I2P Router Project
 //
 // All rights reserved.
 //
@@ -64,13 +64,13 @@ class Core final : public Util
   }
 
   // TODO(anonimal): upon further API development, we'll most likely want non-const reference
-  const kovri::core::Instance& get() const noexcept
+  const xi2p::core::Instance& get() const noexcept
   {
     return m_core;
   }
 
  private:
-  kovri::core::Instance m_core;
+  xi2p::core::Instance m_core;
 };
 
 /// @brief Wrapper for libclient instance
@@ -96,7 +96,7 @@ class Client final
   }
 
  private:
-  kovri::client::Instance m_client;
+  xi2p::client::Instance m_client;
 };
 
 #endif  // CONTRIB_PYTHON_INSTANCE_H_

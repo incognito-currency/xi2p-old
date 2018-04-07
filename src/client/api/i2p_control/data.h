@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -47,7 +47,7 @@
 
 // Note: Spec at https://geti2p.net/en/docs/api/i2pcontrol
 
-namespace kovri
+namespace xi2p
 {
 namespace client
 {
@@ -485,6 +485,6 @@ class I2PControlResponse final : public I2PControlData
 };
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_API_I2P_CONTROL_DATA_H_

@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -49,7 +49,7 @@
 #define I2P_UPNP_TCP 1
 #define I2P_UPNP_UDP 2
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 class UPnP {
@@ -97,7 +97,7 @@ class UPnP {
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // USE_UPNP
 #endif  // SRC_CORE_ROUTER_TRANSPORTS_UPNP_H_

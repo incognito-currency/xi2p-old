@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -36,7 +36,7 @@
 
 #include "core/router/tunnel/base.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 /// @class TunnelEncryptionImpl
@@ -93,7 +93,7 @@ class TunnelEncryption::TunnelEncryptionImpl {
       m_CBCLayerEncryption.SetIV(out);
       m_CBCLayerEncryption.Encrypt(  // data
           in + 16,
-          kovri::core::TUNNEL_DATA_ENCRYPTED_SIZE,
+          xi2p::core::TUNNEL_DATA_ENCRYPTED_SIZE,
           out + 16);
       m_IVEncryption.Encrypt(  // double iv
           reinterpret_cast<CipherBlock *>(out),
@@ -180,7 +180,7 @@ class TunnelDecryption::TunnelDecryptionImpl {
       m_CBCLayerDecryption.SetIV(out);
       m_CBCLayerDecryption.Decrypt(  // data
           in + 16,
-          kovri::core::TUNNEL_DATA_ENCRYPTED_SIZE,
+          xi2p::core::TUNNEL_DATA_ENCRYPTED_SIZE,
           out + 16);
       m_IVDecryption.Decrypt(  // double iv
           reinterpret_cast<CipherBlock *>(out),
@@ -213,4 +213,4 @@ void TunnelDecryption::Decrypt(
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

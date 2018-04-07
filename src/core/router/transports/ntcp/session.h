@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -53,7 +53,7 @@
 
 #include "core/util/exception.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 /// @enum NTCPTimeoutLength
@@ -71,7 +71,7 @@ class NTCPSession
  public:
   NTCPSession(
       NTCPServer& server,
-      std::shared_ptr<const kovri::core::RouterInfo> remote_router = nullptr);
+      std::shared_ptr<const xi2p::core::RouterInfo> remote_router = nullptr);
 
   ~NTCPSession();
 
@@ -154,7 +154,7 @@ class NTCPSession
 
   void CreateAESKey(
       std::uint8_t* pub_key,
-      kovri::core::AESKey& key);
+      xi2p::core::AESKey& key);
 
   // TODO(anonimal): simplify phase impl/handler
 
@@ -229,7 +229,7 @@ class NTCPSession
   /// @brief Send payload (I2NP message)
   /// @param msg shared pointer to payload (I2NPMessage)
   void SendPayload(
-      std::shared_ptr<kovri::core::I2NPMessage> msg);
+      std::shared_ptr<xi2p::core::I2NPMessage> msg);
 
   /// @brief Send payload (I2NP messages)
   /// @param msg shared pointer to payload (I2NPMessages)
@@ -266,8 +266,8 @@ class NTCPSession
   boost::asio::deadline_timer m_TerminationTimer;
   bool m_IsEstablished, m_IsTerminated;
 
-  kovri::core::CBCDecryption m_Decryption;
-  kovri::core::CBCEncryption m_Encryption;
+  xi2p::core::CBCDecryption m_Decryption;
+  xi2p::core::CBCEncryption m_Encryption;
 
   /// @enum NTCPSize
   enum NTCPSize : std::uint16_t {
@@ -290,7 +290,7 @@ class NTCPSession
     Phase3Signature = 40,
     Phase3Unencrypted =
       Phase3AliceRI +
-      kovri::core::DEFAULT_IDENTITY_SIZE +  // 387
+      xi2p::core::DEFAULT_IDENTITY_SIZE +  // 387
       Phase3AliceTS +
       Phase3Padding +
       Phase3Signature,  // Total = 448
@@ -329,22 +329,22 @@ class NTCPSession
   /// @brief Hash of Diffie-Hellman X
   std::array<std::uint8_t, NTCPSize::Hash> m_HX;
 
-  kovri::core::AESAlignedBuffer<NTCPSize::Buffer + NTCPSize::IV> m_ReceiveBuffer;
-  kovri::core::AESAlignedBuffer<NTCPSize::IV> m_TimeSyncBuffer;
+  xi2p::core::AESAlignedBuffer<NTCPSize::Buffer + NTCPSize::IV> m_ReceiveBuffer;
+  xi2p::core::AESAlignedBuffer<NTCPSize::IV> m_TimeSyncBuffer;
 
   std::size_t m_ReceiveBufferOffset;
 
   std::shared_ptr<I2NPMessage> m_NextMessage;
   std::size_t m_NextMessageOffset;
-  kovri::core::I2NPMessagesHandler m_Handler;
+  xi2p::core::I2NPMessagesHandler m_Handler;
 
   bool m_IsSending;
   std::vector<std::shared_ptr<I2NPMessage>> m_SendQueue;
 
-  kovri::core::Exception m_Exception;
+  xi2p::core::Exception m_Exception;
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_TRANSPORTS_NTCP_SESSION_H_

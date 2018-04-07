@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -39,7 +39,7 @@
 
 #include "ed25519/ed25519_ref10.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 /**
@@ -157,7 +157,7 @@ void EDDSA25519Signer::Sign(
 void CreateEDDSARandomKeys(
     std::uint8_t* privateKey,
     std::uint8_t* publicKey) {
-  kovri::core::RandBytes(
+  xi2p::core::RandBytes(
       privateKey,
       EDDSA25519_PRIVATE_KEY_LENGTH);
   ed25519_ref10_pubkey(
@@ -166,4 +166,4 @@ void CreateEDDSARandomKeys(
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

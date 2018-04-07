@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -74,7 +74,7 @@ void handle_signal(int sig) {
   }
 }
 
-namespace kovri {
+namespace xi2p {
 namespace app {
 
 bool DaemonLinux::Configure(
@@ -84,7 +84,7 @@ bool DaemonLinux::Configure(
 
 bool DaemonLinux::Initialize() {
   m_PIDPath = core::GetPath(core::Path::Data).string();
-  m_PIDFile = (core::GetPath(core::Path::Data) / "kovri.pid").string();
+  m_PIDFile = (core::GetPath(core::Path::Data) / "xi2p.pid").string();
 
   if (m_IsDaemon) {
     // Parent
@@ -178,6 +178,6 @@ void DaemonLinux::Reload() {
 }
 
 }  // namespace app
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif

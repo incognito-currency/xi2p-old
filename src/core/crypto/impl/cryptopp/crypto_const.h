@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -35,7 +35,7 @@
 
 #include <cryptopp/integer.h>
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 struct CryptoConstants {
@@ -64,6 +64,6 @@ const CryptoConstants& GetCryptoConstants();
 const int rsae = 65537;
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_CRYPTO_IMPL_CRYPTOPP_CRYPTOCONST_H_

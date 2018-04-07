@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -39,8 +39,8 @@
 #include "client/api/i2p_control/data.h"
 #include "client/util/json.h"
 
-namespace client = kovri::client;
-namespace core = kovri::core;
+namespace client = xi2p::client;
+namespace core = xi2p::core;
 
 struct I2PControlSessionFixture
 {
@@ -155,7 +155,7 @@ struct I2PControlRouterInfoFixture : public I2PControlSessionFixture
 
   const std::string m_Status{"some status"};
   const std::size_t m_Uptime{123456};
-  const std::string m_KovriVersion{"some version"};
+  const std::string m_Xi2pVersion{"some version"};
   const double m_BWIn1S{1.1};
   const double m_BWIn15S{15.15};
   const double m_BWOut1S{2.2};
@@ -549,7 +549,7 @@ BOOST_AUTO_TEST_CASE(WriteRouterInfoResponse)
   std::string empty;
   response.SetParam(RouterInfo::Status, m_Status);
   response.SetParam(RouterInfo::Uptime, m_Uptime);
-  response.SetParam(RouterInfo::Version, m_KovriVersion);
+  response.SetParam(RouterInfo::Version, m_Xi2pVersion);
   response.SetParam(RouterInfo::BWIn1S, m_BWIn1S);
   response.SetParam(RouterInfo::BWIn15S, m_BWIn15S);
   response.SetParam(RouterInfo::BWOut1S, m_BWOut1S);
@@ -588,7 +588,7 @@ BOOST_AUTO_TEST_CASE(ReadRouterInfoResponse)
   BOOST_CHECK_EQUAL(
       response.GetParam<std::size_t>(RouterInfo::Uptime), m_Uptime);
   BOOST_CHECK_EQUAL(
-      response.GetParam<std::string>(RouterInfo::Version), m_KovriVersion);
+      response.GetParam<std::string>(RouterInfo::Version), m_Xi2pVersion);
   BOOST_CHECK_EQUAL(response.GetParam<double>(RouterInfo::BWIn1S), m_BWIn1S);
   BOOST_CHECK_EQUAL(response.GetParam<double>(RouterInfo::BWIn15S), m_BWIn15S);
   BOOST_CHECK_EQUAL(response.GetParam<double>(RouterInfo::BWOut1S), m_BWOut1S);

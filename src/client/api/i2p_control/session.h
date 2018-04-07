@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -44,7 +44,7 @@
 #include "client/api/i2p_control/data.h"
 #include "core/router/tunnel/impl.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 const char DEFAULT_PASSWORD[] = "itoopie";
@@ -135,6 +135,6 @@ class I2PControlSession
 };
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_API_I2P_CONTROL_SESSION_H_

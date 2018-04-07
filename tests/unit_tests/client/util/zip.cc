@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -148,7 +148,7 @@ class ZIPFixtureImpl : ZIPFixture {
     std::vector<unsigned char> bad_bytes = good_bytes;
     std::fill_n(bad_bytes.begin() + offset, amount, byte);
     std::string str(bad_bytes.begin(), bad_bytes.end());
-    kovri::client::ZIP zip(str, str.size());
+    xi2p::client::ZIP zip(str, str.size());
     return zip.Unzip();
   }
 };

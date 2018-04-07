@@ -1,19 +1,19 @@
-name: kovri
+name: xi2p
 version: master
-summary: The Kovri I2P Router Project
+summary: The Xi2p I2P Router Project
 description: |
-  Kovri is a security-focused, community-driven C++ implementation of I2P
+  Xi2p is a security-focused, community-driven C++ implementation of I2P
 
 grade: devel # must be 'stable' to release into candidate/stable channels
 confinement: strict
 
 apps:
-  kovri:
-    command: kovri-wrapper
+  xi2p:
+    command: xi2p-wrapper
     plugs: [network, network-bind]
 
 parts:
-  kovri:
+  xi2p:
     source: .
     source-type: git
     plugin: make
@@ -24,13 +24,13 @@ parts:
       - libssl-dev
       - libssl1.0.0
     artifacts:
-      - build/kovri
+      - build/xi2p
       - pkg/config
       - pkg/client
     organize:
-      build/kovri: bin/
+      build/xi2p: bin/
       pkg/*: .
   wrapper:
     plugin: dump
     source: snap/
-    stage: [kovri-wrapper]
+    stage: [xi2p-wrapper]

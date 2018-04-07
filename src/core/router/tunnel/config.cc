@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -41,7 +41,7 @@
 #include "core/util/log.h"
 #include "core/util/timestamp.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 // TODO(unassigned): refactor all tunnel implementation (applies across entire namespace)
@@ -236,7 +236,7 @@ void TunnelHopConfig::CreateBuildRequestRecord(
 
 // TODO(unassigned): smart pointers, please
 TunnelConfig::TunnelConfig(
-    std::vector<std::shared_ptr<const kovri::core::RouterInfo> > peers,
+    std::vector<std::shared_ptr<const xi2p::core::RouterInfo> > peers,
     std::shared_ptr<const TunnelConfig> reply_tunnel_config)
     : TunnelConfig() {
   TunnelHopConfig* prev = nullptr;
@@ -290,8 +290,8 @@ bool TunnelConfig::IsInbound() const {
   return m_FirstHop->IsGateway();
 }
 
-std::vector<std::shared_ptr<const kovri::core::RouterInfo> > TunnelConfig::GetPeers() const {
-  std::vector<std::shared_ptr<const kovri::core::RouterInfo> > peers;
+std::vector<std::shared_ptr<const xi2p::core::RouterInfo> > TunnelConfig::GetPeers() const {
+  std::vector<std::shared_ptr<const xi2p::core::RouterInfo> > peers;
   TunnelHopConfig* hop = m_FirstHop;
   while (hop) {
     peers.push_back(hop->GetCurrentRouter());
@@ -333,4 +333,4 @@ std::shared_ptr<TunnelConfig> TunnelConfig::Clone(
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -47,11 +47,11 @@
 
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 DatagramDestination::DatagramDestination(
-    kovri::client::ClientDestination& owner)
+    xi2p::client::ClientDestination& owner)
     : m_Owner(owner),
       m_Receiver(nullptr),
       m_Exception(__func__) {}
@@ -102,7 +102,7 @@ T* release(const ReleasableSharedPtr<T>& smart_ptr) {
 void DatagramDestination::SendDatagramTo(
     const std::uint8_t* payload,
     std::size_t len,
-    const kovri::core::IdentHash& ident,
+    const xi2p::core::IdentHash& ident,
     std::uint16_t from_port,
     std::uint16_t to_port) {
   // TODO(anonimal): this try block should be larger or handled entirely by caller
@@ -115,30 +115,30 @@ void DatagramDestination::SendDatagramTo(
     std::size_t header_len = identity_len + signature_len;
     memcpy(buf1, payload, len);
     if (m_Owner.GetIdentity().GetSigningKeyType()
-        == kovri::core::SIGNING_KEY_TYPE_DSA_SHA1) {
+        == xi2p::core::SIGNING_KEY_TYPE_DSA_SHA1) {
       std::uint8_t hash[32];
-      kovri::core::SHA256().CalculateDigest(hash, buf1, len);
+      xi2p::core::SHA256().CalculateDigest(hash, buf1, len);
       m_Owner.Sign(hash, 32, signature);
     } else {
       m_Owner.Sign(buf1, len, signature);
     }
-    std::unique_ptr<kovri::core::I2NPMessage> msg
+    std::unique_ptr<xi2p::core::I2NPMessage> msg
         = CreateDataMessage(buf, len + header_len, from_port, to_port);
-    std::shared_ptr<const kovri::core::LeaseSet> remote
+    std::shared_ptr<const xi2p::core::LeaseSet> remote
         = m_Owner.FindLeaseSet(ident);
 
-    ReleasableSharedPtr<kovri::core::I2NPMessage> temp_msg
+    ReleasableSharedPtr<xi2p::core::I2NPMessage> temp_msg
         = make_releasable_shared_ptr(msg.release());
     if (remote) {
       m_Owner.GetService().post([this, temp_msg, remote] {
-        SendMsg(std::unique_ptr<kovri::core::I2NPMessage>(release(temp_msg)), remote);
+        SendMsg(std::unique_ptr<xi2p::core::I2NPMessage>(release(temp_msg)), remote);
       });
     } else {
       m_Owner.RequestDestination(
           ident,
-          [this, temp_msg](const std::shared_ptr<kovri::core::LeaseSet>& remote) {
+          [this, temp_msg](const std::shared_ptr<xi2p::core::LeaseSet>& remote) {
             HandleLeaseSetRequestComplete(
-                remote, std::unique_ptr<kovri::core::I2NPMessage>(release(temp_msg)));
+                remote, std::unique_ptr<xi2p::core::I2NPMessage>(release(temp_msg)));
           });
     }
   } catch (...) {
@@ -149,26 +149,26 @@ void DatagramDestination::SendDatagramTo(
 }
 
 void DatagramDestination::HandleLeaseSetRequestComplete(
-    std::shared_ptr<kovri::core::LeaseSet> remote,
-    std::unique_ptr<kovri::core::I2NPMessage> msg) {
+    std::shared_ptr<xi2p::core::LeaseSet> remote,
+    std::unique_ptr<xi2p::core::I2NPMessage> msg) {
   if (remote)
     SendMsg(std::move(msg), remote);
 }
 
 void DatagramDestination::SendMsg(
-    std::unique_ptr<kovri::core::I2NPMessage> msg,
-    std::shared_ptr<const kovri::core::LeaseSet> remote) {
+    std::unique_ptr<xi2p::core::I2NPMessage> msg,
+    std::shared_ptr<const xi2p::core::LeaseSet> remote) {
   auto outbound_tunnel = m_Owner.GetTunnelPool()->GetNextOutboundTunnel();
   auto leases = remote->GetNonExpiredLeases();
   if (!leases.empty() && outbound_tunnel) {
-    std::vector<kovri::core::TunnelMessageBlock> msgs;
-    std::uint32_t i = kovri::core::RandInRange32(0, leases.size() - 1);
+    std::vector<xi2p::core::TunnelMessageBlock> msgs;
+    std::uint32_t i = xi2p::core::RandInRange32(0, leases.size() - 1);
     auto garlic = m_Owner.WrapMessage(
         remote,
         ToSharedI2NPMessage(std::move(msg)),
         true);
     msgs.push_back(
-        kovri::core::TunnelMessageBlock{kovri::core::e_DeliveryTypeTunnel,
+        xi2p::core::TunnelMessageBlock{xi2p::core::e_DeliveryTypeTunnel,
                                         leases[i].tunnel_gateway,
                                         leases[i].tunnel_ID,
                                         garlic});
@@ -188,14 +188,14 @@ void DatagramDestination::HandleDatagram(
     std::size_t len) {
   // TODO(anonimal): this try block should be handled entirely by caller
   try {
-    kovri::core::IdentityEx identity;
+    xi2p::core::IdentityEx identity;
     std::size_t identity_len = identity.FromBuffer(buf, len);
     const std::uint8_t* signature = buf + identity_len;
     std::size_t header_len = identity_len + identity.GetSignatureLen();
     bool verified = false;
-    if (identity.GetSigningKeyType() == kovri::core::SIGNING_KEY_TYPE_DSA_SHA1) {
+    if (identity.GetSigningKeyType() == xi2p::core::SIGNING_KEY_TYPE_DSA_SHA1) {
       std::uint8_t hash[32];
-      kovri::core::SHA256().CalculateDigest(hash, buf + header_len, len - header_len);
+      xi2p::core::SHA256().CalculateDigest(hash, buf + header_len, len - header_len);
       verified = identity.Verify(hash, 32, signature);
     } else {
       verified =
@@ -229,7 +229,7 @@ void DatagramDestination::HandleDataMessagePayload(
     std::size_t len) {
   // Gunzip it
   try {
-    kovri::core::Gunzip decompressor;
+    xi2p::core::Gunzip decompressor;
     decompressor.Put(buf, len);
     std::uint8_t uncompressed[MAX_DATAGRAM_SIZE];
     auto uncompressed_len = decompressor.MaxRetrievable();
@@ -248,13 +248,13 @@ void DatagramDestination::HandleDataMessagePayload(
 }
 
 // TODO(anonimal): bytestream refactor
-std::unique_ptr<kovri::core::I2NPMessage> DatagramDestination::CreateDataMessage(
+std::unique_ptr<xi2p::core::I2NPMessage> DatagramDestination::CreateDataMessage(
     const std::uint8_t* payload,
     std::size_t len,
     std::uint16_t from_port,
     std::uint16_t to_port) {
-  std::unique_ptr<kovri::core::I2NPMessage> msg = kovri::core::NewI2NPMessage();
-  kovri::core::Gzip compressor;  // default level
+  std::unique_ptr<xi2p::core::I2NPMessage> msg = xi2p::core::NewI2NPMessage();
+  xi2p::core::Gzip compressor;  // default level
   try {
     compressor.Put(payload, len);
     std::size_t size = compressor.MaxRetrievable();
@@ -264,9 +264,9 @@ std::unique_ptr<kovri::core::I2NPMessage> DatagramDestination::CreateDataMessage
     compressor.Get(buf, size);
     core::OutputByteStream::Write<std::uint16_t>(buf + 4, from_port);  // source port
     core::OutputByteStream::Write<std::uint16_t>(buf + 6, to_port);  // destination port
-    buf[9] = kovri::client::PROTOCOL_TYPE_DATAGRAM;  // datagram protocol
+    buf[9] = xi2p::client::PROTOCOL_TYPE_DATAGRAM;  // datagram protocol
     msg->len += size + 4;
-    msg->FillI2NPMessageHeader(kovri::core::I2NPData);
+    msg->FillI2NPMessageHeader(xi2p::core::I2NPData);
   } catch (...) {
     m_Exception.Dispatch(__func__);
     // TODO(anonimal): review if we need to safely break control, ensure exception handling by callers
@@ -275,4 +275,4 @@ std::unique_ptr<kovri::core::I2NPMessage> DatagramDestination::CreateDataMessage
 }
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p

@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2017, The Kovri I2P Router Project
+# Copyright (c) 2017-2018, The Xi2p I2P Router Project
 #
 # All rights reserved.
 #
@@ -26,7 +26,7 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Bash completion for kovri.
+# Bash completion for xi2p.
 # source this script or put it in /usr/share/bash-completion/completions/
 
 ########################################
@@ -66,16 +66,16 @@ _parse_boost_program_options() {
 # Returns:
 #   Options
 ########################################
-_parse_kovri_help() {
+_parse_xi2p_help() {
   local line
-  kovri --help | while read -r line; do
+  xi2p --help | while read -r line; do
     [[ "${line}" == *-* ]] || continue
     _parse_boost_program_options "${line}"
   done
 }
 
 ########################################
-# Bash completion function for Kovri
+# Bash completion function for Xi2p
 #
 # Globals:
 #   COMPREPLY
@@ -84,7 +84,7 @@ _parse_kovri_help() {
 # Returns:
 #   Completion suggestions
 ########################################
-_kovri() {
+_xi2p() {
   local cur prev type
   _init_completion -n = || return
 
@@ -94,7 +94,7 @@ _kovri() {
       return
       ;;
     -*)
-      type=$(kovri --help | \
+      type=$(xi2p --help | \
         grep -Poi "^\s*(${prev}|\-\w \[ ${prev} \]|${prev} \[ --\S+ \])\s\K\w+")
       case "${type}" in
         path)
@@ -114,7 +114,7 @@ _kovri() {
 
   # Start parsing the help for option suggestions.
   if [[ "${cur}" == -* ]]; then
-    COMPREPLY=($(compgen -W "$(_parse_kovri_help)" -- "${cur}"))
+    COMPREPLY=($(compgen -W "$(_parse_xi2p_help)" -- "${cur}"))
     [[ -n "${COMPREPLY}" ]] && return
   fi
 
@@ -122,4 +122,4 @@ _kovri() {
   _filedir
 }
 
-complete -F _kovri kovri
+complete -F _xi2p xi2p

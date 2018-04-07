@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -39,18 +39,18 @@
 #include "core/util/log.h"
 #include "core/util/exception.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
-const std::set<kovri::core::IdentHash> ParseACL(const std::string list)
+const std::set<xi2p::core::IdentHash> ParseACL(const std::string list)
 {
   std::vector<std::string> parsed;
   boost::split(parsed, list, boost::is_any_of(","));
   // Get b32 of each value
-  std::set<kovri::core::IdentHash> idents;
+  std::set<xi2p::core::IdentHash> idents;
   for (auto const& p : parsed)
     {
-      kovri::core::IdentHash ident;
+      xi2p::core::IdentHash ident;
       try
         {
           ident.FromBase32(p);
@@ -75,9 +75,9 @@ void ParseClientDestination(
   if (parsed.size() > 1) {
     // Shuffle to ensure all destinations are accessible
     // TODO(anonimal): review RandInRange() so we don't need to shuffle
-    kovri::core::Shuffle(parsed.begin(), parsed.end());
+    xi2p::core::Shuffle(parsed.begin(), parsed.end());
     tunnel->dest =
-      parsed.at(kovri::core::RandInRange32(0, parsed.size() - 1));
+      parsed.at(xi2p::core::RandInRange32(0, parsed.size() - 1));
   }
   LOG(debug) << "Client: parsing destination " << tunnel->dest;
   // If dest has port appended to it, replace previously set dest port
@@ -107,4 +107,4 @@ void ParseClientDestination(
 }
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p

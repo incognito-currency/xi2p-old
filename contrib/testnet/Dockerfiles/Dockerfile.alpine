@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2017, The Kovri I2P Router Project
+# Copyright (c) 2017-2018, The Xi2p I2P Router Project
 #
 # All rights reserved.
 #
@@ -46,7 +46,7 @@ RUN apk add --update --no-cache \
       coreutils \
       curl \
       && \ 
-      adduser -D kovri && \
-      chown -R kovri:kovri /home/kovri
+      adduser -D xi2p && \
+      chown -R xi2p:xi2p /home/xi2p
 
-USER kovri
+USER xi2p

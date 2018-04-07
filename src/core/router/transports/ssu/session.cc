@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -48,7 +48,7 @@
 #include "core/util/log.h"
 #include "core/util/timestamp.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 // TODO(anonimal): session message creation/processing should be separated from
@@ -81,7 +81,7 @@ std::uint8_t* SSUSessionPacket::Encrypted() const {
 SSUSession::SSUSession(
     SSUServer& server,
     boost::asio::ip::udp::endpoint& remote_endpoint,
-    std::shared_ptr<const kovri::core::RouterInfo> router,
+    std::shared_ptr<const xi2p::core::RouterInfo> router,
     bool peer_test)
     : TransportSession(router),
       m_Server(server),
@@ -94,7 +94,7 @@ SSUSession::SSUSession(
       m_Data(*this),
       m_IsDataReceived(false),
       m_Exception(__func__) {
-  m_CreationTime = kovri::core::GetSecondsSinceEpoch();
+  m_CreationTime = xi2p::core::GetSecondsSinceEpoch();
 }
 
 SSUSession::~SSUSession() {}
@@ -107,7 +107,7 @@ bool SSUSession::CreateAESandMACKey(
     const std::uint8_t* pub_key) {
   // TODO(anonimal): this try block should be handled entirely by caller
   try {
-    kovri::core::DiffieHellman dh;
+    xi2p::core::DiffieHellman dh;
     std::array<std::uint8_t, 256> shared_key;
     if (!dh.Agree(shared_key.data(), m_DHKeysPair->private_key.data(), pub_key)) {
       LOG(error)
@@ -137,7 +137,7 @@ bool SSUSession::CreateAESandMACKey(
         }
       }
       memcpy(session_key, non_zero, 32);
-      kovri::core::SHA256().CalculateDigest(
+      xi2p::core::SHA256().CalculateDigest(
           mac_key,
           non_zero,
           64 - (non_zero - shared_key.data()));
@@ -545,7 +545,7 @@ void SSUSession::SendSessionCreated(const std::uint8_t* dh_x)
 
       // Set IV
       std::array<std::uint8_t, SSUSize::IV> IV;
-      kovri::core::RandBytes(IV.data(), IV.size());
+      xi2p::core::RandBytes(IV.data(), IV.size());
       message.GetHeader()->SetIV(IV.data());
 
       // Set our (Bob's) DH Y
@@ -683,7 +683,7 @@ void SSUSession::ProcessSessionConfirmed(SSUPacket* pkt) {
   core::OutputByteStream data(
       m_SessionConfirmData.data(), m_SessionConfirmData.size());
 
-  // TODO(anonimal): received as BE (at least with kovri). Ensure BE.
+  // TODO(anonimal): received as BE (at least with xi2p). Ensure BE.
   std::uint32_t const time = packet->GetSignedOnTime();
   std::memcpy(data.Data() + (data.Size() - 4), &time, 4);
 
@@ -1277,7 +1277,7 @@ void SSUSession::SendPeerTest() {
   auto* const address =
       context.GetRouterInfo().GetSSUAddress(context.GetRouterInfo().HasV6());
   assert(address);
-  auto nonce = kovri::core::Rand<std::uint32_t>();
+  auto nonce = xi2p::core::Rand<std::uint32_t>();
   if (!nonce)
     nonce = 1;
   m_PeerTest = false;
@@ -1380,10 +1380,10 @@ void SSUSession::FillHeaderAndEncrypt(
     SSUSessionPacket pkt(buf, len);
     core::RandBytes(pkt.IV(), SSUSize::IV);
     pkt.PutFlag(flag | (payload_type << 4));  // MSB is 0
-    pkt.PutTime(kovri::core::GetSecondsSinceEpoch());
+    pkt.PutTime(xi2p::core::GetSecondsSinceEpoch());
     auto encrypted = pkt.Encrypted();
     auto encrypted_len = len - (encrypted - buf);
-    kovri::core::CBCEncryption encryption(aes_key, pkt.IV());
+    xi2p::core::CBCEncryption encryption(aes_key, pkt.IV());
     encryption.Encrypt(
         encrypted,
         encrypted_len,
@@ -1393,7 +1393,7 @@ void SSUSession::FillHeaderAndEncrypt(
     memcpy(buf + len, pkt.IV(), SSUSize::IV);
     core::OutputByteStream::Write<std::uint16_t>(
         buf + len + SSUSize::IV, encrypted_len);
-    kovri::core::HMACMD5Digest(
+    xi2p::core::HMACMD5Digest(
         encrypted,
         encrypted_len + SSUSize::BufferMargin,
         mac_key,
@@ -1414,7 +1414,7 @@ void SSUSession::WriteAndEncrypt(
     const std::uint8_t* mac_key) {
   // TODO(anonimal): this try block should be handled entirely by caller
   try {
-    packet->GetHeader()->SetTime(kovri::core::GetSecondsSinceEpoch());
+    packet->GetHeader()->SetTime(xi2p::core::GetSecondsSinceEpoch());
     SSUPacketBuilder builder(buffer, buffer_size);
     // Write header (excluding MAC)
     builder.WriteHeader(packet->GetHeader());
@@ -1436,17 +1436,17 @@ void SSUSession::WriteAndEncrypt(
         builder.WriteData(padding.data(), padding.size());
         encrypted_len += padding.size();
       }
-    kovri::core::CBCEncryption encryption(aes_key, packet->GetHeader()->GetIV());
+    xi2p::core::CBCEncryption encryption(aes_key, packet->GetHeader()->GetIV());
     encryption.Encrypt(encrypted, encrypted_len, encrypted);
     // Compute HMAC of encryptedPayload + IV + (payloadLength ^ protocolVersion)
     // Currently, protocolVersion == 0
-    kovri::core::OutputByteStream stream(
+    xi2p::core::OutputByteStream stream(
         encrypted + encrypted_len, buffer_size - (encrypted - buffer));
     stream.WriteData(
         packet->GetHeader()->GetIV(),
         SSUSize::IV);
     stream.Write<std::uint16_t>(encrypted_len);
-    kovri::core::HMACMD5Digest(
+    xi2p::core::HMACMD5Digest(
         encrypted,
         encrypted_len + SSUSize::BufferMargin,
         mac_key,
@@ -1472,10 +1472,10 @@ void SSUSession::FillHeaderAndEncrypt(
       return;
     }
     SSUSessionPacket pkt(buf, len);
-    kovri::core::RandBytes(pkt.IV(), SSUSize::IV);  // random iv
+    xi2p::core::RandBytes(pkt.IV(), SSUSize::IV);  // random iv
     m_SessionKeyEncryption.SetIV(pkt.IV());
     pkt.PutFlag(payload_type << 4);  // MSB is 0
-    pkt.PutTime(kovri::core::GetSecondsSinceEpoch());
+    pkt.PutTime(xi2p::core::GetSecondsSinceEpoch());
     auto encrypted = pkt.Encrypted();
     auto encrypted_len = len - (encrypted - buf);
     m_SessionKeyEncryption.Encrypt(
@@ -1487,7 +1487,7 @@ void SSUSession::FillHeaderAndEncrypt(
     memcpy(buf + len, pkt.IV(), SSUSize::IV);
     core::OutputByteStream::Write<std::uint16_t>(
         buf + len + SSUSize::IV, encrypted_len);
-    kovri::core::HMACMD5Digest(
+    xi2p::core::HMACMD5Digest(
         encrypted,
         encrypted_len + SSUSize::BufferMargin,
         m_MACKey,
@@ -1553,7 +1553,7 @@ bool SSUSession::Validate(
   core::OutputByteStream::Write<std::uint16_t>(
       buf + len + SSUSize::IV, encrypted_len);
   std::array<std::uint8_t, 16> digest;
-  kovri::core::HMACMD5Digest(
+  xi2p::core::HMACMD5Digest(
       encrypted,
       encrypted_len + SSUSize::BufferMargin,
       mac_key,
@@ -1764,10 +1764,10 @@ void SSUSession::Send(
     << "SSUSession:" << GetFormattedSessionInfo()
     << "<-- " << size << " bytes transferred, "
     << GetNumSentBytes() << " total bytes sent";
-  kovri::core::transports.UpdateSentBytes(size);
+  xi2p::core::transports.UpdateSentBytes(size);
   m_Server.Send(buf, size, GetRemoteEndpoint());
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 

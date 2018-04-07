@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -50,15 +50,15 @@
 BOOST_LOG_GLOBAL_LOGGER(g_Logger, boost::log::sources::severity_logger_mt<boost::log::trivial::severity_level>)
 #define LOG(severity) BOOST_LOG_SEV(g_Logger::get(), boost::log::trivial::severity)
 
-namespace kovri
+namespace xi2p
 {
 namespace core
 {
 /// @details This configures/sets up the global logger.
-/// @param Parsed kovri variable map
-/// @warning Kovri config must first be parsed
+/// @param Parsed xi2p variable map
+/// @warning Xi2p config must first be parsed
 void SetupLogging(
-    const boost::program_options::variables_map& parsed_kovri_config);
+    const boost::program_options::variables_map& parsed_xi2p_config);
 
 /// @brief Log source and destination of a network request or response
 /// @param boost::network::http::client:: request or response
@@ -97,7 +97,7 @@ std::string LogNetBodyToString(const Type& req)
   std::stringstream ss;
   std::string body(static_cast<std::string>(boost::network::http::body(req)));
   ss << "Body : "
-     << kovri::core::GetFormattedHex(
+     << xi2p::core::GetFormattedHex(
             reinterpret_cast<const uint8_t*>(body.data()), body.length());
   return ss.str();
 }
@@ -116,6 +116,6 @@ std::string LogNetMessageToString(const Type& req)
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_UTIL_LOG_H_

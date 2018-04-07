@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2017, The Kovri I2P Router Project
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project
  *
  * All rights reserved.
  *
@@ -41,7 +41,7 @@
 // Note: Credit goes to EinMByte.
 // This is heavily inspired from i2pcontrol_client.h in qtoopie.
 
-namespace kovri
+namespace xi2p
 {
 namespace client
 {
@@ -124,6 +124,6 @@ class I2PControlClient final
 };
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_UTIL_I2PCONTROL_CLIENT_H_

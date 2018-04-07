@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -53,24 +53,24 @@
 
 #include "core/router/identity.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 HTTPProxyServer::HTTPProxyServer(
     const std::string& name,
     const std::string& address,
     std::uint16_t port,
-    std::shared_ptr<kovri::client::ClientDestination> local_destination)
+    std::shared_ptr<xi2p::client::ClientDestination> local_destination)
     : TCPIPAcceptor(
           address,
           port,
           local_destination
               ? local_destination
-              : kovri::client::context.GetSharedLocalDestination()),
+              : xi2p::client::context.GetSharedLocalDestination()),
       m_Name(name) {
 }
 
-std::shared_ptr<kovri::client::I2PServiceHandler>
+std::shared_ptr<xi2p::client::I2PServiceHandler>
 HTTPProxyServer::CreateHandler(
     std::shared_ptr<boost::asio::ip::tcp::socket> socket) {
   return std::make_shared<HTTPProxyHandler>(this, socket);
@@ -284,13 +284,13 @@ bool HTTPMessage::HandleData(const std::string& protocol_string) {
 }
 
 void HTTPProxyHandler::HandleStreamRequestComplete(
-    std::shared_ptr<kovri::client::Stream> stream) {
+    std::shared_ptr<xi2p::client::Stream> stream) {
   if (stream) {
     if (Kill())
       return;
     LOG(info) << "HTTPProxyHandler: new I2PTunnel connection";
     auto connection =
-      std::make_shared<kovri::client::I2PTunnelConnection>(
+      std::make_shared<xi2p::client::I2PTunnelConnection>(
           GetOwner(),
           m_Socket,
           stream);
@@ -502,7 +502,7 @@ bool HTTPMessage::SaveJumpServiceAddress()
     {
       LOG(debug) << "HTTPProxyHandler: inserting " << m_Address
                  << " into address book";
-      kovri::client::context.GetAddressBook().InsertAddressIntoStorage(
+      xi2p::client::context.GetAddressBook().InsertAddressIntoStorage(
           m_Address, m_Base64Destination);
     }
   catch (...)
@@ -551,4 +551,4 @@ void HTTPProxyHandler::Terminate() {
 }
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p

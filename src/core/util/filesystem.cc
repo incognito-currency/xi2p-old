@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -42,7 +42,7 @@
 
 #include "core/router/context.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 StringStream::StringStream()
@@ -151,7 +151,7 @@ boost::filesystem::path GetPath(Path path)
   auto get_data_path = [](bool const is_default = false) {
 
     auto get_default_data_path = []() {
-      static std::string data_dir("kovri");
+      static std::string data_dir("xi2p");
 #ifdef KOVRI_CUSTOM_DATA_PATH
       return boost::filesystem::path(std::string(KOVRI_CUSTOM_DATA_PATH));
 #else
@@ -250,4 +250,4 @@ boost::filesystem::path GetPath(Path path)
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

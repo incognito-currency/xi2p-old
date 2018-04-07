@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -41,7 +41,7 @@
 
 #include "core/util/exception.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 const char PEER_PROFILE_PREFIX[] = "profile-";
@@ -101,6 +101,6 @@ std::shared_ptr<RouterProfile> GetRouterProfile(
 void DeleteObsoleteProfiles();
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_PROFILING_H_

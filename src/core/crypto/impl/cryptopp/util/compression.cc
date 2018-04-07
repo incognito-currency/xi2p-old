@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -36,7 +36,7 @@
 
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 /// @class DeflateDecompressorImpl
@@ -235,4 +235,4 @@ std::size_t Gunzip::MaxRetrievable() {
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

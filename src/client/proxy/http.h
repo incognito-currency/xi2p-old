@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -48,7 +48,7 @@
 #include "client/destination.h"
 #include "client/service.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 struct HTTPResponseCodes{
@@ -209,8 +209,8 @@ class HTTPMessage : public std::enable_shared_from_this<HTTPMessage>{
   {
     "?i2paddresshelper=",
     "&i2paddresshelper=",
-    "?kovrijumpservice=",
-    "&kovrijumpservice=",
+    "?xi2pjumpservice=",
+    "&xi2pjumpservice=",
   }
   };
   HTTPResponse m_ErrorResponse;
@@ -261,7 +261,7 @@ class HTTPMessage : public std::enable_shared_from_this<HTTPMessage>{
 /// @class HTTPProxyServer
 /// setup asio service
 class HTTPProxyServer
-    : public kovri::client::TCPIPAcceptor {
+    : public xi2p::client::TCPIPAcceptor {
  public:
   /// @param name Proxy server service name
   /// @param address Proxy binding address
@@ -272,13 +272,13 @@ class HTTPProxyServer
       const std::string& name,
       const std::string& address,
       std::uint16_t port,
-      std::shared_ptr<kovri::client::ClientDestination> local_destination
+      std::shared_ptr<xi2p::client::ClientDestination> local_destination
               = nullptr);
 
   ~HTTPProxyServer() {}
 
   /// @brief Implements TCPIPAcceptor
-  std::shared_ptr<kovri::client::I2PServiceHandler> CreateHandler(
+  std::shared_ptr<xi2p::client::I2PServiceHandler> CreateHandler(
       std::shared_ptr<boost::asio::ip::tcp::socket> socket);
 
   /// @brief Gets name of proxy service
@@ -297,7 +297,7 @@ typedef HTTPProxyServer HTTPProxy;
 /// @brief setup handler for asio service
 /// each service needs a handler
 class HTTPProxyHandler
-    : public kovri::client::I2PServiceHandler,
+    : public xi2p::client::I2PServiceHandler,
       public std::enable_shared_from_this<HTTPProxyHandler> {
  public:
   HTTPMessage m_Protocol;
@@ -342,7 +342,7 @@ class HTTPProxyHandler
 
   /// @brief Handles stream created by service through proxy handler
   void HandleStreamRequestComplete(
-      std::shared_ptr<kovri::client::Stream> stream);
+      std::shared_ptr<xi2p::client::Stream> stream);
 
   /// @brief Generic request failure handler
   void HTTPRequestFailed();
@@ -371,6 +371,6 @@ class HTTPProxyHandler
 };
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_PROXY_HTTP_H_

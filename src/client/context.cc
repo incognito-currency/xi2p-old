@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -41,7 +41,7 @@
 #include "core/util/filesystem.h"
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 // Simply instantiating in namespace scope ties into, and is limited by, the current singleton design
@@ -130,11 +130,11 @@ void ClientContext::RequestShutdown() {
     m_ShutdownHandler();
 }
 
-kovri::core::PrivateKeys ClientContext::LoadPrivateKeys(
+xi2p::core::PrivateKeys ClientContext::LoadPrivateKeys(
     const std::string& filename) {
-  kovri::core::PrivateKeys keys;
+  xi2p::core::PrivateKeys keys;
   try {
-    auto file_path = (kovri::core::GetPath(kovri::core::Path::ClientKeys) / filename).string();
+    auto file_path = (xi2p::core::GetPath(xi2p::core::Path::ClientKeys) / filename).string();
     std::ifstream file(file_path, std::ifstream::binary);
     if (!file) {
       LOG(debug)
@@ -152,7 +152,7 @@ kovri::core::PrivateKeys ClientContext::LoadPrivateKeys(
     CreateBaseAddressTextFile(keys, filename);
     LOG(info)
       << "ClientContext: " << file_path << " loaded: uses local address "
-      << kovri::core::GetB32Address(keys.GetPublic().GetIdentHash());
+      << xi2p::core::GetB32Address(keys.GetPublic().GetIdentHash());
   } catch (...) {
     m_Exception.Dispatch(__func__);
     throw;
@@ -160,7 +160,7 @@ kovri::core::PrivateKeys ClientContext::LoadPrivateKeys(
   return keys;
 }
 
-kovri::core::PrivateKeys ClientContext::CreatePrivateKeys(
+xi2p::core::PrivateKeys ClientContext::CreatePrivateKeys(
     const std::string& filename) {
   auto path = core::EnsurePath(core::GetPath(core::Path::ClientKeys));
   auto file_path = (path / filename).string();
@@ -168,7 +168,7 @@ kovri::core::PrivateKeys ClientContext::CreatePrivateKeys(
   std::ofstream file(file_path, std::ofstream::binary);
   if (!file)
     throw std::runtime_error("ClientContext: could not open private keys for writing");
-  auto keys = kovri::core::PrivateKeys::CreateRandomKeys();  // Generate default type
+  auto keys = xi2p::core::PrivateKeys::CreateRandomKeys();  // Generate default type
   std::size_t len = keys.GetFullLen();
   std::unique_ptr<std::uint8_t[]> buf(std::make_unique<std::uint8_t[]>(len));
   len = keys.ToBuffer(buf.get(), len);
@@ -177,12 +177,12 @@ kovri::core::PrivateKeys ClientContext::CreatePrivateKeys(
   CreateBaseAddressTextFile(keys, filename);
   LOG(info)
     << "ClientContext: created new private keys " << file_path << " for "
-    << kovri::core::GetB32Address(keys.GetPublic().GetIdentHash());
+    << xi2p::core::GetB32Address(keys.GetPublic().GetIdentHash());
   return keys;
 }
 
 void ClientContext::CreateBaseAddressTextFile(
-    const kovri::core::PrivateKeys& keys,
+    const xi2p::core::PrivateKeys& keys,
     const std::string& filename) {
   auto path = core::EnsurePath(core::GetPath(core::Path::ClientKeys));
   auto file_path = (path / filename).string() + ".txt";
@@ -192,7 +192,7 @@ void ClientContext::CreateBaseAddressTextFile(
     throw std::runtime_error("ClientContext: could not open base address text file for writing");
   // Re: identity, see #366
   // Base32
-  file << kovri::core::GetB32Address(keys.GetPublic().GetIdentHash()) << "\n";
+  file << xi2p::core::GetB32Address(keys.GetPublic().GetIdentHash()) << "\n";
   // Base64
   file << keys.GetPublic().ToBase64();
   LOG(info) << "ClientContext: created base address text file " << file_path;
@@ -208,7 +208,7 @@ std::shared_ptr<ClientDestination> ClientContext::LoadLocalDestination(
   if (it != m_Destinations.end()) {
     LOG(warning)
       << "ClientContext: local destination "
-      << kovri::core::GetB32Address(keys.GetPublic().GetIdentHash())
+      << xi2p::core::GetB32Address(keys.GetPublic().GetIdentHash())
       << " already exists";
     local_destination = it->second;
   } else {
@@ -221,10 +221,10 @@ std::shared_ptr<ClientDestination> ClientContext::LoadLocalDestination(
 
 std::shared_ptr<ClientDestination> ClientContext::CreateNewLocalDestination(
     bool is_public,
-    kovri::core::SigningKeyType sig_type,
+    xi2p::core::SigningKeyType sig_type,
     const std::map<std::string, std::string>* params) {
-  kovri::core::PrivateKeys keys =
-    kovri::core::PrivateKeys::CreateRandomKeys(sig_type);
+  xi2p::core::PrivateKeys keys =
+    xi2p::core::PrivateKeys::CreateRandomKeys(sig_type);
   auto local_destination =
     std::make_shared<ClientDestination>(keys, is_public, params);
   std::unique_lock<std::mutex> l(m_DestinationsMutex);
@@ -249,14 +249,14 @@ void ClientContext::DeleteLocalDestination(
 }
 
 std::shared_ptr<ClientDestination> ClientContext::CreateNewLocalDestination(
-    const kovri::core::PrivateKeys& keys,
+    const xi2p::core::PrivateKeys& keys,
     bool is_public,
     const std::map<std::string, std::string>* params) {
   auto it = m_Destinations.find(keys.GetPublic().GetIdentHash());
   if (it != m_Destinations.end()) {
     LOG(debug)
       << "ClientContext: local destination "
-      << kovri::core::GetB32Address(keys.GetPublic().GetIdentHash())
+      << xi2p::core::GetB32Address(keys.GetPublic().GetIdentHash())
       << " already exists";
     if (!it->second->IsRunning()) {
       it->second->Start();
@@ -273,7 +273,7 @@ std::shared_ptr<ClientDestination> ClientContext::CreateNewLocalDestination(
 }
 
 std::shared_ptr<ClientDestination> ClientContext::FindLocalDestination(
-    const kovri::core::IdentHash& destination) const {
+    const xi2p::core::IdentHash& destination) const {
   auto it = m_Destinations.find(destination);
   if (it != m_Destinations.end())
     return it->second;
@@ -307,8 +307,8 @@ void ClientContext::UpdateServerTunnel(
     bool is_http) {
   bool create_tunnel = false;
   try {
-    kovri::core::PrivateKeys keys = LoadPrivateKeys(tunnel.keys);
-    kovri::core::IdentHash ident = keys.GetPublic().GetIdentHash();
+    xi2p::core::PrivateKeys keys = LoadPrivateKeys(tunnel.keys);
+    xi2p::core::IdentHash ident = keys.GetPublic().GetIdentHash();
     // Check if server already exists
     auto server_tunnel = GetServerTunnel(ident);
     if (server_tunnel == nullptr) {
@@ -398,9 +398,9 @@ bool ClientContext::AddServerTunnel(
 {
   auto local_destination = LoadLocalDestination(tunnel.keys, true);
   auto server_tunnel =
-      is_http ? std::make_unique<kovri::client::I2PServerTunnelHTTP>(
+      is_http ? std::make_unique<xi2p::client::I2PServerTunnelHTTP>(
                     tunnel, local_destination)
-              : std::make_unique<kovri::client::I2PServerTunnel>(
+              : std::make_unique<xi2p::client::I2PServerTunnel>(
                     tunnel, local_destination);
   // Insert server tunnel
   if (!InsertServerTunnel(
@@ -417,11 +417,11 @@ bool ClientContext::AddServerTunnel(
 
 bool ClientContext::AddClientTunnel(const TunnelAttributes& tunnel)
 {
-  std::shared_ptr<kovri::client::ClientDestination> local_destination;
+  std::shared_ptr<xi2p::client::ClientDestination> local_destination;
   if (!tunnel.keys.empty())
     local_destination = LoadLocalDestination(tunnel.keys, false);
   // Insert client tunnel
-  auto client_tunnel = std::make_unique<kovri::client::I2PClientTunnel>(
+  auto client_tunnel = std::make_unique<xi2p::client::I2PClientTunnel>(
       tunnel, local_destination);
   if (!InsertClientTunnel(tunnel.port, std::move(client_tunnel)))
     {
@@ -445,7 +445,7 @@ bool ClientContext::InsertClientTunnel(
 }
 
 bool ClientContext::InsertServerTunnel(
-    const kovri::core::IdentHash& id,
+    const xi2p::core::IdentHash& id,
     std::unique_ptr<I2PServerTunnel> tunnel) {
   std::lock_guard<std::mutex> lock(m_ServerMutex);
   return m_ServerTunnels.insert(
@@ -453,7 +453,7 @@ bool ClientContext::InsertServerTunnel(
 }
 
 void ClientContext::SetI2PControlService(
-    std::unique_ptr<kovri::client::I2PControlService> service) {
+    std::unique_ptr<xi2p::client::I2PControlService> service) {
   m_I2PControlService = std::move(service);
 }
 
@@ -463,7 +463,7 @@ void ClientContext::SetHTTPProxy(
 }
 
 void ClientContext::SetSOCKSProxy(
-    std::unique_ptr<kovri::client::SOCKSProxy> proxy) {
+    std::unique_ptr<xi2p::client::SOCKSProxy> proxy) {
   m_SocksProxy = std::move(proxy);
 }
 
@@ -479,7 +479,7 @@ I2PServerTunnel* ClientContext::GetServerTunnel(const std::string& name)
 }
 
 I2PServerTunnel* ClientContext::GetServerTunnel(
-    const kovri::core::IdentHash& id)
+    const xi2p::core::IdentHash& id)
 {
   std::lock_guard<std::mutex> lock(m_ServerMutex);
   auto it = m_ServerTunnels.find(id);
@@ -509,4 +509,4 @@ boost::asio::io_service& ClientContext::GetIoService() {
 }
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p

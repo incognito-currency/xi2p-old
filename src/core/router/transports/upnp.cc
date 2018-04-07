@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -131,7 +131,7 @@ F GetKnownProcAddressImpl(
 }
 #define GetKnownProcAddress(hmod, func) GetKnownProcAddressImpl(hmod, #func, func##Func);
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 UPnP::UPnP()
@@ -279,7 +279,7 @@ void UPnP::TryPortMapping(
       upnp_type = "UDP";
   }
   int r;
-  const std::string desc = "Kovri";
+  const std::string desc = "Xi2p";
   try {
     for (;;) {
 #ifndef UPNPDISCOVER_SUCCESS
@@ -369,6 +369,6 @@ void UPnP::Close() {
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // USE_UPNP

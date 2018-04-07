@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2017, The Kovri I2P Router Project
+// Copyright (c) 2017-2018, The Xi2p I2P Router Project
 //
 // All rights reserved.
 //
@@ -36,8 +36,8 @@ namespace py = boost::python;
 
 void test_run()
 {
-  kovri::core::Instance core;
-  kovri::client::Instance client(core);
+  xi2p::core::Instance core;
+  xi2p::client::Instance client(core);
 
   client.Initialize();
   client.Start();
@@ -55,7 +55,7 @@ void wrapper_test_run()
 }
 
 // TODO(anonimal): in-tandem API development
-BOOST_PYTHON_MODULE(kovri_python)
+BOOST_PYTHON_MODULE(xi2p_python)
 {
   py::def("test_run", test_run);
   py::def("wrapper_test_run", wrapper_test_run);

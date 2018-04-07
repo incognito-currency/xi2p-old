@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -54,7 +54,7 @@
 #include "core/util/exception.h"
 #include "core/util/queue.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 const int TUNNEL_EXPIRATION_TIMEOUT = 660,    // 11 minutes
@@ -129,7 +129,7 @@ class Tunnel : public TunnelBase {
 
   // implements TunnelBase
   void SendTunnelDataMsg(
-      std::shared_ptr<kovri::core::I2NPMessage> msg);
+      std::shared_ptr<xi2p::core::I2NPMessage> msg);
 
   void EncryptTunnelMsg(
       std::shared_ptr<const I2NPMessage> in,
@@ -139,7 +139,7 @@ class Tunnel : public TunnelBase {
     return m_Config->GetFirstHop()->GetTunnelID();
   }
 
-  const kovri::core::IdentHash& GetNextIdentHash() const {
+  const xi2p::core::IdentHash& GetNextIdentHash() const {
     return m_Config->GetFirstHop()->GetCurrentRouter()->GetIdentHash();
   }
 
@@ -162,7 +162,7 @@ class OutboundTunnel
   void SendTunnelDataMsg(
       const std::uint8_t* gw_hash,
       std::uint32_t gw_tunnel,
-      std::shared_ptr<kovri::core::I2NPMessage> msg);
+      std::shared_ptr<xi2p::core::I2NPMessage> msg);
 
   // Exposes hidden overloaded virtual function until we do a tunnel refactor
   using Tunnel::SendTunnelDataMsg;
@@ -171,7 +171,7 @@ class OutboundTunnel
   void SendTunnelDataMsg(
       const std::vector<TunnelMessageBlock>& msgs);
 
-  const std::shared_ptr<const kovri::core::RouterInfo>& GetEndpointRouter() const noexcept {
+  const std::shared_ptr<const xi2p::core::RouterInfo>& GetEndpointRouter() const noexcept {
     return GetTunnelConfig()->GetLastHop()->GetCurrentRouter();
   }
 
@@ -181,7 +181,7 @@ class OutboundTunnel
 
   // implements TunnelBase
   void HandleTunnelDataMsg(
-      std::shared_ptr<const kovri::core::I2NPMessage> tunnel_msg);
+      std::shared_ptr<const xi2p::core::I2NPMessage> tunnel_msg);
 
   std::uint32_t GetTunnelID() const {
     return GetNextTunnelID();
@@ -275,7 +275,7 @@ class Tunnels {
       std::shared_ptr<OutboundTunnel> tunnel);  // outbound
 
   std::shared_ptr<TunnelPool> CreateTunnelPool(
-      kovri::core::GarlicDestination* local_destination,
+      xi2p::core::GarlicDestination* local_destination,
       int num_inbound_hops,
       int num_oubound_hops,
       int num_inbound_tunnels,
@@ -334,7 +334,7 @@ class Tunnels {
   std::mutex m_PoolsMutex;
   std::list<std::shared_ptr<TunnelPool>> m_Pools;
   std::shared_ptr<TunnelPool> m_ExploratoryPool;
-  kovri::core::Queue<std::shared_ptr<I2NPMessage> > m_Queue;
+  xi2p::core::Queue<std::shared_ptr<I2NPMessage> > m_Queue;
 
   // some stats
   int m_NumSuccesiveTunnelCreations,
@@ -370,6 +370,6 @@ class Tunnels {
 extern Tunnels tunnels;
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_TUNNEL_IMPL_H_

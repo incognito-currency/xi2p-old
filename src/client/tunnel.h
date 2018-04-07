@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -48,7 +48,7 @@
 
 #include "core/router/identity.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 /// @class ACL
@@ -82,19 +82,19 @@ class I2PTunnelConnection
   I2PTunnelConnection(
       I2PService* owner,
       std::shared_ptr<boost::asio::ip::tcp::socket> socket,
-      std::shared_ptr<const kovri::core::LeaseSet> lease_set,
+      std::shared_ptr<const xi2p::core::LeaseSet> lease_set,
       std::uint16_t port = 0);
 
   // To I2P using simplified API
   I2PTunnelConnection(
       I2PService* owner,
       std::shared_ptr<boost::asio::ip::tcp::socket> socket,
-      std::shared_ptr<kovri::client::Stream> stream);
+      std::shared_ptr<xi2p::client::Stream> stream);
 
   // From I2P
   I2PTunnelConnection(
       I2PService* owner,
-      std::shared_ptr<kovri::client::Stream> stream,
+      std::shared_ptr<xi2p::client::Stream> stream,
       std::shared_ptr<boost::asio::ip::tcp::socket> socket,
       const boost::asio::ip::tcp::endpoint& target,
       bool quiet = true);
@@ -138,7 +138,7 @@ class I2PTunnelConnection
   m_StreamBuffer[I2P_TUNNEL_CONNECTION_BUFFER_SIZE];
 
   std::shared_ptr<boost::asio::ip::tcp::socket> m_Socket;
-  std::shared_ptr<kovri::client::Stream> m_Stream;
+  std::shared_ptr<xi2p::client::Stream> m_Stream;
   boost::asio::ip::tcp::endpoint m_RemoteEndpoint;
   bool m_IsQuiet;  // don't send destination
 };
@@ -147,7 +147,7 @@ class I2PTunnelConnectionHTTP: public I2PTunnelConnection {
  public:
   I2PTunnelConnectionHTTP(
       I2PService* owner,
-      std::shared_ptr<kovri::client::Stream> stream,
+      std::shared_ptr<xi2p::client::Stream> stream,
       std::shared_ptr<boost::asio::ip::tcp::socket> socket,
       const boost::asio::ip::tcp::endpoint& target,
       const std::string& host);
@@ -209,10 +209,10 @@ class I2PClientTunnel : public TCPIPAcceptor {
 
   /// @brief Gets ident hash of tunnel attribute remote destination
   /// @return Unique pointer to ident hash
-  std::unique_ptr<const kovri::core::IdentHash> GetDestIdentHash();
+  std::unique_ptr<const xi2p::core::IdentHash> GetDestIdentHash();
 
   /// @brief Destination ident hash
-  std::unique_ptr<const kovri::core::IdentHash> m_DestinationIdentHash;
+  std::unique_ptr<const xi2p::core::IdentHash> m_DestinationIdentHash;
 };
 
 // TODO(anonimal): more documentation
@@ -224,7 +224,7 @@ class I2PClientTunnelHandler
  public:
   I2PClientTunnelHandler(
       I2PClientTunnel* parent,
-      kovri::core::IdentHash destination,
+      xi2p::core::IdentHash destination,
       std::uint16_t destination_port,
       std::shared_ptr<boost::asio::ip::tcp::socket> socket);
 
@@ -233,8 +233,8 @@ class I2PClientTunnelHandler
   void Terminate();
 
  private:
-  void HandleStreamRequestComplete(std::shared_ptr<kovri::client::Stream> stream);
-  kovri::core::IdentHash m_DestinationIdentHash;
+  void HandleStreamRequestComplete(std::shared_ptr<xi2p::client::Stream> stream);
+  xi2p::core::IdentHash m_DestinationIdentHash;
   std::uint16_t m_DestinationPort;
   std::shared_ptr<boost::asio::ip::tcp::socket> m_Socket;
 };
@@ -275,7 +275,7 @@ class I2PServerTunnel : public I2PService {
 
   /// @brief Return populated Access Control List
   /// @return Const reference to member
-  const std::set<kovri::core::IdentHash>& GetACL() noexcept {
+  const std::set<xi2p::core::IdentHash>& GetACL() noexcept {
     return m_ACL;
   }
 
@@ -283,7 +283,7 @@ class I2PServerTunnel : public I2PService {
   /// @param stream Shared pointer to client stream
   /// @return False If ACL applies to stream (and stream should be closed)
   bool EnforceACL(
-    std::shared_ptr<kovri::client::Stream> stream);
+    std::shared_ptr<xi2p::client::Stream> stream);
 
   // TODO(unassigned): must this function be virtual? Can we extend tunnel attributes?
   /// @brief Returns tunnel name
@@ -310,12 +310,12 @@ class I2PServerTunnel : public I2PService {
 
   /// @brief Handles streaming connection
   void HandleAccept(
-      std::shared_ptr<kovri::client::Stream> stream);
+      std::shared_ptr<xi2p::client::Stream> stream);
 
   /// @brief Creates Streaming connection for inbound in-net connection attempts
   /// @param stream Shared pointer to stream object
   virtual void CreateI2PConnection(
-      std::shared_ptr<kovri::client::Stream> stream);
+      std::shared_ptr<xi2p::client::Stream> stream);
 
  private:
   /// @var m_TunnelAttributes
@@ -328,11 +328,11 @@ class I2PServerTunnel : public I2PService {
 
   /// @var m_PortDestination
   /// @brief Used to connect Streaming handling to server tunnel port handling
-  std::shared_ptr<kovri::client::StreamingDestination> m_PortDestination;
+  std::shared_ptr<xi2p::client::StreamingDestination> m_PortDestination;
 
   /// @var m_ACL
   /// @brief Access Control List for inbound streaming connections
-  std::set<kovri::core::IdentHash> m_ACL;
+  std::set<xi2p::core::IdentHash> m_ACL;
 };
 
 /// @class I2PServerTunnelHTTP
@@ -344,10 +344,10 @@ class I2PServerTunnelHTTP : public I2PServerTunnel {
 
  private:
   void CreateI2PConnection(
-      std::shared_ptr<kovri::client::Stream> stream);
+      std::shared_ptr<xi2p::client::Stream> stream);
 };
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_TUNNEL_H_

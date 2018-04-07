@@ -619,8 +619,8 @@
                 {
                     "allValue": null,
                     "current": {
-                        "text": "kovri_testnet_01[0-4]",
-                        "value": "kovri_testnet_01[0-4]"
+                        "text": "xi2p_testnet_01[0-4]",
+                        "value": "xi2p_testnet_01[0-4]"
                     },
                     "datasource": "InfluxDB",
                     "hide": 0,
@@ -631,33 +631,33 @@
                     "options": [
                         {
                             "selected": true,
-                            "text": "kovri_testnet_01[0-4]",
-                            "value": "kovri_testnet_01[0-4]"
+                            "text": "xi2p_testnet_01[0-4]",
+                            "value": "xi2p_testnet_01[0-4]"
                         },
                         {
                             "selected": false,
-                            "text": "kovri_testnet_02[5-9]",
-                            "value": "kovri_testnet_02[5-9]"
+                            "text": "xi2p_testnet_02[5-9]",
+                            "value": "xi2p_testnet_02[5-9]"
                         },
                         {
                             "selected": false,
-                            "text": "kovri_testnet_01.*",
-                            "value": "kovri_testnet_01.*"
+                            "text": "xi2p_testnet_01.*",
+                            "value": "xi2p_testnet_01.*"
                         },
                         {
                             "selected": false,
-                            "text": "kovri_testnet_02.*",
-                            "value": "kovri_testnet_02.*"
+                            "text": "xi2p_testnet_02.*",
+                            "value": "xi2p_testnet_02.*"
                         },
                         {
                             "selected": false,
-                            "text": "kovri_testnet.*",
-                            "value": "kovri_testnet.*"
+                            "text": "xi2p_testnet.*",
+                            "value": "xi2p_testnet.*"
                         },
                         {
                             "selected": false,
-                            "text": "kovri.*",
-                            "value": "kovri.*"
+                            "text": "xi2p.*",
+                            "value": "xi2p.*"
                         }
                     ],
                     "query": "SHOW TAG VALUES WITH KEY = \"container_name\"",

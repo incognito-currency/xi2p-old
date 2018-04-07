@@ -1436,8 +1436,8 @@
                     "allValue": null,
                     "current": {
                         "tags": [],
-                        "text": "kovri_testnet_016",
-                        "value": "kovri_testnet_016"
+                        "text": "xi2p_testnet_016",
+                        "value": "xi2p_testnet_016"
                     },
                     "datasource": "InfluxDB",
                     "hide": 0,

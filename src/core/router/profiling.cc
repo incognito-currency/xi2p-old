@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -42,7 +42,7 @@
 #include "core/util/filesystem.h"
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 RouterProfile::RouterProfile(
@@ -287,4 +287,4 @@ void DeleteObsoleteProfiles()
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

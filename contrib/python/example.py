@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright (c) 2015-2017, The Kovri I2P Router Project
+# Copyright (c) 2017-2018, The Xi2p I2P Router Project
 #
 # All rights reserved.
 #
@@ -31,22 +31,22 @@
 root = "../../"
 args = "--log-level 5 --enable-ssu 0"
 
-# Ensure kovri data dir is available
+# Ensure xi2p data dir is available
 import subprocess
 
 p = subprocess.Popen(['make', 'install'], cwd=root)
 p.wait()
 
-# Use built kovri python object
+# Use built xi2p python object
 import sys
 
 sys.path.insert(0, root + "/build")
 
-# Run kovri
-import kovri_python as kovri
+# Run xi2p
+import xi2p_python as xi2p
 
-core = kovri.Core(args)
-client = kovri.Client(core)
+core = xi2p.Core(args)
+client = xi2p.Client(core)
 
 client.init()
 client.start()

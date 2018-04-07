@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -51,7 +51,7 @@
 
 #include "version.h"  // NOLINT(build/include)
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 // TODO(anonimal): bytestream refactor
@@ -83,18 +83,18 @@ void I2NPMessage::FillI2NPMessageHeader(
   if (reply_msg_ID)  // for tunnel creation
     SetMsgID(reply_msg_ID);
   else
-    SetMsgID(kovri::core::Rand<std::uint32_t>());
+    SetMsgID(xi2p::core::Rand<std::uint32_t>());
   SetExpiration(
-      kovri::core::GetMillisecondsSinceEpoch() +
+      xi2p::core::GetMillisecondsSinceEpoch() +
       I2NP_HEADER_DEFAULT_EXPIRATION_TIME);
   UpdateSize();
   UpdateChks();
 }
 
 void I2NPMessage::RenewI2NPMessageHeader() {
-  SetMsgID(kovri::core::Rand<std::uint32_t>());
+  SetMsgID(xi2p::core::Rand<std::uint32_t>());
   SetExpiration(
-      kovri::core::GetMillisecondsSinceEpoch() +
+      xi2p::core::GetMillisecondsSinceEpoch() +
       I2NP_HEADER_DEFAULT_EXPIRATION_TIME);
 }
 
@@ -128,7 +128,7 @@ std::unique_ptr<I2NPMessage> CreateI2NPMessage(
 std::shared_ptr<I2NPMessage> CreateI2NPMessage(
     const std::uint8_t* buf,
     int len,  // TODO(anonimal): uint16_t, and caller should ensure no overflow
-    std::shared_ptr<kovri::core::InboundTunnel> from) {
+    std::shared_ptr<xi2p::core::InboundTunnel> from) {
   std::unique_ptr<I2NPMessage> msg = NewI2NPMessage();
   if (msg->offset + len < msg->max_len) {
     memcpy(msg->GetBuffer(), buf, len);
@@ -155,7 +155,7 @@ std::shared_ptr<I2NPMessage> CreateDeliveryStatusMsg(
   } else {  // for SSU establishment
     core::OutputByteStream::Write<std::uint32_t>(
         buf + DELIVERY_STATUS_MSGID_OFFSET,
-        kovri::core::Rand<std::uint32_t>());
+        xi2p::core::Rand<std::uint32_t>());
     core::OutputByteStream::Write<std::uint64_t>(
         buf + DELIVERY_STATUS_TIMESTAMP_OFFSET,
         I2P_NETWORK_ID);
@@ -170,7 +170,7 @@ std::shared_ptr<I2NPMessage> CreateRouterInfoDatabaseLookupMsg(
     const std::uint8_t* from,
     std::uint32_t reply_tunnel_ID,
     bool exploratory,
-    std::set<kovri::core::IdentHash>* excluded_peers) {
+    std::set<xi2p::core::IdentHash>* excluded_peers) {
   auto m = ToSharedI2NPMessage(
       excluded_peers ? NewI2NPMessage() : NewI2NPShortMessage());
   std::uint8_t* buf = m->GetPayload();
@@ -209,9 +209,9 @@ std::shared_ptr<I2NPMessage> CreateRouterInfoDatabaseLookupMsg(
 // TODO(anonimal: bytestream refactor
 // TODO(anonimal): pass reference to structure, not FIVE arguments!
 std::shared_ptr<I2NPMessage> CreateLeaseSetDatabaseLookupMsg(
-    const kovri::core::IdentHash& dest,
-    const std::set<kovri::core::IdentHash>& excluded_floodfills,
-    const kovri::core::InboundTunnel* reply_tunnel,
+    const xi2p::core::IdentHash& dest,
+    const std::set<xi2p::core::IdentHash>& excluded_floodfills,
+    const xi2p::core::InboundTunnel* reply_tunnel,
     const std::uint8_t* reply_key,
     const std::uint8_t* reply_tag) {
   int cnt = excluded_floodfills.size();
@@ -248,8 +248,8 @@ std::shared_ptr<I2NPMessage> CreateLeaseSetDatabaseLookupMsg(
 }
 
 std::shared_ptr<I2NPMessage> CreateDatabaseSearchReply(
-    const kovri::core::IdentHash& ident,
-    std::vector<kovri::core::IdentHash> routers) {
+    const xi2p::core::IdentHash& ident,
+    std::vector<xi2p::core::IdentHash> routers) {
   auto m =  ToSharedI2NPMessage(NewI2NPShortMessage());
   std::uint8_t* buf = m->GetPayload();
   std::size_t len = 0;
@@ -270,7 +270,7 @@ std::shared_ptr<I2NPMessage> CreateDatabaseSearchReply(
 
 // TODO(anonimal): bytestream refactor
 std::shared_ptr<I2NPMessage> CreateDatabaseStoreMsg(
-    std::shared_ptr<const kovri::core::RouterInfo> router,
+    std::shared_ptr<const xi2p::core::RouterInfo> router,
     std::uint32_t reply_token) {
   if (!router)  // we send own RouterInfo
     router = context.GetSharedRouterInfo();
@@ -288,7 +288,7 @@ std::shared_ptr<I2NPMessage> CreateDatabaseStoreMsg(
       memcpy(buf, router->GetIdentHash(), 32);
       buf += 32;
     }
-    kovri::core::Gzip compressor;
+    xi2p::core::Gzip compressor;
     compressor.Put(router->GetBuffer(), router->GetBufferLen());
     auto size = compressor.MaxRetrievable();
     core::OutputByteStream::Write<std::uint16_t>(buf, size);  // size
@@ -307,7 +307,7 @@ std::shared_ptr<I2NPMessage> CreateDatabaseStoreMsg(
     m->len += size;
     m->FillI2NPMessageHeader(I2NPDatabaseStore);
   } catch (...) {
-    kovri::core::Exception ex;
+    xi2p::core::Exception ex;
     ex.Dispatch(__func__);
     // TODO(anonimal): review if we need to safely break control, ensure exception handling by callers
   }
@@ -316,7 +316,7 @@ std::shared_ptr<I2NPMessage> CreateDatabaseStoreMsg(
 
 // TODO(anonimal): bytestream refactor
 std::shared_ptr<I2NPMessage> CreateDatabaseStoreMsg(
-    std::shared_ptr<const kovri::core::LeaseSet> lease_set,
+    std::shared_ptr<const xi2p::core::LeaseSet> lease_set,
     std::uint32_t reply_token) {
   if (!lease_set)
     return nullptr;
@@ -373,7 +373,7 @@ bool HandleBuildRequestRecords(
               16)) {
         LOG(debug) << "I2NPMessage: record " << i << " is ours";
         // Get session key from encrypted block
-        kovri::core::ElGamalDecrypt(
+        xi2p::core::ElGamalDecrypt(
             context.GetEncryptionPrivateKey(),
             record + BUILD_REQUEST_RECORD_ENCRYPTED_OFFSET,
             clear_text);
@@ -386,11 +386,11 @@ bool HandleBuildRequestRecords(
          * higher levels of rejection.
          */
         if (context.AcceptsTunnels() &&
-            kovri::core::tunnels.GetTransitTunnels().size() <=
+            xi2p::core::tunnels.GetTransitTunnels().size() <=
             MAX_NUM_TRANSIT_TUNNELS &&
-            !kovri::core::transports.IsBandwidthExceeded()) {
-          kovri::core::TransitTunnel* transit_tunnel =
-            kovri::core::CreateTransitTunnel(
+            !xi2p::core::transports.IsBandwidthExceeded()) {
+          xi2p::core::TransitTunnel* transit_tunnel =
+            xi2p::core::CreateTransitTunnel(
                 core::InputByteStream::Read<std::uint32_t>(clear_text + BUILD_REQUEST_RECORD_RECEIVE_TUNNEL_OFFSET),
                 clear_text + BUILD_REQUEST_RECORD_NEXT_IDENT_OFFSET,
                 core::InputByteStream::Read<std::uint32_t>(clear_text + BUILD_REQUEST_RECORD_NEXT_TUNNEL_OFFSET),
@@ -398,7 +398,7 @@ bool HandleBuildRequestRecords(
                 clear_text + BUILD_REQUEST_RECORD_IV_KEY_OFFSET,
                 clear_text[BUILD_REQUEST_RECORD_FLAG_OFFSET] & 0x80,
                 clear_text[BUILD_REQUEST_RECORD_FLAG_OFFSET] & 0x40);
-          kovri::core::tunnels.AddTransitTunnel(transit_tunnel);
+          xi2p::core::tunnels.AddTransitTunnel(transit_tunnel);
           record[BUILD_RESPONSE_RECORD_RET_OFFSET] = 0;
         } else {
           /**
@@ -431,11 +431,11 @@ bool HandleBuildRequestRecords(
          *   Total: 528 byte record
          */
         // Fill random padding
-        kovri::core::RandBytes(
+        xi2p::core::RandBytes(
             record + BUILD_RESPONSE_RECORD_RANDPAD_OFFSET,
             BUILD_RESPONSE_RECORD_RANDPAD_SIZE);
         // Get SHA256 of complete record
-        kovri::core::SHA256().CalculateDigest(
+        xi2p::core::SHA256().CalculateDigest(
             record + BUILD_RESPONSE_RECORD_SHA256HASH_OFFSET,
             record + BUILD_RESPONSE_RECORD_RANDPAD_OFFSET,
             BUILD_RESPONSE_RECORD_RANDPAD_SIZE + 1);  // + 1 byte for status/reply
@@ -447,7 +447,7 @@ bool HandleBuildRequestRecords(
          * Each is AES/CBC encrypted separately with the same reply key
          * and reply IV. The CBC mode is not continued (chained) across records.
          */
-        kovri::core::CBCEncryption encryption;
+        xi2p::core::CBCEncryption encryption;
         for (int j = 0; j < num; j++) {
           encryption.SetKey(clear_text + BUILD_REQUEST_RECORD_REPLY_KEY_OFFSET);
           encryption.SetIV(clear_text + BUILD_REQUEST_RECORD_REPLY_IV_OFFSET);
@@ -472,7 +472,7 @@ void HandleVariableTunnelBuildMsg(
     std::size_t len) {
   int num = buf[0];
   LOG(debug) << "I2NPMessage: VariableTunnelBuild " << num << " records";
-  auto tunnel = kovri::core::tunnels.GetPendingInboundTunnel(reply_msg_ID);
+  auto tunnel = xi2p::core::tunnels.GetPendingInboundTunnel(reply_msg_ID);
   if (tunnel) {
     // endpoint of inbound tunnel
     LOG(debug)
@@ -482,13 +482,13 @@ void HandleVariableTunnelBuildMsg(
       LOG(debug)
         << "I2NPMessage: inbound tunnel "
         << tunnel->GetTunnelID() << " has been created";
-      tunnel->SetState(kovri::core::e_TunnelStateEstablished);
-      kovri::core::tunnels.AddInboundTunnel(tunnel);
+      tunnel->SetState(xi2p::core::e_TunnelStateEstablished);
+      xi2p::core::tunnels.AddInboundTunnel(tunnel);
     } else {
       LOG(debug)
         << "I2NPMessage: inbound tunnel "
         << tunnel->GetTunnelID() << " has been declined";
-      tunnel->SetState(kovri::core::e_TunnelStateBuildFailed);
+      tunnel->SetState(xi2p::core::e_TunnelStateBuildFailed);
     }
   } else {
     std::uint8_t clear_text[BUILD_REQUEST_RECORD_CLEAR_TEXT_SIZE] = {};
@@ -496,7 +496,7 @@ void HandleVariableTunnelBuildMsg(
       // we are endpoint of outboud tunnel
       if (clear_text[BUILD_REQUEST_RECORD_FLAG_OFFSET] & 0x40) {
         // So, we send it to reply tunnel
-        kovri::core::transports.SendMessage(
+        xi2p::core::transports.SendMessage(
             clear_text + BUILD_REQUEST_RECORD_NEXT_IDENT_OFFSET,
             ToSharedI2NPMessage(
                 CreateTunnelGatewayMsg(
@@ -508,7 +508,7 @@ void HandleVariableTunnelBuildMsg(
                     core::InputByteStream::Read<std::uint32_t>(
                         clear_text + BUILD_REQUEST_RECORD_SEND_MSG_ID_OFFSET))));
       } else {
-        kovri::core::transports.SendMessage(
+        xi2p::core::transports.SendMessage(
             clear_text + BUILD_REQUEST_RECORD_NEXT_IDENT_OFFSET,
             ToSharedI2NPMessage(
                 CreateI2NPMessage(
@@ -530,7 +530,7 @@ void HandleTunnelBuildMsg(
     // we are endpoint of outbound tunnel
     if (clear_text[BUILD_REQUEST_RECORD_FLAG_OFFSET] & 0x40) {
       // so we send it to reply tunnel
-      kovri::core::transports.SendMessage(
+      xi2p::core::transports.SendMessage(
           clear_text + BUILD_REQUEST_RECORD_NEXT_IDENT_OFFSET,
           ToSharedI2NPMessage(
               CreateTunnelGatewayMsg(
@@ -542,7 +542,7 @@ void HandleTunnelBuildMsg(
                   core::InputByteStream::Read<std::uint32_t>(
                       clear_text + BUILD_REQUEST_RECORD_SEND_MSG_ID_OFFSET))));
     } else {
-      kovri::core::transports.SendMessage(
+      xi2p::core::transports.SendMessage(
           clear_text + BUILD_REQUEST_RECORD_NEXT_IDENT_OFFSET,
           ToSharedI2NPMessage(
               CreateI2NPMessage(
@@ -560,20 +560,20 @@ void HandleVariableTunnelBuildReplyMsg(
     std::uint8_t* buf,
     std::size_t len) {
   LOG(debug) << "I2NPMessage: " << __func__ << " reply_msg_ID=" << reply_msg_ID;
-  auto tunnel = kovri::core::tunnels.GetPendingOutboundTunnel(reply_msg_ID);
+  auto tunnel = xi2p::core::tunnels.GetPendingOutboundTunnel(reply_msg_ID);
   if (tunnel) {
     // reply for outbound tunnel
     if (tunnel->HandleTunnelBuildResponse(buf, len)) {
       LOG(debug)
         << "I2NPMessage: outbound tunnel "
         << tunnel->GetTunnelID() << " has been created";
-      tunnel->SetState(kovri::core::e_TunnelStateEstablished);
-      kovri::core::tunnels.AddOutboundTunnel(tunnel);
+      tunnel->SetState(xi2p::core::e_TunnelStateEstablished);
+      xi2p::core::tunnels.AddOutboundTunnel(tunnel);
     } else {
       LOG(warning)
         << "I2NPMessage: outbound tunnel "
         << tunnel->GetTunnelID() << " has been declined";
-      tunnel->SetState(kovri::core::e_TunnelStateBuildFailed);
+      tunnel->SetState(xi2p::core::e_TunnelStateBuildFailed);
     }
   } else {
     LOG(warning)
@@ -586,8 +586,8 @@ void HandleVariableTunnelBuildReplyMsg(
 std::unique_ptr<I2NPMessage> CreateTunnelDataMsg(
     const std::uint8_t * buf) {
   std::unique_ptr<I2NPMessage> msg = NewI2NPShortMessage();
-  memcpy(msg->GetPayload(), buf, kovri::core::TUNNEL_DATA_MSG_SIZE);
-  msg->len += kovri::core::TUNNEL_DATA_MSG_SIZE;
+  memcpy(msg->GetPayload(), buf, xi2p::core::TUNNEL_DATA_MSG_SIZE);
+  msg->len += xi2p::core::TUNNEL_DATA_MSG_SIZE;
   msg->FillI2NPMessageHeader(I2NPTunnelData);
   return msg;
 }
@@ -596,16 +596,16 @@ std::unique_ptr<I2NPMessage> CreateTunnelDataMsg(
     std::uint32_t tunnel_ID,
     const std::uint8_t* payload) {
   std::unique_ptr<I2NPMessage> msg = NewI2NPShortMessage();
-  memcpy(msg->GetPayload() + 4, payload, kovri::core::TUNNEL_DATA_MSG_SIZE - 4);
+  memcpy(msg->GetPayload() + 4, payload, xi2p::core::TUNNEL_DATA_MSG_SIZE - 4);
   core::OutputByteStream::Write<std::uint32_t>(msg->GetPayload(), tunnel_ID);
-  msg->len += kovri::core::TUNNEL_DATA_MSG_SIZE;
+  msg->len += xi2p::core::TUNNEL_DATA_MSG_SIZE;
   msg->FillI2NPMessageHeader(I2NPTunnelData);
   return msg;
 }
 
 std::shared_ptr<I2NPMessage> CreateEmptyTunnelDataMsg() {
   std::unique_ptr<I2NPMessage> msg = NewI2NPShortMessage();
-  msg->len += kovri::core::TUNNEL_DATA_MSG_SIZE;
+  msg->len += xi2p::core::TUNNEL_DATA_MSG_SIZE;
   return ToSharedI2NPMessage(std::move(msg));
 }
 
@@ -724,11 +724,11 @@ void HandleI2NPMessage(
     switch (msg->GetTypeID()) {
       case I2NPTunnelData:
         LOG(debug) << "I2NPMessage: TunnelData";
-        kovri::core::tunnels.PostTunnelData(msg);
+        xi2p::core::tunnels.PostTunnelData(msg);
       break;
       case I2NPTunnelGateway:
         LOG(debug) << "I2NPMessage: TunnelGateway";
-        kovri::core::tunnels.PostTunnelData(msg);
+        xi2p::core::tunnels.PostTunnelData(msg);
       break;
       case I2NPGarlic: {
         LOG(debug) << "I2NPMessage: Garlic";
@@ -747,7 +747,7 @@ void HandleI2NPMessage(
       case I2NPDatabaseSearchReply:
       case I2NPDatabaseLookup:
         // forward to netDb
-        kovri::core::netdb.PostI2NPMsg(msg);
+        xi2p::core::netdb.PostI2NPMsg(msg);
       break;
       case I2NPDeliveryStatus: {
         LOG(debug) << "I2NPMessage: DeliveryStatus";
@@ -762,7 +762,7 @@ void HandleI2NPMessage(
       case I2NPTunnelBuild:
       case I2NPTunnelBuildReply:
         // forward to tunnel thread
-        kovri::core::tunnels.PostTunnelData(msg);
+        xi2p::core::tunnels.PostTunnelData(msg);
       break;
       default:
         HandleI2NPMessage(msg->GetBuffer(), msg->GetLength());
@@ -792,13 +792,13 @@ void I2NPMessagesHandler::PutNextMessage(
 
 void I2NPMessagesHandler::Flush() {
   if (!m_TunnelMsgs.empty()) {
-    kovri::core::tunnels.PostTunnelData(m_TunnelMsgs);
+    xi2p::core::tunnels.PostTunnelData(m_TunnelMsgs);
     m_TunnelMsgs.clear();
   }
   if (!m_TunnelGatewayMsgs.empty()) {
-    kovri::core::tunnels.PostTunnelData(m_TunnelGatewayMsgs);
+    xi2p::core::tunnels.PostTunnelData(m_TunnelGatewayMsgs);
     m_TunnelGatewayMsgs.clear();
   }
 }
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

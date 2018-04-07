@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -53,11 +53,11 @@
 #include "core/router/transports/ssu/session.h"
 
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 struct RawSSUPacket {
-  kovri::core::AESAlignedBuffer<SSUSize::RawPacketBuffer> buf;
+  xi2p::core::AESAlignedBuffer<SSUSize::RawPacketBuffer> buf;
   boost::asio::ip::udp::endpoint from;
   std::size_t len;
 };
@@ -75,11 +75,11 @@ class SSUServer {
   void Stop();
 
   std::shared_ptr<SSUSession> GetSession(
-      std::shared_ptr<const kovri::core::RouterInfo> router,
+      std::shared_ptr<const xi2p::core::RouterInfo> router,
       bool peer_test = false);
 
   std::shared_ptr<SSUSession> FindSession(
-      std::shared_ptr<const kovri::core::RouterInfo> router) const;
+      std::shared_ptr<const xi2p::core::RouterInfo> router) const;
 
   std::shared_ptr<SSUSession> FindSession(
       const boost::asio::ip::udp::endpoint& ep) const;
@@ -196,6 +196,6 @@ class SSUServer {
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_TRANSPORTS_SSU_SERVER_H_

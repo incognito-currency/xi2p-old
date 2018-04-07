@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.12)
-project("kovri" C CXX)
+project("xi2p" C CXX)
 
-set(KOVRI_PROJECT "The Kovri I2P Router Project")
+set(KOVRI_PROJECT "The Xi2p I2P Router Project")
 
 # Versioning
 set(KOVRI_VERSION "0.1.0-pre-alpha")
@@ -37,9 +37,9 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.h.in" "${CMAKE_BINARY_
 include_directories("${CMAKE_BINARY_DIR}")
 
 # Configurable options
-option(KOVRI_DATA_PATH "The path to the kovri data folder")
-option(WITH_BINARY     "Build kovri binary" ON)
-option(WITH_KOVRI_UTIL "Build kovri utility binary" OFF)
+option(KOVRI_DATA_PATH "The path to the xi2p data folder")
+option(WITH_BINARY     "Build xi2p binary" ON)
+option(WITH_KOVRI_UTIL "Build xi2p utility binary" OFF)
 option(WITH_COVERAGE   "Build with coverage" OFF)
 option(WITH_CRYPTOPP   "Build with Crypto++" ON)  # Default ON unless we switch libraries
 option(WITH_CPPNETLIB  "Build with cpp-netlib" ON)
@@ -350,7 +350,7 @@ message(STATUS "Compiler vendor    : ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "Compiler version   : ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "Compiler path      : ${CMAKE_CXX_COMPILER}")
 message(STATUS "Install prefix:    : ${CMAKE_INSTALL_PREFIX}")
-message(STATUS "Kovri data directory: ${KOVRI_DATA_DIR}")
+message(STATUS "Xi2p data directory: ${KOVRI_DATA_DIR}")
 message(STATUS "Options:")
 message(STATUS "  BINARY           : ${WITH_BINARY}")
 message(STATUS "  KOVRI UTIL       : ${WITH_KOVRI_UTIL}")

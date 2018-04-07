@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -39,7 +39,7 @@
 #include "core/util/log.h"
 #include "core/util/timestamp.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 NTCPServer::NTCPServer(
@@ -102,7 +102,7 @@ void NTCPServer::HandleAccept(
       LOG(debug) << "NTCPServer: connected from " << ep;
       auto it = m_BanList.find(ep.address());
       if (it != m_BanList.end()) {
-        std::uint32_t ts = kovri::core::GetSecondsSinceEpoch();
+        std::uint32_t ts = xi2p::core::GetSecondsSinceEpoch();
         if (ts < it->second) {
           LOG(debug)
             << "NTCPServer: " << ep.address() << " is banned for "
@@ -144,7 +144,7 @@ void NTCPServer::HandleAcceptV6(
       LOG(debug) << "NTCPServer: V6 connected from " << ep;
       auto it = m_BanList.find(ep.address());
       if (it != m_BanList.end()) {
-        std::uint32_t ts = kovri::core::GetSecondsSinceEpoch();
+        std::uint32_t ts = xi2p::core::GetSecondsSinceEpoch();
         if (ts < it->second) {
           LOG(debug)
             << "NTCPServer: " << ep.address() << " is banned for "
@@ -203,7 +203,7 @@ void NTCPServer::HandleConnect(
       << " [" << conn->GetRemoteRouter()->GetIdentHashAbbreviation() << "] "
       << __func__ << ": '" << ecode.message() << "'";
     if (ecode != boost::asio::error::operation_aborted)
-      kovri::core::netdb.SetUnreachable(
+      xi2p::core::netdb.SetUnreachable(
           conn->GetRemoteIdentity().GetIdentHash(),
           true);
     conn->Terminate();
@@ -242,7 +242,7 @@ void NTCPServer::RemoveNTCPSession(
 }
 
 std::shared_ptr<NTCPSession> NTCPServer::FindNTCPSession(
-    const kovri::core::IdentHash& ident) {
+    const xi2p::core::IdentHash& ident) {
   LOG(debug) << "NTCPServer: finding NTCP session";
   std::unique_lock<std::mutex> l(m_NTCPSessionsMutex);
   auto it = m_NTCPSessions.find(ident);
@@ -253,7 +253,7 @@ std::shared_ptr<NTCPSession> NTCPServer::FindNTCPSession(
 
 void NTCPServer::Ban(
     const std::shared_ptr<NTCPSession>& session) {
-  std::uint32_t ts = kovri::core::GetSecondsSinceEpoch();
+  std::uint32_t ts = xi2p::core::GetSecondsSinceEpoch();
   m_BanList[session->GetRemoteEndpoint().address()] =
     ts + GetType(NTCPTimeoutLength::BanExpiration);
   LOG(warning)
@@ -272,5 +272,5 @@ void NTCPServer::Stop() {
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 

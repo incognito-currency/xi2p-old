@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -42,20 +42,20 @@
 
 #include "client/service.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
-class SOCKSServer : public kovri::client::TCPIPAcceptor {
+class SOCKSServer : public xi2p::client::TCPIPAcceptor {
  public:
   SOCKSServer(
       const std::string& address,
       int port,
-      std::shared_ptr<kovri::client::ClientDestination> local_destination = nullptr);
+      std::shared_ptr<xi2p::client::ClientDestination> local_destination = nullptr);
   ~SOCKSServer() {}
 
  protected:
   // Implements TCPIPAcceptor
-  std::shared_ptr<kovri::client::I2PServiceHandler> CreateHandler(
+  std::shared_ptr<xi2p::client::I2PServiceHandler> CreateHandler(
       std::shared_ptr<boost::asio::ip::tcp::socket> socket);
 
   std::string GetName() const { return "SOCKS"; }
@@ -64,6 +64,6 @@ class SOCKSServer : public kovri::client::TCPIPAcceptor {
 typedef SOCKSServer SOCKSProxy;
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_PROXY_SOCKS_H_

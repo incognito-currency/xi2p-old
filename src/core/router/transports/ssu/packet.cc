@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2018, The Kovri I2P Router Project
+ * Copyright (c) 2015-2018, The Xi2p I2P Router Project
  *
  * All rights reserved.
  *
@@ -39,7 +39,7 @@
 #include "core/util/log.h"
 #include "core/util/timestamp.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 /**
@@ -299,11 +299,11 @@ std::size_t SSUSessionCreatedPacket::GetSize() const {
  */
 
 void SSUSessionConfirmedPacket::SetRemoteRouterIdentity(
-    const kovri::core::IdentityEx& identity) {
+    const xi2p::core::IdentityEx& identity) {
   m_RemoteIdentity = identity;
 }
 
-kovri::core::IdentityEx& SSUSessionConfirmedPacket::GetRemoteRouterIdentity() {
+xi2p::core::IdentityEx& SSUSessionConfirmedPacket::GetRemoteRouterIdentity() {
   return m_RemoteIdentity;
 }
 
@@ -809,7 +809,7 @@ std::unique_ptr<SSUSessionConfirmedPacket> SSUPacketParser::ParseSessionConfirme
   auto packet = std::make_unique<SSUSessionConfirmedPacket>();
   SkipBytes(1);  // Info byte
   std::uint16_t identity_size = Read<std::uint16_t>();
-  kovri::core::IdentityEx identity;
+  xi2p::core::IdentityEx identity;
   if (!identity.FromBuffer(ReadBytes(identity_size), identity_size))
     throw std::length_error("SSUPacketParser: invalid length within identity");
   packet->SetRemoteRouterIdentity(identity);
@@ -979,7 +979,7 @@ void SSUPacketBuilder::WriteSessionConfirmed(
       packet->GetHeader()->GetSize() + m_DataPtr - begin + signature_size);
   std::uint8_t* const padding = m_DataPtr;
   SkipBytes(padding_size);
-  kovri::core::RandBytes(padding, padding_size);
+  xi2p::core::RandBytes(padding, padding_size);
   WriteData(packet->GetSignature(), signature_size);
 }
 
@@ -1037,4 +1037,4 @@ void SSUPacketBuilder::WritePacket(SSUPacket* packet) {
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

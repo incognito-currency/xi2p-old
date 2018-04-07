@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2015-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -38,7 +38,7 @@
 #include <string>
 #include <vector>
 
-namespace kovri
+namespace xi2p
 {
 namespace core
 {
@@ -145,4 +145,4 @@ std::vector<std::uint8_t> Base64::Decode(
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -34,14 +34,14 @@
 #include <stdint.h>
 #include "client/reseed.h"
 
-namespace kovri
+namespace xi2p
 {
 namespace fuzz
 {
 int SU3::Initialize(int*, char***)
 {
   boost::filesystem::path cert_dir_path = core::GetPath(core::Path::SU3);
-  if (!kovri::client::Reseed::ProcessCerts(&m_Keys, cert_dir_path))
+  if (!xi2p::client::Reseed::ProcessCerts(&m_Keys, cert_dir_path))
     {
       LOG(error) << "su3file: Failed to get trusted certificates !";
       return 1;
@@ -54,12 +54,12 @@ int SU3::Impl(const uint8_t* data, size_t size)
   try
     {
       std::string su3_str(data, data + size);
-      kovri::client::SU3 su3(su3_str, m_Keys);
+      xi2p::client::SU3 su3(su3_str, m_Keys);
       su3.SU3Impl();
     }
   catch (...)
     {
-      kovri::core::Exception ex;
+      xi2p::core::Exception ex;
       ex.Dispatch(__func__);
       return 0;
     }
@@ -67,4 +67,4 @@ int SU3::Impl(const uint8_t* data, size_t size)
 }
 
 }  // namespace fuzz
-}  // namespace kovri
+}  // namespace xi2p

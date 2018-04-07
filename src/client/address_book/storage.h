@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -48,7 +48,7 @@
 #include "core/util/filesystem.h"
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 /// @class AddressBookDefaults
@@ -85,8 +85,8 @@ struct AddressBookDefaults {
   /// @return Default publishers URI
   /// @notes A default publisher is used if no publishers file is available
   std::string GetDefaultPublisherURI() const {
-    // TODO(unassigned): replace with Monero's b32 publisher service
-    return "https://downloads.getmonero.org/kovri/hosts.txt";
+    // TODO(unassigned): replace with Incognito's b32 publisher service
+    return "https://downloads.incognitocurrency.com/xi2p/hosts.txt";
     // Below is only used for testing in-net download (this is *not* our default subscription)
     //return "http://udhdrtrcetjm5sxzskjyr5ztpeszydbh4dpl3pl4utgqqw2v4jna.b32.i2p/hosts.txt";
   }
@@ -119,33 +119,33 @@ class AddressBookStorage : public AddressBookDefaults {
   /// @param ident Const reference to identity hash from filesystem
   /// @param address Reference to identity address buffer
   bool GetAddress(
-      const kovri::core::IdentHash& ident,
-      kovri::core::IdentityEx& address) const;
+      const xi2p::core::IdentHash& ident,
+      xi2p::core::IdentityEx& address) const;
 
   /// @brief Adds identity to address book storage
   /// @param address Const reference to identity address buffer
   void AddAddress(
-      const kovri::core::IdentityEx& address);
+      const xi2p::core::IdentityEx& address);
 
   /**
   // TODO(unassigned): currently unused
   /// @brief Removes .b32 address filename from filesystem
   /// @param ident Reference to identity hash to be removed
   void RemoveAddress(
-      const kovri::core::IdentHash& ident);
+      const xi2p::core::IdentHash& ident);
   **/
 
   /// @brief Loads subscriptions from file into memory
   /// @return Number of subscriptions loaded
   /// @param addresses Reference to map of human-readable addresses to hashes
   std::size_t Load(
-      std::map<std::string, kovri::core::IdentHash>& addresses);
+      std::map<std::string, xi2p::core::IdentHash>& addresses);
 
   /// @brief Saves subscriptions to file in CSV format to verify addresses loaded
   /// @return Number of addresses saved
   /// @param addresses Const reference to map of human-readable address to b32 hashes of address
   std::size_t Save(
-      const std::map<std::string, kovri::core::IdentHash>& addresses);
+      const std::map<std::string, xi2p::core::IdentHash>& addresses);
 
  private:
   /// @return Address book path with appended addresses location
@@ -155,6 +155,6 @@ class AddressBookStorage : public AddressBookDefaults {
 };
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_ADDRESS_BOOK_STORAGE_H_

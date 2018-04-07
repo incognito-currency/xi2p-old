@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2017, The Kovri I2P Router Project
+# Copyright (c) 2017-2018, The Xi2p I2P Router Project
 #
 # All rights reserved.
 #
@@ -27,14 +27,14 @@
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Example:
-# $ docker build -t geti2p/kovri .
+# $ docker build -t geti2p/xi2p .
 # $ export KOVRI_PORT=$((9111 + RANDOM & 30777))
-# $ docker run -p ${KOVRI_PORT}:${KOVRI_PORT} --env KOVRI_PORT=${KOVRI_PORT} geti2p/kovri
+# $ docker run -p ${KOVRI_PORT}:${KOVRI_PORT} --env KOVRI_PORT=${KOVRI_PORT} geti2p/xi2p
 
 FROM alpine:3.6
 ENV KOVRI_HOST 0.0.0.0
 ENV KOVRI_PORT 24085
-ADD . kovri/
+ADD . xi2p/
 RUN apk add --update --no-cache \
       binutils \
       boost \
@@ -49,20 +49,20 @@ RUN apk add --update --no-cache \
       make \
       bash \
     && \
-    cd kovri && \
+    cd xi2p && \
     make all tests && \
-    adduser -D kovri && \
-    mkdir /home/kovri/.kovri && \
-    cp -r /kovri/pkg/* /home/kovri/.kovri && \
-    strip /kovri/build/kovri && \
-    strip /kovri/build/kovri-util && \
-    strip /kovri/build/kovri-tests && \
-    install /kovri/build/kovri /usr/bin/kovri && \
-    install /kovri/build/kovri-util /usr/bin/kovri-util && \
-    install /kovri/build/kovri-tests /usr/bin/kovri-tests && \
+    adduser -D xi2p && \
+    mkdir /home/xi2p/.xi2p && \
+    cp -r /xi2p/pkg/* /home/xi2p/.xi2p && \
+    strip /xi2p/build/xi2p && \
+    strip /xi2p/build/xi2p-util && \
+    strip /xi2p/build/xi2p-tests && \
+    install /xi2p/build/xi2p /usr/bin/xi2p && \
+    install /xi2p/build/xi2p-util /usr/bin/xi2p-util && \
+    install /xi2p/build/xi2p-tests /usr/bin/xi2p-tests && \
     cd .. && \
-    rm -rf ~/kovri && \
-    chown -R kovri:kovri /home/kovri && \
+    rm -rf ~/xi2p && \
+    chown -R xi2p:xi2p /home/xi2p && \
     apk del \
       binutils \
       boost-dev \
@@ -71,8 +71,8 @@ RUN apk add --update --no-cache \
       make \
       bash \
     && \
-    rm -rf /kovri && \
+    rm -rf /xi2p && \
     rm -rf /var/cache/*
-USER kovri
-RUN /usr/bin/kovri-tests
-CMD /usr/bin/kovri --host ${KOVRI_HOST} --port ${KOVRI_PORT}
+USER xi2p
+RUN /usr/bin/xi2p-tests
+CMD /usr/bin/xi2p --host ${KOVRI_HOST} --port ${KOVRI_PORT}

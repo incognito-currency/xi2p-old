@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -38,13 +38,13 @@
 
 #include "client/tunnel.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 /// @brief Parses an ACL
 /// @param record String record of CSV
 /// @return Returns a std::set of the b32 of each value from the list
-const std::set<kovri::core::IdentHash> ParseACL(const std::string list);
+const std::set<xi2p::core::IdentHash> ParseACL(const std::string list);
 
 /// @brief Parse for multiple CSV destination(s) and also dest:port
 /// @details Free function used solely for configuration which shows that we
@@ -57,6 +57,6 @@ void ParseClientDestination(
     TunnelAttributes* tunnel);
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_UTIL_PARSE_H_

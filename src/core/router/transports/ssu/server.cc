@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -44,7 +44,7 @@
 #include "core/util/log.h"
 #include "core/util/timestamp.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 SSUServer::SSUServer(
@@ -280,7 +280,7 @@ void SSUServer::HandleReceivedPackets(
 }
 
 std::shared_ptr<SSUSession> SSUServer::FindSession(
-    std::shared_ptr<const kovri::core::RouterInfo> router) const {
+    std::shared_ptr<const xi2p::core::RouterInfo> router) const {
   LOG(debug) << "SSUServer: finding session from RI";
   if (!router)
     return nullptr;
@@ -309,7 +309,7 @@ std::shared_ptr<SSUSession> SSUServer::FindSession(
 }
 
 std::shared_ptr<SSUSession> SSUServer::GetSession(
-    std::shared_ptr<const kovri::core::RouterInfo> router,
+    std::shared_ptr<const xi2p::core::RouterInfo> router,
     bool peer_test) {
   LOG(debug) << "SSUServer: getting session";
   std::shared_ptr<SSUSession> session;
@@ -344,7 +344,7 @@ std::shared_ptr<SSUSession> SSUServer::GetSession(
           auto num_introducers = address->introducers.size();
           if (num_introducers > 0) {
             std::shared_ptr<SSUSession> introducer_session;
-            const kovri::core::RouterInfo::Introducer* introducer = nullptr;
+            const xi2p::core::RouterInfo::Introducer* introducer = nullptr;
             // we might have a session to introducer already
             for (std::size_t i = 0; i < num_introducers; i++) {
               introducer = &(address->introducers[i]);
@@ -435,7 +435,7 @@ std::shared_ptr<SSUSession> SSUServer::GetRandomSession(
       filtered_sessions.push_back(session.second);
   if (filtered_sessions.size() > 0) {
     std::size_t s = filtered_sessions.size();
-    std::size_t ind = kovri::core::RandInRange32(0, s - 1);
+    std::size_t ind = xi2p::core::RandInRange32(0, s - 1);
     return filtered_sessions[ind];
   }
   return nullptr;
@@ -454,7 +454,7 @@ std::shared_ptr<SSUSession> SSUServer::GetRandomEstablishedSession(
 std::set<SSUSession *> SSUServer::FindIntroducers(
     std::size_t max_num_introducers) {
   LOG(debug) << "SSUServer: finding introducers";
-  std::uint32_t ts = kovri::core::GetSecondsSinceEpoch();
+  std::uint32_t ts = xi2p::core::GetSecondsSinceEpoch();
   std::set<SSUSession *> ret;
   for (std::size_t i = 0; i < max_num_introducers; i++) {
     auto session =
@@ -501,7 +501,7 @@ void SSUServer::HandleIntroducersUpdateTimer(
     if (!context.IsUnreachable()) context.SetUnreachable();
     std::list<boost::asio::ip::udp::endpoint> new_list;
     std::size_t num_introducers = 0;
-    std::uint32_t ts = kovri::core::GetSecondsSinceEpoch();  // Timestamp
+    std::uint32_t ts = xi2p::core::GetSecondsSinceEpoch();  // Timestamp
     for (auto introducer : m_Introducers) {
       auto session = FindSession(introducer);
       if (session &&
@@ -532,7 +532,7 @@ void SSUServer::HandleIntroducersUpdateTimer(
     }
     m_Introducers = new_list;
     if (m_Introducers.empty()) {
-      auto introducer = kovri::core::netdb.GetRandomIntroducer();
+      auto introducer = xi2p::core::netdb.GetRandomIntroducer();
       if (introducer)
         GetSession(introducer);
     }
@@ -546,7 +546,7 @@ void SSUServer::NewPeerTest(
     std::shared_ptr<SSUSession> session) {
   LOG(debug) << "SSUServer: new peer test";
   m_PeerTests[nonce] = {
-    kovri::core::GetMillisecondsSinceEpoch(),
+    xi2p::core::GetMillisecondsSinceEpoch(),
     role,
     session
   };
@@ -604,7 +604,7 @@ void SSUServer::HandlePeerTestsCleanupTimer(
   LOG(debug) << "SSUServer: handling PeerTests cleanup timer";
   if (ecode != boost::asio::error::operation_aborted) {
     std::size_t num_deleted = 0;
-    std::uint64_t ts = kovri::core::GetMillisecondsSinceEpoch();
+    std::uint64_t ts = xi2p::core::GetMillisecondsSinceEpoch();
     for (auto it = m_PeerTests.begin(); it != m_PeerTests.end();) {
       if (ts > it->second.creationTime
                + SSUDuration::PeerTestTimeout
@@ -623,5 +623,5 @@ void SSUServer::HandlePeerTestsCleanupTimer(
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 

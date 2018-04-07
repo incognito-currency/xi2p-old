@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -33,7 +33,7 @@
 
 #include <string>
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 /// TODO(anonimal): not yet a true exception class; could be more useful as a polymorphic class
@@ -56,6 +56,6 @@ class Exception final {
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_UTIL_EXCEPTION_H_

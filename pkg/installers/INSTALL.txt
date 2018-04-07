@@ -1,12 +1,12 @@
-The Kovri I2P Router Project (c) 2015-2017
+The Xi2p I2P Router Project (c) 2017-2018
 ==========================================
 
 Linux/OSX/BSD/MSYS2
 -------------------
 
-1. Run kovri-install.sh
+1. Run xi2p-install.sh
 2. Location of configuration files + data and binary will be reported to you after successful installation
-3. Run kovri!
+3. Run xi2p!
 
 Windows
 --------
@@ -16,4 +16,4 @@ See Inno Setup scripts and instructions in the windows subdirectory
 User-guide
 ----------
 
-Available at https://getkovri.org or https://github.com/monero-project/kovri-docs
+Available at https://getxi2p.org or https://github.com/incognito-currency/xi2p-docs

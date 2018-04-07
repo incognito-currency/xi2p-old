@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -52,12 +52,12 @@
 #include "core/util/log.h"
 #include "core/util/timestamp.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 NTCPSession::NTCPSession(
     NTCPServer& server,
-    std::shared_ptr<const kovri::core::RouterInfo> remote_router)
+    std::shared_ptr<const xi2p::core::RouterInfo> remote_router)
     : TransportSession(remote_router),
       m_Server(server),
       m_Socket(m_Server.GetService()),
@@ -127,7 +127,7 @@ void NTCPSession::SendPhase1()
   m_Establisher->phase1.pub_key = m_DHKeysPair->public_key;
 
   // SHA256 hash(X)
-  kovri::core::SHA256().CalculateDigest(
+  xi2p::core::SHA256().CalculateDigest(
       m_HX.data(),
       m_Establisher->phase1.pub_key.data(),
       m_Establisher->phase1.pub_key.size());
@@ -201,7 +201,7 @@ void NTCPSession::HandlePhase2Received(
       LOG(trace)
         << "NTCPSession:" << GetFormattedSessionInfo()
         << GetFormattedPhaseInfo(Phase::Two);
-      kovri::core::netdb.SetUnreachable(
+      xi2p::core::netdb.SetUnreachable(
           GetRemoteIdentity().GetIdentHash(),
           true);
       transports.ReuseDHKeysPair(std::move(m_DHKeysPair));
@@ -218,7 +218,7 @@ void NTCPSession::HandlePhase2Received(
     << "Encrypted " << GetFormattedPhaseInfo(Phase::Two);
   // TODO(anonimal): this try block should be larger or handled entirely by caller
   try {
-    kovri::core::AESKey aes_key;
+    xi2p::core::AESKey aes_key;
     CreateAESKey(m_Establisher->phase2.pub_key.data(), aes_key);
     m_Decryption.SetKey(aes_key);
     m_Decryption.SetIV(m_Establisher->phase2.pub_key.data() + NTCPSize::Phase2BobIVOffset);
@@ -238,7 +238,7 @@ void NTCPSession::HandlePhase2Received(
         xy.data() + NTCPSize::PubKey,
         m_Establisher->phase2.pub_key.data(),
         NTCPSize::PubKey);
-    if (!kovri::core::SHA256().VerifyDigest(
+    if (!xi2p::core::SHA256().VerifyDigest(
           m_Establisher->phase2.encrypted.hxy.data(),
           xy.data(),
           NTCPSize::PubKey * 2)) {
@@ -269,12 +269,12 @@ void NTCPSession::HandlePhase2Received(
 
 void NTCPSession::CreateAESKey(
     std::uint8_t* pub_key,
-    kovri::core::AESKey& key) {
+    xi2p::core::AESKey& key) {
   LOG(debug)
     << "NTCPSession:" << GetFormattedSessionInfo() << "*** creating shared key";
   // TODO(anonimal): this try block should be handled entirely by caller
   try {
-    kovri::core::DiffieHellman dh;
+    xi2p::core::DiffieHellman dh;
     std::array<std::uint8_t, NTCPSize::PubKey> shared_key;
     if (!dh.Agree(shared_key.data(), m_DHKeysPair->private_key.data(), pub_key)) {
       LOG(error)
@@ -337,7 +337,7 @@ void NTCPSession::SendPhase3() {
   std::size_t padding_size = len & 0x0F;  // %16
   if (padding_size) {
     padding_size = NTCPSize::IV - padding_size;
-    kovri::core::RandBytes(buf, padding_size);
+    xi2p::core::RandBytes(buf, padding_size);
     buf += padding_size;
     len += padding_size;
   }
@@ -419,7 +419,7 @@ void NTCPSession::HandlePhase4Received(
       LOG(error)
         << "NTCPSession:" << GetFormattedSessionInfo()
         << "!!! Phase4, remote router does not like us";
-      kovri::core::netdb.SetUnreachable(GetRemoteIdentity().GetIdentHash(), true);
+      xi2p::core::netdb.SetUnreachable(GetRemoteIdentity().GetIdentHash(), true);
       Terminate();
     }
     return;
@@ -516,7 +516,7 @@ void NTCPSession::HandlePhase1Received(
   std::array<std::uint8_t, NTCPSize::Hash> digest;
   // TODO(anonimal): this try block should be larger or handled entirely by caller
   try {
-    kovri::core::SHA256().CalculateDigest(
+    xi2p::core::SHA256().CalculateDigest(
         digest.data(),
         m_Establisher->phase1.pub_key.data(),
         NTCPSize::PubKey);
@@ -576,7 +576,7 @@ void NTCPSession::SendPhase2() {
   // TODO(anonimal): this try block should be larger or handled entirely by caller
   try {
     // Hash of XY
-    kovri::core::SHA256().CalculateDigest(
+    xi2p::core::SHA256().CalculateDigest(
         m_Establisher->phase2.encrypted.hxy.data(),
         xy.data(),
         NTCPSize::PubKey * 2);
@@ -584,11 +584,11 @@ void NTCPSession::SendPhase2() {
     ts_B = boost::endian::native_to_big(core::GetSecondsSinceEpoch());
     m_Establisher->phase2.encrypted.timestamp = ts_B;
     // Random padding
-    kovri::core::RandBytes(
+    xi2p::core::RandBytes(
         m_Establisher->phase2.encrypted.padding.data(),
         NTCPSize::Padding);
     // AES key
-    kovri::core::AESKey aes_key;
+    xi2p::core::AESKey aes_key;
     CreateAESKey(m_Establisher->phase1.pub_key.data(), aes_key);
     m_Encryption.SetKey(aes_key);
     m_Encryption.SetIV(y + NTCPSize::Phase2BobIVOffset);
@@ -863,7 +863,7 @@ void NTCPSession::SendTimeSyncMessage() {
 }
 
 void NTCPSession::SendPayload(
-    std::shared_ptr<kovri::core::I2NPMessage> msg) {
+    std::shared_ptr<xi2p::core::I2NPMessage> msg) {
   LOG(debug)
     << "NTCPSession:" << GetFormattedSessionInfo() << "<-- sending I2NP message";
   m_IsSending = true;
@@ -899,7 +899,7 @@ void NTCPSession::HandleSentPayload(
     << "NTCPSession:" << GetFormattedSessionInfo()
     << "<-- " << bytes_transferred << " bytes transferred << "
     << GetNumSentBytes() << " total bytes sent";
-  kovri::core::transports.UpdateSentBytes(bytes_transferred);
+  xi2p::core::transports.UpdateSentBytes(bytes_transferred);
   if (!m_SendQueue.empty()) {
     SendPayload(m_SendQueue);
     m_SendQueue.clear();
@@ -957,11 +957,11 @@ boost::asio::const_buffers_1 NTCPSession::CreateMsgBuffer(
     int padding = 0;
     if (rem) {
       padding = NTCPSize::IV - rem;
-      kovri::core::RandBytes(
+      xi2p::core::RandBytes(
           send_buffer + len + NTCPSize::Phase3AliceTS,
           padding);
     }
-    kovri::core::Adler32().CalculateDigest(
+    xi2p::core::Adler32().CalculateDigest(
         send_buffer + len + NTCPSize::Phase3AliceRI + padding,
         send_buffer,
         len + NTCPSize::Phase3AliceRI + padding);
@@ -1021,7 +1021,7 @@ void NTCPSession::HandleReceivedPayload(
     << "NTCPSession:" << GetFormattedSessionInfo()
     << "--> " << bytes_transferred << " bytes transferred << "
     << GetNumReceivedBytes() << " total bytes received";
-  kovri::core::transports.UpdateReceivedBytes(bytes_transferred);
+  xi2p::core::transports.UpdateReceivedBytes(bytes_transferred);
   m_ReceiveBufferOffset += bytes_transferred;
   // Decrypt as many 16 byte blocks as possible
   std::uint8_t* next_block = m_ReceiveBuffer;
@@ -1093,7 +1093,7 @@ bool NTCPSession::DecryptNextBlock(
     if (m_NextMessageOffset >=
         m_NextMessage->len + NTCPSize::Adler32) {
       // We have a complete I2NP message
-      if (kovri::core::Adler32().VerifyDigest(
+      if (xi2p::core::Adler32().VerifyDigest(
             m_NextMessage->buf + m_NextMessageOffset - NTCPSize::Adler32,
             m_NextMessage->buf,
             m_NextMessageOffset - NTCPSize::Adler32))
@@ -1270,4 +1270,4 @@ const std::string NTCPSession::GetFormattedPhaseInfo(Phase num)
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

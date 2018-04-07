@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -61,7 +61,7 @@ BOOST_LOG_GLOBAL_LOGGER_INIT(g_Logger, boost::log::sources::severity_logger_mt) 
   return logger;
 }
 
-namespace kovri
+namespace xi2p
 {
 namespace core
 {
@@ -130,7 +130,7 @@ logging::formatter GetFormat(bool has_color)
   return format;
 }
 
-void SetupLogging(const boost::program_options::variables_map& kovri_config)
+void SetupLogging(const boost::program_options::variables_map& xi2p_config)
 {
   namespace sinks = boost::log::sinks;
   namespace keywords = boost::log::keywords;
@@ -141,7 +141,7 @@ void SetupLogging(const boost::program_options::variables_map& kovri_config)
   core->add_global_attribute("TimeStamp", attrs::utc_clock());
   core->add_global_attribute("ThreadID", attrs::current_thread_id());
   // Get/Set filter log level
-  auto log_level = kovri_config["log-level"].as<std::uint16_t>();
+  auto log_level = xi2p_config["log-level"].as<std::uint16_t>();
   logging::trivial::severity_level severity;
   switch (log_level)
     {
@@ -180,29 +180,29 @@ void SetupLogging(const boost::program_options::variables_map& kovri_config)
   typedef sinks::asynchronous_sink<sinks::text_file_backend> text_file_sink;
   auto file_backend = boost::make_shared<sinks::text_file_backend>(
       keywords::file_name =
-          kovri_config["log-file-name"].defaulted()
-              ? ((core::GetPath(core::Path::Logs) / "kovri_%Y-%m-%d.log").string())
-              : kovri_config["log-file-name"].as<std::string>(),
+          xi2p_config["log-file-name"].defaulted()
+              ? ((core::GetPath(core::Path::Logs) / "xi2p_%Y-%m-%d.log").string())
+              : xi2p_config["log-file-name"].as<std::string>(),
       keywords::time_based_rotation =
           sinks::file::rotation_at_time_point(0, 0, 0));  // Rotate at midnight
   // Auto flush for closer-to-real-time record message reporting
   // Note: our severity levels are processed in reverse
   if (severity <= logging::trivial::debug
-      || kovri_config["log-auto-flush"].as<bool>())
+      || xi2p_config["log-auto-flush"].as<bool>())
     file_backend->auto_flush();
   // Create file sink
   auto file_sink = boost::shared_ptr<text_file_sink>(
       std::make_unique<text_file_sink>(file_backend));
   // Set sink formatting
   text_sink->set_formatter(
-      GetFormat(kovri_config["log-enable-color"].as<bool>()));
+      GetFormat(xi2p_config["log-enable-color"].as<bool>()));
   file_sink->set_formatter(GetFormat(false));
   // Add sinks
   core->add_sink(text_sink);
   core->add_sink(file_sink);
   // Remove sinks if needed (we must first have added sinks to remove)
-  bool log_to_console = kovri_config["log-to-console"].as<bool>();
-  bool log_to_file = kovri_config["log-to-file"].as<bool>();
+  bool log_to_console = xi2p_config["log-to-console"].as<bool>();
+  bool log_to_file = xi2p_config["log-to-file"].as<bool>();
   if (!log_to_console)
     core->remove_sink(text_sink);
   if (!log_to_file)
@@ -210,4 +210,4 @@ void SetupLogging(const boost::program_options::variables_map& kovri_config)
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

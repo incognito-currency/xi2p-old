@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -32,7 +32,7 @@
 #include "tests/fuzz_tests/routerinfo.h"
 #include "core/router/info.h"
 
-namespace kovri
+namespace xi2p
 {
 namespace fuzz
 {
@@ -46,12 +46,12 @@ int RouterInfo::Impl(const uint8_t* data, size_t size)
 {
   try
     {
-      kovri::core::RouterInfo ri(data, size);
+      xi2p::core::RouterInfo ri(data, size);
       ri.GetDescription();
     }
   catch (...)
     {
-      kovri::core::Exception ex;
+      xi2p::core::Exception ex;
       ex.Dispatch(__func__);
       return 0;
     }
@@ -59,4 +59,4 @@ int RouterInfo::Impl(const uint8_t* data, size_t size)
 }
 
 }  // namespace fuzz
-}  // namespace kovri
+}  // namespace xi2p

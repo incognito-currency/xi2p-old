@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -44,44 +44,6 @@
 
 /// @class SubscriptionFixture
 struct SubscriptionFixture {
-  struct AddressBookEntry
-  {
-   public:
-    explicit AddressBookEntry(const std::string& subscription_line)
-    {
-      try
-        {
-          std::size_t pos = subscription_line.find('=');
-          if (pos == std::string::npos)
-            throw std::runtime_error(
-                "AddressBookEntry: invalid subscription line");
-          m_Host = subscription_line.substr(0, pos++);
-          kovri::core::IdentityEx ident;
-          ident.FromBase64(subscription_line.substr(pos));
-          m_Address = ident.GetIdentHash();
-        }
-      catch (...)
-        {
-          kovri::core::Exception ex;
-          ex.Dispatch(__func__);
-          throw;
-        }
-    }
-
-    const std::string& host() const
-    {
-      return m_Host;
-    }
-
-    const kovri::core::IdentHash& address() const
-    {
-      return m_Address;
-    }
-
-   private:
-    std::string m_Host;  ///< Human-readable I2P hostname
-    kovri::core::IdentHash m_Address;  ///< I2P address hash
-  };
 
   /// @brief Validates given lines as proven addressbook host/address pairs
   /// @param lines Lines to validate
@@ -111,16 +73,16 @@ struct SubscriptionFixture {
   /// @brief Subscription with valid hosts
   const std::vector<std::string> subscription {{
     "anonimal.i2p=AQZGLAMpI9Q0l0kmMj1vpJJYK3CjLp~fE3MfvE-e7KMKjI5cPOH6EN8m794uHJ6b09qM8mb9VEv1lVLEov~usVliTSXCSHuRBOCIwIOuDNU0AbVa4BpIx~2sU4TxKhoaA3zQ6VzINoduTdR2IJhPvI5xzezp7dR21CEQGGTbenDslXeQ4iLHFA2~bzp1f7etSl9T2W9RID-KH78sRQmzWnv7dbhNodMbpO6xsf1vENf6bMRzqD5vgHEHZu2aSoNuPyYxDU1eM6--61b2xp9mt1k3ud-5WvPVg89RaU9ugU5cxaHgR927lHMCAEU2Ax~zUb3DbrvgQBOTHnJEx2Fp7pOK~PnP6ylkYKQMfLROosLDXinxOoSKP0UYCh2WgIUPwE7WzJH3PiJVF0~WZ1dZ9mg00c~gzLgmkOxe1NpFRNg6XzoARivNVB5NuWqNxr5WKWMLBGQ9YHvHO1OHhUJTowb9X90BhtHnLK2AHwO6fV-iHWxRJyDabhSMj1kuYpVUBQAEAAcAAA==",
-    "check.kovri.i2p=5MDeZbodxbx3baVqISWAghnvSo1ZgQjs0cg1h3bK~SmqbCvDCy4pRjAf68rK3hSthMXj3-YEck5-UaeqmXOg~-5rZRXQWBjvtDFnwyQSacR7zK5E-E8fVDG-ILbJOPV-OgIgFa9ulECjhXRffYqOOeqSyRH7--pZKVcp6d43b-09FTFgB9PJV~VI5sHKZWlTt4uwQpbEwti5xymqW9IvSRjq2HNJbk5ITnEKnUi6hJMBmuI3-ReGT9aUrFQN1nXT4r17YVeuTBI7ZinAeVBGPnA7~p~X6FAhOh2UVLd3Z8OqRcQwhDVVF3lKqkRm9o1U8PAvPnt4pmugYYoFkNsD0K3HxC8HTQAsvlbevQQY2f1oHnYCxxC57D-qMD2QqMG-zUoEa7SkBkqs91Pm6~c4MVYvysg3cFoX6ZB7xqK6vXJh~XdRq9GdNdIuKbSpwS~yYLhKgVGERprea7J9eusglH~WD628FHjMIwTktT4wh5QRA31ha2gIOgIXjpXLlCFKBQAEAAcAAA==",
-    "kovri.i2p=0UVPqAA4xUSfPYPBca24h8fdokhwcJZ4zWvELv-5OsBYTHKtnLzvK7byXtXT~fOV2pExi8vrkgarGTNDfJbB2KCsdVS3V7qwtTvoCGYyklcDBlJsWMj7H763hEz5rt9SzLkcpwhO3t0Zwe6jXL1UB-QW8KxM30t-ZOfPc6OiJ1QpnE6Bo5OUm6jPurQGXdWCAPio5Z-YnRL46n0IHWOQPYYSStJMYPlPS-S75rMIKbZbEMDraRvSzYAphUaHfvtWr2rCSPkKh3EbrOiBYiAP2oWvAQCsjouPgVF2qwQRnBbiAezHedM2gXzkgIyCV2kGOOcHhiihd~7fWwJOloH-gO78QkmCuY-3kp3633v3MBw7pmABr-XNKWnATZOuf2syWVBZbTnOXsWf41tu6a33HOuNsMxAOUrwbu7QRmT4X8X-EITwNlKN6r1t3uoQ~yZm4RKsJUsBGfVtKl8PBMak3flQAg95oV0OBDGuizIQ9vREOWvPGlQCAXZzEg~cUNbfBQAEAAcAAA==",
-    "monero.i2p=3VzGaQQXwzN1iAwaPI17RK~gUqKqMH6fI2dkkGBwdayAPAdiZMyk1KGoTq~q1~HBraPZnz9mZJlzf6WVGCkUmUV3SBjBEbrdL9ud0fArq3P1~Ui9ViR9B7m5EG8smAnFvKZdqS-cnmHploUfIOefoQe0ecM7YYHErZsn3kL-WtvlfoDiSth-edIBpWxeHfmXSKoHSGSJ2snl5p9hxh30KmKj9AB0d4En-jcD83Ep3jsSvtPoQl7tSsh575~q0JJLsqGqm2sR9w4nZr7O58cg-21A2tlZeldM287uoTMb9eHWnYuozUGzzWOXvqg0UxPQSTfwh7YEhx0aRTXT2OFpr84XPoH2M6xIXfEMkFtJEJ-XlM-ILUZkg3kuBEFN7n4mBK~8L0Ht1QCq8L3~y7YnN61sxC0E9ZdyEOoC~nFJxndri9s9NzgZPo5eo6DsZXweOrTAIVQgKFUozL7WXKMlgqBZ5Nl3ijD6MGCIy0fWYHGLJ4jDBY7wrcfynVXFGm4EBQAEAAcAAA=="
+    "check.xi2p.i2p=5MDeZbodxbx3baVqISWAghnvSo1ZgQjs0cg1h3bK~SmqbCvDCy4pRjAf68rK3hSthMXj3-YEck5-UaeqmXOg~-5rZRXQWBjvtDFnwyQSacR7zK5E-E8fVDG-ILbJOPV-OgIgFa9ulECjhXRffYqOOeqSyRH7--pZKVcp6d43b-09FTFgB9PJV~VI5sHKZWlTt4uwQpbEwti5xymqW9IvSRjq2HNJbk5ITnEKnUi6hJMBmuI3-ReGT9aUrFQN1nXT4r17YVeuTBI7ZinAeVBGPnA7~p~X6FAhOh2UVLd3Z8OqRcQwhDVVF3lKqkRm9o1U8PAvPnt4pmugYYoFkNsD0K3HxC8HTQAsvlbevQQY2f1oHnYCxxC57D-qMD2QqMG-zUoEa7SkBkqs91Pm6~c4MVYvysg3cFoX6ZB7xqK6vXJh~XdRq9GdNdIuKbSpwS~yYLhKgVGERprea7J9eusglH~WD628FHjMIwTktT4wh5QRA31ha2gIOgIXjpXLlCFKBQAEAAcAAA==",
+    "xi2p.i2p=0UVPqAA4xUSfPYPBca24h8fdokhwcJZ4zWvELv-5OsBYTHKtnLzvK7byXtXT~fOV2pExi8vrkgarGTNDfJbB2KCsdVS3V7qwtTvoCGYyklcDBlJsWMj7H763hEz5rt9SzLkcpwhO3t0Zwe6jXL1UB-QW8KxM30t-ZOfPc6OiJ1QpnE6Bo5OUm6jPurQGXdWCAPio5Z-YnRL46n0IHWOQPYYSStJMYPlPS-S75rMIKbZbEMDraRvSzYAphUaHfvtWr2rCSPkKh3EbrOiBYiAP2oWvAQCsjouPgVF2qwQRnBbiAezHedM2gXzkgIyCV2kGOOcHhiihd~7fWwJOloH-gO78QkmCuY-3kp3633v3MBw7pmABr-XNKWnATZOuf2syWVBZbTnOXsWf41tu6a33HOuNsMxAOUrwbu7QRmT4X8X-EITwNlKN6r1t3uoQ~yZm4RKsJUsBGfVtKl8PBMak3flQAg95oV0OBDGuizIQ9vREOWvPGlQCAXZzEg~cUNbfBQAEAAcAAA==",
+    "incognito.i2p=3VzGaQQXwzN1iAwaPI17RK~gUqKqMH6fI2dkkGBwdayAPAdiZMyk1KGoTq~q1~HBraPZnz9mZJlzf6WVGCkUmUV3SBjBEbrdL9ud0fArq3P1~Ui9ViR9B7m5EG8smAnFvKZdqS-cnmHploUfIOefoQe0ecM7YYHErZsn3kL-WtvlfoDiSth-edIBpWxeHfmXSKoHSGSJ2snl5p9hxh30KmKj9AB0d4En-jcD83Ep3jsSvtPoQl7tSsh575~q0JJLsqGqm2sR9w4nZr7O58cg-21A2tlZeldM287uoTMb9eHWnYuozUGzzWOXvqg0UxPQSTfwh7YEhx0aRTXT2OFpr84XPoH2M6xIXfEMkFtJEJ-XlM-ILUZkg3kuBEFN7n4mBK~8L0Ht1QCq8L3~y7YnN61sxC0E9ZdyEOoC~nFJxndri9s9NzgZPo5eo6DsZXweOrTAIVQgKFUozL7WXKMlgqBZ5Nl3ijD6MGCIy0fWYHGLJ4jDBY7wrcfynVXFGm4EBQAEAAcAAA=="
   }};
 
   /// @brief Test data to verify against Host=Address
   std::vector<std::string> lines;
 
   /// @brief Addressbook instance
-  kovri::client::AddressBook book;
+  xi2p::client::AddressBook book;
 };
 
 BOOST_FIXTURE_TEST_SUITE(AddressBook, SubscriptionFixture)
@@ -165,7 +127,7 @@ BOOST_AUTO_TEST_CASE(BadAddresses) {
 BOOST_AUTO_TEST_CASE(GarbageLines) {
   for (std::size_t i = 0; i < subscription.size(); i++) {
     std::array<std::uint8_t, 100> rand;
-    kovri::core::RandBytes(rand.data(), rand.size());
+    xi2p::core::RandBytes(rand.data(), rand.size());
     const std::string line(std::begin(rand), std::end(rand));
     lines.push_back(line);
   }
@@ -208,21 +170,4 @@ BOOST_AUTO_TEST_CASE(PGPClearSign) {
 
 // TODO(unassigned): more cases?
 
-BOOST_AUTO_TEST_CASE(RejectDuplicateEntry)
-{
-  // Ensure valid subscription line creates an entry
-  BOOST_CHECK_NO_THROW(AddressBookEntry entry(subscription.front()));
-
-  AddressBookEntry entry(subscription.front());
-  // Ensure valid entry is inserted
-  BOOST_CHECK_NO_THROW(book.InsertAddress(entry.host(), entry.address()));
-  // Ensure address book throws for duplicate host
-  BOOST_CHECK_THROW(
-      book.InsertAddress(entry.host(), entry.address()), std::runtime_error);
-  // Ensure address book throws for duplicate address
-  BOOST_CHECK_THROW(
-      book.InsertAddress("unique." + entry.host(), entry.address()),
-      std::runtime_error);
-}
-
-BOOST_AUTO_TEST_SUITE_END()
+BOOST_AUTO_TEST_SUITE_END() 

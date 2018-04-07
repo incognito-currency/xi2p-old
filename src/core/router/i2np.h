@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -48,7 +48,7 @@
 
 #include "core/util/exception.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 // TODO(anonimal): good God, get rid of all of this
@@ -153,7 +153,7 @@ class TunnelPool;
 struct I2NPMessage {
   std::uint8_t* buf;
   std::size_t len, offset, max_len;
-  std::shared_ptr<kovri::core::InboundTunnel> from;
+  std::shared_ptr<xi2p::core::InboundTunnel> from;
   core::Exception exception;
 
   I2NPMessage()
@@ -222,7 +222,7 @@ struct I2NPMessage {
     // TODO(anonimal): this try block should be handled entirely by caller
     try {
       std::uint8_t hash[32];
-      kovri::core::SHA256().CalculateDigest(hash, GetPayload(), GetPayloadLength());
+      xi2p::core::SHA256().CalculateDigest(hash, GetPayload(), GetPayloadLength());
       GetHeader()[I2NP_HEADER_CHKS_OFFSET] = hash[0];
     } catch (...) {
       exception.Dispatch(__func__);
@@ -346,7 +346,7 @@ std::unique_ptr<I2NPMessage> CreateI2NPMessage(
 std::shared_ptr<I2NPMessage> CreateI2NPMessage(
     const std::uint8_t* buf,
     int len,
-    std::shared_ptr<kovri::core::InboundTunnel> from = nullptr);
+    std::shared_ptr<xi2p::core::InboundTunnel> from = nullptr);
 
 std::shared_ptr<I2NPMessage> CreateDeliveryStatusMsg(std::uint32_t msg_ID);
 
@@ -355,24 +355,24 @@ std::shared_ptr<I2NPMessage> CreateRouterInfoDatabaseLookupMsg(
     const std::uint8_t * from,
     std::uint32_t reply_tunnel_ID,
     bool exploratory = false,
-    std::set<kovri::core::IdentHash>* excluded_peers = nullptr);
+    std::set<xi2p::core::IdentHash>* excluded_peers = nullptr);
 
 std::shared_ptr<I2NPMessage> CreateLeaseSetDatabaseLookupMsg(
-    const kovri::core::IdentHash& dest,
-    const std::set<kovri::core::IdentHash>& excluded_floodfills,
-    const kovri::core::InboundTunnel* reply_tunnel,
+    const xi2p::core::IdentHash& dest,
+    const std::set<xi2p::core::IdentHash>& excluded_floodfills,
+    const xi2p::core::InboundTunnel* reply_tunnel,
     const std::uint8_t* reply_key,
     const std::uint8_t* reply_tag);
 
 std::shared_ptr<I2NPMessage> CreateDatabaseSearchReply(
-    const kovri::core::IdentHash& ident,
-    std::vector<kovri::core::IdentHash> routers);
+    const xi2p::core::IdentHash& ident,
+    std::vector<xi2p::core::IdentHash> routers);
 
 std::shared_ptr<I2NPMessage> CreateDatabaseStoreMsg(
-    std::shared_ptr<const kovri::core::RouterInfo> router = nullptr,
+    std::shared_ptr<const xi2p::core::RouterInfo> router = nullptr,
     std::uint32_t reply_token = 0);
 std::shared_ptr<I2NPMessage> CreateDatabaseStoreMsg(
-    std::shared_ptr<const kovri::core::LeaseSet> lease_set,
+    std::shared_ptr<const xi2p::core::LeaseSet> lease_set,
     std::uint32_t reply_token = 0);
 
 bool HandleBuildRequestRecords(
@@ -443,6 +443,6 @@ class I2NPMessagesHandler {
                                              m_TunnelGatewayMsgs;
 };
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_I2NP_H_

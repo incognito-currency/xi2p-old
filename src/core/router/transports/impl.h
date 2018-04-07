@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -62,7 +62,7 @@
 #include "core/router/transports/upnp.h"
 #endif
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 /// @class DHKeysPairSupplier
@@ -104,10 +104,10 @@ class DHKeysPairSupplier {
 /// @brief Stores information about transport peers.
 struct Peer {
   std::size_t num_attempts;
-  std::shared_ptr<const kovri::core::RouterInfo> router;
+  std::shared_ptr<const xi2p::core::RouterInfo> router;
   std::list<std::shared_ptr<TransportSession>> sessions;
   std::uint64_t creation_time;
-  std::vector<std::shared_ptr<kovri::core::I2NPMessage>> delayed_messages;
+  std::vector<std::shared_ptr<xi2p::core::I2NPMessage>> delayed_messages;
 
   void Done();
 };
@@ -138,7 +138,7 @@ class Transports {
   }
 
   /// @return a pointer to a Diffie-Hellman pair
-  std::unique_ptr<kovri::core::DHKeysPair> GetNextDHKeysPair();
+  std::unique_ptr<xi2p::core::DHKeysPair> GetNextDHKeysPair();
 
   /// @brief Returns a keypair for reuse.
   // TODO(unassigned): Do not reuse ephemeral keys, the whole point is that they
@@ -150,21 +150,21 @@ class Transports {
   /// @param ident the router hash of the remote peer
   /// @param msg the I2NP message to deliver
   void SendMessage(
-      const kovri::core::IdentHash& ident,
-      std::shared_ptr<kovri::core::I2NPMessage> msg);
+      const xi2p::core::IdentHash& ident,
+      std::shared_ptr<xi2p::core::I2NPMessage> msg);
 
   /// @brief Asynchronously sends one or more messages to a peer.
   /// @param ident the router hash of the remote peer
   /// @param msgs the I2NP messages to deliver
   void SendMessages(
-      const kovri::core::IdentHash& ident,
-      const std::vector<std::shared_ptr<kovri::core::I2NPMessage>>& msgs);
+      const xi2p::core::IdentHash& ident,
+      const std::vector<std::shared_ptr<xi2p::core::I2NPMessage>>& msgs);
 
   /// @brief Asynchronously close all transport sessions to the given router.
-  /// @param router the kovri::core::RouterInfo of the router to disconnect from
+  /// @param router the xi2p::core::RouterInfo of the router to disconnect from
   /// @note if router is nullptr, nothing happens
   void CloseSession(
-      std::shared_ptr<const kovri::core::RouterInfo> router);
+      std::shared_ptr<const xi2p::core::RouterInfo> router);
 
   /// @brief Informs this Transports object that a new peer has connected
   ///        to us
@@ -179,7 +179,7 @@ class Transports {
       std::shared_ptr<TransportSession> session);
 
   bool IsConnected(
-      const kovri::core::IdentHash& ident) const;
+      const xi2p::core::IdentHash& ident) const;
 
   void UpdateSentBytes(
       std::uint64_t num_bytes) {
@@ -215,35 +215,35 @@ class Transports {
     return m_Peers.size();
   }
 
-  std::shared_ptr<const kovri::core::RouterInfo> GetRandomPeer() const;
+  std::shared_ptr<const xi2p::core::RouterInfo> GetRandomPeer() const;
 
   /// @return Log-formatted string of session info
   std::string GetFormattedSessionInfo(
-      std::shared_ptr<const kovri::core::RouterInfo>& router) const;
+      std::shared_ptr<const xi2p::core::RouterInfo>& router) const;
 
  private:
   void Run();
 
   void RequestComplete(
-      std::shared_ptr<const kovri::core::RouterInfo> router,
-      const kovri::core::IdentHash& ident);
+      std::shared_ptr<const xi2p::core::RouterInfo> router,
+      const xi2p::core::IdentHash& ident);
 
   void HandleRequestComplete(
-      std::shared_ptr<const kovri::core::RouterInfo> router,
-      const kovri::core::IdentHash& ident);
+      std::shared_ptr<const xi2p::core::RouterInfo> router,
+      const xi2p::core::IdentHash& ident);
 
   void PostMessages(
-      kovri::core::IdentHash ident,
-      std::vector<std::shared_ptr<kovri::core::I2NPMessage>> msgs);
+      xi2p::core::IdentHash ident,
+      std::vector<std::shared_ptr<xi2p::core::I2NPMessage>> msgs);
 
   void PostCloseSession(
-      std::shared_ptr<const kovri::core::RouterInfo> router);
+      std::shared_ptr<const xi2p::core::RouterInfo> router);
 
   bool ConnectToPeer(
-      const kovri::core::IdentHash& ident, Peer& peer);
+      const xi2p::core::IdentHash& ident, Peer& peer);
 
   bool ConnectToPeerNTCP(
-      const kovri::core::IdentHash& ident, Peer& peer);
+      const xi2p::core::IdentHash& ident, Peer& peer);
 
   bool ConnectToPeerSSU(Peer& peer);
 
@@ -252,12 +252,12 @@ class Transports {
 
   void NTCPResolve(
       const std::string& addr,
-      const kovri::core::IdentHash& ident);
+      const xi2p::core::IdentHash& ident);
 
   void HandleNTCPResolve(
       const boost::system::error_code& ecode,
       boost::asio::ip::tcp::resolver::iterator it,
-      kovri::core::IdentHash ident,
+      xi2p::core::IdentHash ident,
       std::shared_ptr<boost::asio::ip::tcp::resolver> resolver);
 
   void UpdateBandwidth();
@@ -275,7 +275,7 @@ class Transports {
   std::unique_ptr<NTCPServer> m_NTCPServer;
   std::unique_ptr<SSUServer> m_SSUServer;
 
-  std::map<kovri::core::IdentHash, Peer> m_Peers;
+  std::map<xi2p::core::IdentHash, Peer> m_Peers;
 
   DHKeysPairSupplier m_DHKeysPairSupplier;
 
@@ -298,6 +298,6 @@ class Transports {
 extern Transports transports;
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_TRANSPORTS_IMPL_H_

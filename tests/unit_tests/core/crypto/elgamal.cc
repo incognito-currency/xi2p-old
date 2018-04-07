@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -42,11 +42,11 @@ BOOST_AUTO_TEST_SUITE(ElgamalTests)
 struct ElgamalFixture {
   ElgamalFixture() {
     // TODO(unassigned): use static keys
-    kovri::core::GenerateElGamalKeyPair(private_key, public_key);
-    enc = std::make_unique<kovri::core::ElGamalEncryption>(public_key);
+    xi2p::core::GenerateElGamalKeyPair(private_key, public_key);
+    enc = std::make_unique<xi2p::core::ElGamalEncryption>(public_key);
   }
   uint8_t private_key[256], public_key[256];
-  std::unique_ptr<kovri::core::ElGamalEncryption> enc;
+  std::unique_ptr<xi2p::core::ElGamalEncryption> enc;
   static constexpr size_t key_message_len = 222;
   static constexpr size_t key_ciphertext_len = 512;
   static constexpr size_t key_zero_padding_ciphertext_len = key_ciphertext_len + 2;
@@ -56,9 +56,9 @@ BOOST_FIXTURE_TEST_CASE(ElgamalEncryptDecryptSuccess, ElgamalFixture) {
   uint8_t plaintext[key_message_len];
   uint8_t ciphertext[key_ciphertext_len];
   uint8_t result[key_message_len];
-  kovri::core::RandBytes(plaintext, key_message_len);
+  xi2p::core::RandBytes(plaintext, key_message_len);
   enc->Encrypt(plaintext, key_message_len, ciphertext, false);
-  BOOST_CHECK(kovri::core::ElGamalDecrypt(private_key, ciphertext, result, false));
+  BOOST_CHECK(xi2p::core::ElGamalDecrypt(private_key, ciphertext, result, false));
   BOOST_CHECK_EQUAL_COLLECTIONS(
     plaintext, plaintext + key_message_len,
     result, result + key_message_len);
@@ -68,31 +68,31 @@ BOOST_FIXTURE_TEST_CASE(ElgamalEncryptDecryptFail, ElgamalFixture) {
   uint8_t plaintext[key_message_len];
   uint8_t ciphertext[key_ciphertext_len];
   uint8_t result[key_message_len];
-  kovri::core::RandBytes(plaintext, key_message_len);
+  xi2p::core::RandBytes(plaintext, key_message_len);
   enc->Encrypt(plaintext, key_message_len, ciphertext, false);
   // Introduce an error in the ciphertext
-  ciphertext[4] ^= kovri::core::RandInRange32(1, 128);
-  BOOST_CHECK(!kovri::core::ElGamalDecrypt(private_key, ciphertext, result, false));
+  ciphertext[4] ^= xi2p::core::RandInRange32(1, 128);
+  BOOST_CHECK(!xi2p::core::ElGamalDecrypt(private_key, ciphertext, result, false));
 }
 
 BOOST_FIXTURE_TEST_CASE(ElgamalEncryptDecryptZeroPadBadPad, ElgamalFixture) {
   uint8_t plaintext[key_message_len];
   uint8_t ciphertext[key_zero_padding_ciphertext_len];
   uint8_t result[key_message_len];
-  kovri::core::RandBytes(plaintext, key_message_len);
+  xi2p::core::RandBytes(plaintext, key_message_len);
   enc->Encrypt(plaintext, key_message_len, ciphertext, true);
   // Introduce an error in the ciphertext zeropadding
-  ciphertext[0] = kovri::core::RandInRange32(1, 128);
-  BOOST_CHECK(!kovri::core::ElGamalDecrypt(private_key, ciphertext, result, true));
+  ciphertext[0] = xi2p::core::RandInRange32(1, 128);
+  BOOST_CHECK(!xi2p::core::ElGamalDecrypt(private_key, ciphertext, result, true));
 }
 
 BOOST_FIXTURE_TEST_CASE(ElgamalEncryptDecryptZeroPadSuccess, ElgamalFixture) {
   uint8_t plaintext[key_message_len];
   uint8_t ciphertext[key_zero_padding_ciphertext_len];
   uint8_t result[key_message_len];
-  kovri::core::RandBytes(plaintext, key_message_len);
+  xi2p::core::RandBytes(plaintext, key_message_len);
   enc->Encrypt(plaintext, key_message_len, ciphertext, true);
-  bool res = kovri::core::ElGamalDecrypt(private_key, ciphertext, result, true);
+  bool res = xi2p::core::ElGamalDecrypt(private_key, ciphertext, result, true);
   BOOST_CHECK(res);
   if (res) {
     BOOST_CHECK_EQUAL_COLLECTIONS(
@@ -106,9 +106,9 @@ BOOST_FIXTURE_TEST_CASE(ElgamalEncryptDecryptZeroPadSmallMessageSuccess, Elgamal
   uint8_t plaintext[key_message_len - key_smaller];
   uint8_t ciphertext[key_zero_padding_ciphertext_len];
   uint8_t result[key_message_len];
-  kovri::core::RandBytes(plaintext, key_message_len - key_smaller);
+  xi2p::core::RandBytes(plaintext, key_message_len - key_smaller);
   enc->Encrypt(plaintext, key_message_len, ciphertext, true);
-  BOOST_CHECK(kovri::core::ElGamalDecrypt(private_key, ciphertext, result, true));
+  BOOST_CHECK(xi2p::core::ElGamalDecrypt(private_key, ciphertext, result, true));
   BOOST_CHECK_EQUAL_COLLECTIONS(
     plaintext, plaintext + key_message_len - key_smaller,
     result, result + key_message_len - key_smaller);

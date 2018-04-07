@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -40,8 +40,8 @@
 #include "client/api/i2p_control/data.h"
 #include "core/util/log.h"
 
-namespace client = kovri::client;
-namespace core = kovri::core;
+namespace client = xi2p::client;
+namespace core = xi2p::core;
 typedef client::I2PControlResponse Response;
 typedef client::I2PControlRequest Request;
 typedef Response::ErrorCode ErrorCode;

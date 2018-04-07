@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -53,7 +53,7 @@
 #include "core/util/tag.h"
 #include "core/util/filesystem.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 struct RouterInfoTraits
@@ -435,13 +435,13 @@ class RouterInfo : public RouterInfoTraits, public RoutingDestination
   ~RouterInfo();
 
   /// @brief Create RI with standard defaults
-  /// @param keys Privkeys which generate identity
-  /// @param points Local hostname/ip address + port list
+  /// @param point Local hostname/ip address + port
   /// @param has_transport Supports NTCP, SSU
+  /// @param keys Privkeys which generate identity
   /// @param caps RI capabilities
   RouterInfo(
       const core::PrivateKeys& keys,
-      const std::vector<std::pair<std::string, std::uint16_t>>& points,
+      const std::pair<std::string, std::uint16_t>& point,
       const std::pair<bool, bool>& has_transport,  // TODO(anonimal): refactor as bitwise SupportedTransport?
       const std::uint8_t caps = core::RouterInfo::Cap::Reachable);
 
@@ -610,7 +610,7 @@ class RouterInfo : public RouterInfoTraits, public RoutingDestination
   /// @brief Set RI option(s)
   /// @details RI options consist of expected (required) options and additional options.
   ///   Required options include capability flags (in non-int form) and various router version information.
-  ///   Additional options can include statistics and/or kovri-specific information if needed
+  ///   Additional options can include statistics and/or xi2p-specific information if needed
   /// @param key Key type
   /// @param value Value type
   void SetOption(const std::string& key, const std::string& value)
@@ -815,6 +815,6 @@ class RouterInfo : public RouterInfoTraits, public RoutingDestination
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_INFO_H_

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright (c) 2015-2017, The Kovri I2P Router Project
+# Copyright (c) 2017-2018, The Xi2p I2P Router Project
 #
 # All rights reserved.
 #
@@ -39,7 +39,7 @@ import sys
 parser = argparse.ArgumentParser(description='Backup current grafana dashboards.')
 parser.add_argument('--dir', default=os.path.dirname(os.path.realpath(__file__)), 
                     help='Directory to store the dashboards (%(default)s)')
-parser.add_argument('--uri', default='http://admin:kovri@127.0.0.1:3030',
+parser.add_argument('--uri', default='http://admin:xi2p@127.0.0.1:3030',
                     help='URI to access grafana with credentials (%(default)s)')
 
 args = parser.parse_args()

@@ -43,7 +43,7 @@ if(WITH_TESTS)
     target_link_libraries(${TESTS_NAME} ${CORE_NAME} ws2_32 wsock32 iphlpapi)
   endif()
   enable_testing()
-  add_test(KovriTest ${TESTS_NAME})
+  add_test(Xi2pTest ${TESTS_NAME})
   install(TARGETS
     ${TESTS_NAME} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()

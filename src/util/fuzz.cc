@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -76,7 +76,7 @@ UniqueCharArrayPtr VectorToArgcArgv(
   return argv;
 }
 
-kovri::fuzz::FuzzTarget* CurrentTarget = nullptr;
+xi2p::fuzz::FuzzTarget* CurrentTarget = nullptr;
 
 // Fuzz callbacks
 
@@ -150,7 +150,7 @@ bool FuzzCommand::Impl(
     }
   catch (...)
     {
-      kovri::core::Exception ex(GetName().c_str());
+      xi2p::core::Exception ex(GetName().c_str());
       ex.Dispatch(__func__);
       return false;
     }
@@ -170,19 +170,19 @@ bool FuzzCommand::Impl(
     }
   else if (target == "su3")
     {
-      CurrentTarget = new kovri::fuzz::SU3();
+      CurrentTarget = new xi2p::fuzz::SU3();
     }
   else if (target == "routerinfo")
     {
-      CurrentTarget = new kovri::fuzz::RouterInfo();
+      CurrentTarget = new xi2p::fuzz::RouterInfo();
     }
   else if (target == "leaseset")
     {
-      CurrentTarget = new kovri::fuzz::LeaseSet();
+      CurrentTarget = new xi2p::fuzz::LeaseSet();
     }
   else if (target == "i2pcontrol")
     {
-      CurrentTarget = new kovri::fuzz::I2PControl();
+      CurrentTarget = new xi2p::fuzz::I2PControl();
     }
   else
     {

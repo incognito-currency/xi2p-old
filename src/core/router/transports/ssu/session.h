@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -49,7 +49,7 @@
 
 #include "core/util/exception.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 /// @enum SessionState
@@ -124,7 +124,7 @@ class SSUSession
   SSUSession(
       SSUServer& server,
       boost::asio::ip::udp::endpoint& remote_endpoint,
-      std::shared_ptr<const kovri::core::RouterInfo> router = nullptr,
+      std::shared_ptr<const xi2p::core::RouterInfo> router = nullptr,
       bool peer_test = false);
 
   ~SSUSession();
@@ -415,10 +415,10 @@ class SSUSession
   bool m_IsSessionKey;
   std::uint32_t m_RelayTag;
   SSUData m_Data;
-  kovri::core::CBCEncryption m_SessionKeyEncryption;
-  kovri::core::CBCDecryption m_SessionKeyDecryption;
-  kovri::core::AESKey m_SessionKey;
-  kovri::core::MACKey m_MACKey;
+  xi2p::core::CBCEncryption m_SessionKeyEncryption;
+  xi2p::core::CBCDecryption m_SessionKeyDecryption;
+  xi2p::core::AESKey m_SessionKey;
+  xi2p::core::MACKey m_MACKey;
   std::uint32_t m_CreationTime;  // seconds since epoch
 
   /// @brief The unsigned SessionCreated data for SessionConfirmed processing
@@ -427,10 +427,10 @@ class SSUSession
   std::vector<std::uint8_t> m_SessionConfirmData;
 
   bool m_IsDataReceived;
-  kovri::core::Exception m_Exception;
+  xi2p::core::Exception m_Exception;
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_TRANSPORTS_SSU_SESSION_H_

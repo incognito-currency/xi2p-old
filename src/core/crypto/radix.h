@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2015-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -39,7 +39,7 @@
 #include <cryptopp/base32.h>
 #include <cryptopp/base64.h>
 
-namespace kovri
+namespace xi2p
 {
 namespace core
 {
@@ -180,6 +180,6 @@ class Base64 final : public Radix<Base64>
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_CRYPTO_RADIX_H_

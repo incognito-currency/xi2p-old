@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -37,33 +37,33 @@
 
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 std::shared_ptr<I2NPMessage> RequestedDestination::CreateRequestMessage(
     std::shared_ptr<const RouterInfo> router,
-    std::shared_ptr<const kovri::core::InboundTunnel> reply_tunnel) {
-  auto msg = kovri::core::CreateRouterInfoDatabaseLookupMsg(
+    std::shared_ptr<const xi2p::core::InboundTunnel> reply_tunnel) {
+  auto msg = xi2p::core::CreateRouterInfoDatabaseLookupMsg(
       m_Destination,
       reply_tunnel->GetNextIdentHash(),
       reply_tunnel->GetNextTunnelID(),
       m_IsExploratory,
       &m_ExcludedPeers);
   m_ExcludedPeers.insert(router->GetIdentHash());
-  m_CreationTime = kovri::core::GetSecondsSinceEpoch();
+  m_CreationTime = xi2p::core::GetSecondsSinceEpoch();
   return msg;
 }
 
 std::shared_ptr<I2NPMessage> RequestedDestination::CreateRequestMessage(
     const IdentHash& floodfill) {
-  auto msg = kovri::core::CreateRouterInfoDatabaseLookupMsg(
+  auto msg = xi2p::core::CreateRouterInfoDatabaseLookupMsg(
       m_Destination,
       context.GetRouterInfo().GetIdentHash(),
       0,
       false,
       &m_ExcludedPeers);
   m_ExcludedPeers.insert(floodfill);
-  m_CreationTime = kovri::core::GetSecondsSinceEpoch();
+  m_CreationTime = xi2p::core::GetSecondsSinceEpoch();
   return msg;
 }
 
@@ -133,7 +133,7 @@ std::shared_ptr<RequestedDestination> NetDbRequests::FindRequest(
 }
 
 void NetDbRequests::ManageRequests() {
-  std::uint64_t ts = kovri::core::GetSecondsSinceEpoch();
+  std::uint64_t ts = xi2p::core::GetSecondsSinceEpoch();
   std::unique_lock<std::mutex> l(m_RequestedDestinationsMutex);
   for (auto it = m_RequestedDestinations.begin();
       it != m_RequestedDestinations.end();) {
@@ -146,7 +146,7 @@ void NetDbRequests::ManageRequests() {
         auto count = dest->GetExcludedPeers().size();
         std::size_t attempts(7);
         if (!dest->IsExploratory() && count < attempts) {
-          auto pool = kovri::core::tunnels.GetExploratoryPool();
+          auto pool = xi2p::core::tunnels.GetExploratoryPool();
           auto outbound = pool->GetNextOutboundTunnel();
           auto inbound = pool->GetNextInboundTunnel();
           auto next_floodfill = netdb.GetClosestFloodfill(
@@ -187,5 +187,5 @@ void NetDbRequests::ManageRequests() {
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 

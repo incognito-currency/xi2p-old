@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -40,7 +40,7 @@
 
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 TransitTunnel::TransitTunnel(
@@ -78,7 +78,7 @@ void TransitTunnel::EncryptTunnelMsg(
 TransitTunnelParticipant::~TransitTunnelParticipant() {}
 
 void TransitTunnelParticipant::HandleTunnelDataMsg(
-    std::shared_ptr<const kovri::core::I2NPMessage> tunnel_msg) {
+    std::shared_ptr<const xi2p::core::I2NPMessage> tunnel_msg) {
   auto new_msg = CreateEmptyTunnelDataMsg();
   EncryptTunnelMsg(tunnel_msg, new_msg);
   m_NumTransmittedBytes += tunnel_msg->GetLength();
@@ -96,7 +96,7 @@ void TransitTunnelParticipant::FlushTunnelDataMsgs() {
         << "TransitTunnelParticipant: " << GetTunnelID()
         << "->" << GetNextTunnelID()
         << " " << num;
-    kovri::core::transports.SendMessages(
+    xi2p::core::transports.SendMessages(
         GetNextIdentHash(),
         m_TunnelDataMsgs);
     m_TunnelDataMsgs.clear();
@@ -104,19 +104,19 @@ void TransitTunnelParticipant::FlushTunnelDataMsgs() {
 }
 
 void TransitTunnel::SendTunnelDataMsg(
-    std::shared_ptr<kovri::core::I2NPMessage>) {
+    std::shared_ptr<xi2p::core::I2NPMessage>) {
   LOG(error)
     << "TransitTunnel: we are not a gateway for transit tunnel: " << m_TunnelID;
 }
 
 void TransitTunnel::HandleTunnelDataMsg(
-    std::shared_ptr<const kovri::core::I2NPMessage>) {
+    std::shared_ptr<const xi2p::core::I2NPMessage>) {
   LOG(error)
     << "TransitTunnel: incoming tunnel message is not supported: " << m_TunnelID;
 }
 
 void TransitTunnelGateway::SendTunnelDataMsg(
-    std::shared_ptr<kovri::core::I2NPMessage> msg) {
+    std::shared_ptr<xi2p::core::I2NPMessage> msg) {
   TunnelMessageBlock block;
   block.delivery_type = e_DeliveryTypeLocal;
   block.data = msg;
@@ -130,7 +130,7 @@ void TransitTunnelGateway::FlushTunnelDataMsgs() {
 }
 
 void TransitTunnelEndpoint::HandleTunnelDataMsg(
-    std::shared_ptr<const kovri::core::I2NPMessage> tunnel_msg) {
+    std::shared_ptr<const xi2p::core::I2NPMessage> tunnel_msg) {
   auto new_msg = CreateEmptyTunnelDataMsg();
   EncryptTunnelMsg(tunnel_msg, new_msg);
   LOG(debug) << "TransitTunnelEndpoint: endpoint for " << GetTunnelID();
@@ -174,4 +174,4 @@ TransitTunnel* CreateTransitTunnel(
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

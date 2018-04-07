@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -32,7 +32,7 @@
 
 #include <cryptopp/osrng.h>
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 void RandBytes(
@@ -50,4 +50,4 @@ std::uint32_t RandInRange32(
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

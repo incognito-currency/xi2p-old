@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -48,7 +48,7 @@
 
 #include "core/util/exception.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 class ClientContext {
@@ -75,12 +75,12 @@ class ClientContext {
   // Non-public
   std::shared_ptr<ClientDestination> CreateNewLocalDestination(
       bool is_public = false,
-      kovri::core::SigningKeyType sig_type = kovri::core::DEFAULT_CLIENT_SIGNING_KEY_TYPE,
+      xi2p::core::SigningKeyType sig_type = xi2p::core::DEFAULT_CLIENT_SIGNING_KEY_TYPE,
       const std::map<std::string, std::string>* params = nullptr);  // transient
 
   // Public
   std::shared_ptr<ClientDestination> CreateNewLocalDestination(
-      const kovri::core::PrivateKeys& keys,
+      const xi2p::core::PrivateKeys& keys,
       bool is_public = true,
       const std::map<std::string, std::string>* params = nullptr);
 
@@ -88,25 +88,25 @@ class ClientContext {
       std::shared_ptr<ClientDestination> destination);
 
   std::shared_ptr<ClientDestination> FindLocalDestination(
-      const kovri::core::IdentHash& destination) const;
+      const xi2p::core::IdentHash& destination) const;
 
   /// @brief Creates private keys from given filename if they don't exist
   /// @param filename the relative name of the private key file
   /// @return Created private keys
-  kovri::core::PrivateKeys CreatePrivateKeys(
+  xi2p::core::PrivateKeys CreatePrivateKeys(
       const std::string& filename);
 
   /// @brief Creates text file containing private key's public b32 address
   /// @param keys Private keys to derive b32 address from
   /// @param filename The relative name of the text address file
   void CreateBaseAddressTextFile(
-      const kovri::core::PrivateKeys& keys,
+      const xi2p::core::PrivateKeys& keys,
       const std::string& filename);
 
   /// @brief Loads private keys from given filename
   /// @param filename Relative name of the private key file
   /// @return Loaded private keys
-  kovri::core::PrivateKeys LoadPrivateKeys(
+  xi2p::core::PrivateKeys LoadPrivateKeys(
       const std::string& filename);
 
   std::shared_ptr<ClientDestination> LoadLocalDestination(
@@ -169,13 +169,13 @@ class ClientContext {
   /// @brief Inserts a server tunnel.
   /// @return true if the tunnel was inserted, false otherwise
   bool InsertServerTunnel(
-      const kovri::core::IdentHash& id,
+      const xi2p::core::IdentHash& id,
       std::unique_ptr<I2PServerTunnel> tunnel);
 
   /// @brief Sets the I2PControl service
   /// @param service a pointer to the I2PControlService
   void SetI2PControlService(
-      std::unique_ptr<kovri::client::I2PControlService> service);
+      std::unique_ptr<xi2p::client::I2PControlService> service);
 
   /// @brief Sets the HTTP proxy.
   /// @param proxy a pointer to the HTTPProxy
@@ -183,13 +183,13 @@ class ClientContext {
 
   /// @brief Sets the SOCKS proxy.
   /// @param proxy a pointer to the SOCKSProxy
-  void SetSOCKSProxy(std::unique_ptr<kovri::client::SOCKSProxy> proxy);
+  void SetSOCKSProxy(std::unique_ptr<xi2p::client::SOCKSProxy> proxy);
 
   /// @return the client tunnel with the given name, or nullptr
   I2PServerTunnel* GetServerTunnel(const std::string& name);
 
   /// @return the server tunnel with the given identity hash, or nullptr
-  I2PServerTunnel* GetServerTunnel(const kovri::core::IdentHash& id);
+  I2PServerTunnel* GetServerTunnel(const xi2p::core::IdentHash& id);
 
   /// @return the client tunnel with the given name, or nullptr
   I2PClientTunnel* GetClientTunnel(const std::string& name);
@@ -201,13 +201,13 @@ class ClientContext {
 
  private:
   std::mutex m_DestinationsMutex;
-  std::map<kovri::core::IdentHash, std::shared_ptr<ClientDestination>> m_Destinations;
+  std::map<xi2p::core::IdentHash, std::shared_ptr<ClientDestination>> m_Destinations;
   std::shared_ptr<ClientDestination> m_SharedLocalDestination;
 
   AddressBook m_AddressBook;
 
   std::unique_ptr<HTTPProxy> m_HttpProxy;
-  std::unique_ptr<kovri::client::SOCKSProxy> m_SocksProxy;
+  std::unique_ptr<xi2p::client::SOCKSProxy> m_SocksProxy;
 
   std::mutex m_ClientMutex;
   // port->tunnel
@@ -215,14 +215,14 @@ class ClientContext {
 
   std::mutex m_ServerMutex;
   // destination->tunnel
-  std::map<kovri::core::IdentHash, std::unique_ptr<I2PServerTunnel>> m_ServerTunnels;
+  std::map<xi2p::core::IdentHash, std::unique_ptr<I2PServerTunnel>> m_ServerTunnels;
 
 
   // types for accessing client / server tunnel map entries
   typedef std::pair<const int,
                     std::unique_ptr<I2PClientTunnel>> ClientTunnelEntry;
 
-  typedef std::pair<const kovri::core::IdentHash,
+  typedef std::pair<const xi2p::core::IdentHash,
                     std::unique_ptr<I2PServerTunnel>> ServerTunnelEntry;
 
   boost::asio::io_service m_Service;
@@ -230,12 +230,12 @@ class ClientContext {
 
   std::function<void(void)> m_ShutdownHandler;
 
-  kovri::core::Exception m_Exception;
+  xi2p::core::Exception m_Exception;
 };
 
 extern ClientContext context;
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_CONTEXT_H_

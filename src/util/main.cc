@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -45,7 +45,7 @@
 #include "util/su3file.h"
 
 #ifndef _WIN32
-#include "util/kovri.h"
+#include "util/xi2p.h"
 #endif
 
 namespace bpo = boost::program_options;
@@ -86,8 +86,8 @@ int main(int argc, const char* argv[])
   list_cmd[i2pcontrol_cmd.GetName()] = &i2pcontrol_cmd;
 
 #ifndef _WIN32
-  KovriCommand kovri_cmd;
-  list_cmd[kovri_cmd.GetName()] = &kovri_cmd;
+  Xi2pCommand xi2p_cmd;
+  list_cmd[xi2p_cmd.GetName()] = &xi2p_cmd;
 #endif
 
 #ifdef WITH_CRYPTOPP
@@ -140,13 +140,13 @@ int main(int argc, const char* argv[])
     }
   catch (...)
     {
-      kovri::core::Exception ex;
+      xi2p::core::Exception ex;
       ex.Dispatch(__func__);
       return EXIT_FAILURE;
     }
 
   // Setup logging options
-  kovri::core::SetupLogging(vm);
+  xi2p::core::SetupLogging(vm);
 
   if (vm.count("args"))
     args = vm["args"].as<std::vector<std::string> >();

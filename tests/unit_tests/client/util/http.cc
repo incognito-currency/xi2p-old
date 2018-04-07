@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -36,7 +36,7 @@
 
 BOOST_AUTO_TEST_SUITE(HTTPUtilityTests)
 
-kovri::client::HTTP http;
+xi2p::client::HTTP http;
 
 BOOST_AUTO_TEST_CASE(UriParse) {
   // Note: cpp-netlib has better tests.

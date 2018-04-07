@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -41,10 +41,10 @@
 
 #ifdef _WIN32
 // Internal name of the service
-#define SERVICE_NAME             "Kovri"
+#define SERVICE_NAME             "Xi2p"
 
 // Displayed name of the service
-#define SERVICE_DISPLAY_NAME     "Kovri I2P Router"
+#define SERVICE_DISPLAY_NAME     "Xi2p I2P Router"
 
 // Service start options.
 #define SERVICE_START_TYPE       SERVICE_DEMAND_START

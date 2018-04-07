@@ -10,7 +10,7 @@ set(UTIL_SRC
   "su3file.cc")
 
 if(NOT WIN32)
-  list(APPEND UTIL_SRC "kovri.cc")
+  list(APPEND UTIL_SRC "xi2p.cc")
 endif()
 
 if(WITH_CRYPTOPP)

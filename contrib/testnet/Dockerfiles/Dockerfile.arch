@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2017, The Kovri I2P Router Project
+# Copyright (c) 2017-2018, The Xi2p I2P Router Project
 #
 # All rights reserved.
 #
@@ -33,7 +33,7 @@ RUN pacman -Syu --noconfirm && pacman -S --noconfirm \
       gnu-netcat iftop iproute2 openssh tcpdump \
       htop iotop \
       && \
-      useradd -m kovri -s /usr/bin/bash && \
-      chown -R kovri:kovri /home/kovri
+      useradd -m xi2p -s /usr/bin/bash && \
+      chown -R xi2p:xi2p /home/xi2p
 
-USER kovri
+USER xi2p

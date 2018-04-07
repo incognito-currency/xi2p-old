@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -44,7 +44,7 @@
  * @brief base class for routerinfo
  */
 
-class RouterInfoCommand : public Command, public kovri::core::RouterInfoTraits
+class RouterInfoCommand : public Command, public xi2p::core::RouterInfoTraits
 {
  public:
   RouterInfoCommand();

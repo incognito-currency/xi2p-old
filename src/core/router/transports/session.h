@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -45,7 +45,7 @@
 
 #include "core/crypto/diffie_hellman.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 // TODO(anonimal): remove
@@ -81,7 +81,7 @@ class SignedData {
   }
 
   bool Verify(
-      const kovri::core::IdentityEx& ident,
+      const xi2p::core::IdentityEx& ident,
       const std::uint8_t* signature) const {
     return ident.Verify(
         (const std::uint8_t *)m_Stream.str().c_str(),
@@ -90,7 +90,7 @@ class SignedData {
   }
 
   void Sign(
-      const kovri::core::PrivateKeys& keys,
+      const xi2p::core::PrivateKeys& keys,
       std::uint8_t* signature) const {
     keys.Sign(
         (const std::uint8_t *)m_Stream.str().c_str(),
@@ -105,7 +105,7 @@ class SignedData {
 class TransportSession {
  public:
   TransportSession(
-      std::shared_ptr<const kovri::core::RouterInfo> in_RemoteRouter)
+      std::shared_ptr<const xi2p::core::RouterInfo> in_RemoteRouter)
       : m_RemoteRouter(in_RemoteRouter),
         m_DHKeysPair(nullptr),
         m_NumSentBytes(0),
@@ -119,11 +119,11 @@ class TransportSession {
 
   virtual void Done() = 0;
 
-  std::shared_ptr<const kovri::core::RouterInfo> GetRemoteRouter() {
+  std::shared_ptr<const xi2p::core::RouterInfo> GetRemoteRouter() {
     return m_RemoteRouter;
   }
 
-  const kovri::core::IdentityEx& GetRemoteIdentity() const {
+  const xi2p::core::IdentityEx& GetRemoteIdentity() const {
     return m_RemoteIdentity;
   }
 
@@ -143,14 +143,14 @@ class TransportSession {
       const std::vector<std::shared_ptr<I2NPMessage> >& msgs) = 0;
 
  protected:
-  std::shared_ptr<const kovri::core::RouterInfo> m_RemoteRouter;
-  kovri::core::IdentityEx m_RemoteIdentity;
+  std::shared_ptr<const xi2p::core::RouterInfo> m_RemoteRouter;
+  xi2p::core::IdentityEx m_RemoteIdentity;
   std::unique_ptr<DHKeysPair> m_DHKeysPair;  // X - for client and Y - for server
   std::size_t m_NumSentBytes, m_NumReceivedBytes;
   bool m_IsOutbound;
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_TRANSPORTS_SESSION_H_

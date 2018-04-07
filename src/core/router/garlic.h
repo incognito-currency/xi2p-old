@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -53,7 +53,7 @@
 #include "core/util/tag.h"
 #include "core/util/queue.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 enum GarlicDeliveryType {
@@ -67,7 +67,7 @@ enum GarlicDeliveryType {
 struct ElGamalBlock {
   ElGamalBlock() {
     // Spec defines padding as CSPRNG radomized
-    kovri::core::RandBytes(padding.data(), padding.size());
+    xi2p::core::RandBytes(padding.data(), padding.size());
   }
   std::array<std::uint8_t, 32> session_key;
   std::array<std::uint8_t, 32> pre_IV;
@@ -80,7 +80,7 @@ const int OUTGOING_TAGS_EXPIRATION_TIMEOUT = 720;  // 12 minutes
 const int LEASET_CONFIRMATION_TIMEOUT = 4000;  // in milliseconds
 
 struct SessionTag
-    : public kovri::core::Tag<32> {
+    : public xi2p::core::Tag<32> {
   SessionTag(
       const std::uint8_t* buf,
       std::uint32_t ts = 0)
@@ -112,7 +112,7 @@ class GarlicRoutingSession
  public:
   GarlicRoutingSession(
       GarlicDestination* owner,
-      std::shared_ptr<const kovri::core::RoutingDestination> destination,
+      std::shared_ptr<const xi2p::core::RoutingDestination> destination,
       int num_tags,
       bool attach_lease_set);
 
@@ -181,8 +181,8 @@ class GarlicRoutingSession
 
  private:
   GarlicDestination* m_Owner;
-  std::shared_ptr<const kovri::core::RoutingDestination> m_Destination;
-  kovri::core::AESKey m_SessionKey;
+  std::shared_ptr<const xi2p::core::RoutingDestination> m_Destination;
+  xi2p::core::AESKey m_SessionKey;
   std::list<SessionTag> m_SessionTags;
   int m_NumTags;
   std::map<std::uint32_t, UnconfirmedTags *> m_UnconfirmedTagsMsgs;
@@ -191,13 +191,13 @@ class GarlicRoutingSession
   std::uint32_t m_LeaseSetUpdateMsgID;
   std::uint64_t m_LeaseSetSubmissionTime;  // in milliseconds
 
-  kovri::core::CBCEncryption m_Encryption;
+  xi2p::core::CBCEncryption m_Encryption;
 
   core::Exception m_Exception;
 };
 
 class GarlicDestination
-    : public kovri::core::LocalDestination {
+    : public xi2p::core::LocalDestination {
  public:
   GarlicDestination()
       : m_LastTagsCleanupTime(0),
@@ -206,7 +206,7 @@ class GarlicDestination
   ~GarlicDestination();
 
   std::shared_ptr<GarlicRoutingSession> GetRoutingSession(
-      std::shared_ptr<const kovri::core::RoutingDestination> destination,
+      std::shared_ptr<const xi2p::core::RoutingDestination> destination,
       bool attach_lease_set);
 
   void CleanupRoutingSessions();
@@ -215,7 +215,7 @@ class GarlicDestination
       std::uint32_t msg_ID);
 
   std::shared_ptr<I2NPMessage> WrapMessage(
-      std::shared_ptr<const kovri::core::RoutingDestination> destination,
+      std::shared_ptr<const xi2p::core::RoutingDestination> destination,
       std::shared_ptr<I2NPMessage> msg,
       bool attach_lease_set = false);
 
@@ -236,13 +236,13 @@ class GarlicDestination
   virtual void SetLeaseSetUpdated();
 
   // TODO(unassigned): ???
-  virtual std::shared_ptr<const kovri::core::LeaseSet> GetLeaseSet() = 0;
-  virtual std::shared_ptr<kovri::core::TunnelPool> GetTunnelPool() const = 0;
+  virtual std::shared_ptr<const xi2p::core::LeaseSet> GetLeaseSet() = 0;
+  virtual std::shared_ptr<xi2p::core::TunnelPool> GetTunnelPool() const = 0;
 
   virtual void HandleI2NPMessage(
       const std::uint8_t* buf,
       std::size_t len,
-      std::shared_ptr<kovri::core::InboundTunnel> from) = 0;
+      std::shared_ptr<xi2p::core::InboundTunnel> from) = 0;
 
  protected:
   void HandleGarlicMessage(std::shared_ptr<I2NPMessage> msg);
@@ -252,22 +252,22 @@ class GarlicDestination
   void HandleAESBlock(
       std::uint8_t* buf,
       std::size_t len,
-      std::shared_ptr<kovri::core::CBCDecryption> decryption,
-      std::shared_ptr<kovri::core::InboundTunnel> from);
+      std::shared_ptr<xi2p::core::CBCDecryption> decryption,
+      std::shared_ptr<xi2p::core::InboundTunnel> from);
 
   void HandleGarlicPayload(
       std::uint8_t* buf,
       std::size_t len,
-      std::shared_ptr<kovri::core::InboundTunnel> from);
+      std::shared_ptr<xi2p::core::InboundTunnel> from);
 
  private:
   // outgoing sessions
   std::mutex m_SessionsMutex;
-  std::map<kovri::core::IdentHash,
+  std::map<xi2p::core::IdentHash,
            std::shared_ptr<GarlicRoutingSession>> m_Sessions;
   // incoming
   std::map<SessionTag,
-           std::shared_ptr<kovri::core::CBCDecryption>> m_Tags;
+           std::shared_ptr<xi2p::core::CBCDecryption>> m_Tags;
   std::uint32_t m_LastTagsCleanupTime;
   // DeliveryStatus  (msg_ID -> session)
   std::map<std::uint32_t,
@@ -277,6 +277,6 @@ class GarlicDestination
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_GARLIC_H_

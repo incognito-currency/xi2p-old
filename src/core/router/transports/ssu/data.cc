@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -41,7 +41,7 @@
 #include "core/util/log.h"
 #include "core/util/timestamp.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 // TODO(anonimal): bytestream refactor
@@ -92,7 +92,7 @@ void SSUData::Stop() {
 }
 
 void SSUData::AdjustPacketSize(
-    const kovri::core::RouterInfo& remote_router) {
+    const xi2p::core::RouterInfo& remote_router) {
   LOG(debug) << "SSUData: adjusting packet size";
   auto ssu_address = remote_router.GetSSUAddress();
   if (ssu_address && ssu_address->mtu) {
@@ -123,11 +123,11 @@ void SSUData::AdjustPacketSize(
 }
 
 void SSUData::UpdatePacketSize(
-    const kovri::core::IdentHash& remote_ident) {
+    const xi2p::core::IdentHash& remote_ident) {
   LOG(debug)
     << "SSUData:" << m_Session.GetFormattedSessionInfo()
     << "updating packet size";
-  auto router_info = kovri::core::netdb.FindRouter(remote_ident);
+  auto router_info = xi2p::core::netdb.FindRouter(remote_ident);
   if (router_info)
     AdjustPacketSize(*router_info);
 }
@@ -277,7 +277,7 @@ void SSUData::ProcessFragments(
         if (incomplete_message->saved_fragments.insert(
               std::unique_ptr<Fragment>(std::move(saved_fragment))).second)
           incomplete_message->last_fragment_insert_time =
-            kovri::core::GetSecondsSinceEpoch();
+            xi2p::core::GetSecondsSinceEpoch();
         else
           LOG(warning)
             << "SSUData:" << m_Session.GetFormattedSessionInfo()
@@ -374,7 +374,7 @@ void SSUData::ProcessMessage(
 
 // TODO(anonimal): bytestream refactor
 void SSUData::Send(
-    std::shared_ptr<kovri::core::I2NPMessage> msg) {
+    std::shared_ptr<xi2p::core::I2NPMessage> msg) {
   LOG(debug)
     << "SSUData:" << m_Session.GetFormattedSessionInfo()
     << "sending message";
@@ -395,7 +395,7 @@ void SSUData::Send(
   std::unique_ptr<SentMessage>& sent_message = ret.first->second;
   if (ret.second) {
     sent_message->next_resend_time =
-      kovri::core::GetSecondsSinceEpoch()
+      xi2p::core::GetSecondsSinceEpoch()
       + SSUDuration::ResendInterval;
     sent_message->num_resends = 0;
   }
@@ -524,7 +524,7 @@ void SSUData::HandleResendTimer(
     << "SSUData:" << m_Session.GetFormattedSessionInfo()
     << "handling resend timer";
   if (ecode != boost::asio::error::operation_aborted) {
-    auto ts = kovri::core::GetSecondsSinceEpoch();
+    auto ts = xi2p::core::GetSecondsSinceEpoch();
     for (auto it = m_SentMessages.begin(); it != m_SentMessages.end();) {
       if (ts >= it->second->next_resend_time) {
         if (it->second->num_resends < SSUDuration::MaxResends) {
@@ -601,7 +601,7 @@ void SSUData::HandleIncompleteMessagesCleanupTimer(
     << "SSUData:" << m_Session.GetFormattedSessionInfo()
     << "handling incomplete messages cleanup";
   if (ecode != boost::asio::error::operation_aborted) {
-    auto ts = kovri::core::GetSecondsSinceEpoch();
+    auto ts = xi2p::core::GetSecondsSinceEpoch();
     std::uint8_t const timeout = SSUDuration::IncompleteMessagesCleanupTimeout;
     for (auto it = m_IncompleteMessages.begin(); it != m_IncompleteMessages.end();) {
       if (ts > it->second->last_fragment_insert_time + timeout) {
@@ -619,5 +619,5 @@ void SSUData::HandleIncompleteMessagesCleanupTimer(
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 

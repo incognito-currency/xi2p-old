@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -34,7 +34,7 @@
 
 #include "client/context.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 I2PService::I2PService(
@@ -42,20 +42,20 @@ I2PService::I2PService(
     : m_LocalDestination(
         local_destination
         ? local_destination
-        : kovri::client::context.CreateNewLocalDestination()) {}
+        : xi2p::client::context.CreateNewLocalDestination()) {}
 
 I2PService::I2PService(
-    kovri::core::SigningKeyType key_type)
+    xi2p::core::SigningKeyType key_type)
     : m_LocalDestination(
-        kovri::client::context.CreateNewLocalDestination(key_type)) {}
+        xi2p::client::context.CreateNewLocalDestination(key_type)) {}
 
 void I2PService::CreateStream(
     StreamRequestComplete stream_request_complete,
     const std::string& dest,
     std::uint16_t port) {
   assert(stream_request_complete);
-  kovri::core::IdentHash ident_hash;
-  if (kovri::client::context.GetAddressBook().CheckAddressIdentHashFound(dest, ident_hash)) {
+  xi2p::core::IdentHash ident_hash;
+  if (xi2p::client::context.GetAddressBook().CheckAddressIdentHashFound(dest, ident_hash)) {
     m_LocalDestination->CreateStream(
         stream_request_complete,
         ident_hash,
@@ -132,4 +132,4 @@ void TCPIPAcceptor::HandleAccept(
 }
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p

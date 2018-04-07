@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -44,7 +44,7 @@
 
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 // TODO(anonimal): bytestream refactor
@@ -72,7 +72,7 @@ void TunnelEndpoint::HandleDecryptedTunnelDataMsg(
     std::uint8_t hash[32];
     // TODO(anonimal): this try block should be larger or handled entirely by caller
     try {
-      kovri::core::SHA256().CalculateDigest(
+      xi2p::core::SHA256().CalculateDigest(
           hash,
           fragment,
           // payload + iv
@@ -105,11 +105,11 @@ void TunnelEndpoint::HandleDecryptedTunnelDataMsg(
           case e_DeliveryTypeTunnel:  // 1
             m.tunnel_ID = core::InputByteStream::Read<std::uint32_t>(fragment);
             fragment += 4;  // tunnel_ID
-            m.hash = kovri::core::IdentHash(fragment);
+            m.hash = xi2p::core::IdentHash(fragment);
             fragment += 32;  // hash
           break;
           case e_DeliveryTypeRouter:  // 2
-            m.hash = kovri::core::IdentHash(fragment);
+            m.hash = xi2p::core::IdentHash(fragment);
             fragment += 32;  // to hash
           break;
           default: {}
@@ -292,28 +292,28 @@ void TunnelEndpoint::HandleNextMessage(
     << static_cast<int>(msg.data->GetTypeID());
   switch (msg.delivery_type) {
     case e_DeliveryTypeLocal:
-      kovri::core::HandleI2NPMessage(msg.data);
+      xi2p::core::HandleI2NPMessage(msg.data);
     break;
     case e_DeliveryTypeTunnel:
-      kovri::core::transports.SendMessage(
+      xi2p::core::transports.SendMessage(
           msg.hash,
-          kovri::core::CreateTunnelGatewayMsg(
+          xi2p::core::CreateTunnelGatewayMsg(
             msg.tunnel_ID,
             msg.data));
     break;
     case e_DeliveryTypeRouter:
       // check if message is sent to us
       if (msg.hash == context.GetRouterInfo().GetIdentHash()) {
-        kovri::core::HandleI2NPMessage(msg.data);
+        xi2p::core::HandleI2NPMessage(msg.data);
       } else {
         // to somebody else
         if (!m_IsInbound) {  // outbound transit tunnel
         /*  auto type_ID = msg.data->GetTypeID ();
           if (type_ID == eI2NPDatabaseStore || type_ID == eI2NPDatabaseSearchReply )
             // catch RI or reply with new list of routers
-            kovri::core::netdb.PostI2NPMsg (msg.data);*/
+            xi2p::core::netdb.PostI2NPMsg (msg.data);*/
           // TODO(unassigned): ^ ???
-          kovri::core::transports.SendMessage(msg.hash, msg.data);
+          xi2p::core::transports.SendMessage(msg.hash, msg.data);
         } else {  // we shouldn't send this message. possible leakage
           LOG(error)
             << "TunnelEndpoint: message to another router "
@@ -329,4 +329,4 @@ void TunnelEndpoint::HandleNextMessage(
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

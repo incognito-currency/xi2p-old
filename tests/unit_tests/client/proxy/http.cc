@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -49,7 +49,7 @@ struct HTTPProxyRequestFixture
     }
 
     // TODO(unassigned): message API needs a proper interface
-    kovri::client::HTTPMessage& get()
+    xi2p::client::HTTPMessage& get()
     {
       return m_Message;
     }
@@ -57,7 +57,7 @@ struct HTTPProxyRequestFixture
    private:
     std::string m_Request;
     // TODO(unassigned): message API needs a proper ctor
-    kovri::client::HTTPMessage m_Message;
+    xi2p::client::HTTPMessage m_Message;
   };
 
   // Valid web-safe destination
@@ -68,27 +68,27 @@ BOOST_AUTO_TEST_SUITE(HTTPMessageHeader)
 
 BOOST_AUTO_TEST_CASE(Short)
 {
-  kovri::client::HTTPMessage tmp;
-  BOOST_CHECK(!tmp.HandleData("GET kovri.i2p HTTP/1.1"));
+  xi2p::client::HTTPMessage tmp;
+  BOOST_CHECK(!tmp.HandleData("GET xi2p.i2p HTTP/1.1"));
 }
 
 BOOST_AUTO_TEST_CASE(MissingRequest)
 {
-  kovri::client::HTTPMessage tmp;
+  xi2p::client::HTTPMessage tmp;
   BOOST_CHECK(!tmp.HandleData("GET HTTP/1.1"));
 }
 
 BOOST_AUTO_TEST_CASE(MissingHeaders)
 {
-  kovri::client::HTTPMessage tmp;
+  xi2p::client::HTTPMessage tmp;
   BOOST_CHECK(!tmp.HandleData("\r\n"));
 }
 
 BOOST_AUTO_TEST_CASE(Valid)
 {
-  kovri::client::HTTPMessage tmp;
+  xi2p::client::HTTPMessage tmp;
   BOOST_CHECK(
-      tmp.HandleData("GET kovri.i2p HTTP/1.1\r\nUser-Agent: dummy\r\n\r\n"));
+      tmp.HandleData("GET xi2p.i2p HTTP/1.1\r\nUser-Agent: dummy\r\n\r\n"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

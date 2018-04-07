@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -40,11 +40,11 @@
 
 #include "core/util/tag.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 // Placed here for use across implementations
-typedef kovri::core::Tag<512> PublicKey;
+typedef xi2p::core::Tag<512> PublicKey;
 
 /// @class X509
 /// @brief Processes X.509 certificate
@@ -68,6 +68,6 @@ class X509 {
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_CRYPTO_UTIL_X509_H_

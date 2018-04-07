@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2018, The Kovri I2P Router Project
+ * Copyright (c) 2015-2018, The Xi2p I2P Router Project
  *
  * All rights reserved.
  *
@@ -38,7 +38,7 @@
 #include "core/router/transports/ssu/packet.h"
 #include "tests/unit_tests/core/router/identity.h"
 
-namespace core = kovri::core;
+namespace core = xi2p::core;
 
 /**
  *
@@ -325,7 +325,7 @@ struct SSUTestVectorsFixture : public IdentityExFixture
 BOOST_AUTO_TEST_SUITE(SSUHeaderTests)
 
 BOOST_AUTO_TEST_CASE(GetPayloadType) {
-  using namespace kovri::core;
+  using namespace xi2p::core;
   SSUHeader header;
   header.SetPayloadType(0);
   BOOST_CHECK(header.GetPayloadType() == SSUPayloadType::SessionRequest);
@@ -348,7 +348,7 @@ BOOST_AUTO_TEST_CASE(GetPayloadType) {
 }
 
 BOOST_AUTO_TEST_CASE(SetPayloadTypeInvalid) {
-  kovri::core::SSUHeader header;
+  xi2p::core::SSUHeader header;
   BOOST_CHECK_THROW(header.SetPayloadType(9);, std::invalid_argument);
   BOOST_CHECK_THROW(header.SetPayloadType(-1);, std::invalid_argument);
 }
@@ -364,7 +364,7 @@ BOOST_AUTO_TEST_SUITE_END()
 BOOST_FIXTURE_TEST_SUITE(SSUPacketParserTests, SSUTestVectorsFixture)
 
 BOOST_AUTO_TEST_CASE(SSUHeaderPlain) {
-  using namespace kovri::core;
+  using namespace xi2p::core;
   SSUPacketParser parser(header_plain.data(), header_plain.size());
   std::unique_ptr<SSUHeader> header;
   BOOST_CHECK_NO_THROW(header = parser.ParseHeader());
@@ -376,7 +376,7 @@ BOOST_AUTO_TEST_CASE(SSUHeaderPlain) {
 }
 
 BOOST_AUTO_TEST_CASE(SSUHeaderExtendedOptions) {
-  using namespace kovri::core;
+  using namespace xi2p::core;
   SSUPacketParser parser(header_extended_options.data(), header_extended_options.size());
   std::unique_ptr<SSUHeader> header;
   BOOST_CHECK_NO_THROW(header = parser.ParseHeader());
@@ -388,7 +388,7 @@ BOOST_AUTO_TEST_CASE(SSUHeaderExtendedOptions) {
 }
 
 BOOST_AUTO_TEST_CASE(SessionRequestPlain) {
-  using namespace kovri::core;
+  using namespace xi2p::core;
   SSUPacketParser parser(session_request.data(), session_request.size());
   std::unique_ptr<SSUSessionRequestPacket> packet;
   BOOST_CHECK_NO_THROW(packet = parser.ParseSessionRequest());
@@ -396,7 +396,7 @@ BOOST_AUTO_TEST_CASE(SessionRequestPlain) {
 }
 
 BOOST_AUTO_TEST_CASE(SessionCreatedPlain) {
-  using namespace kovri::core;
+  using namespace xi2p::core;
   SSUPacketParser parser(session_created.data(), session_created.size());
   std::unique_ptr<SSUSessionCreatedPacket> packet;
   BOOST_CHECK_NO_THROW(packet = parser.ParseSessionCreated());
@@ -442,7 +442,7 @@ BOOST_AUTO_TEST_CASE(SessionConfirmedPlain)
 }
 
 BOOST_AUTO_TEST_CASE(RelayRequestPlain) {
-  using namespace kovri::core;
+  using namespace xi2p::core;
   SSUPacketParser parser(relay_request.data(), relay_request.size());
   std::unique_ptr<SSURelayRequestPacket> packet;
   BOOST_CHECK_NO_THROW(packet = parser.ParseRelayRequest());
@@ -461,7 +461,7 @@ BOOST_AUTO_TEST_CASE(RelayRequestPlain) {
 }
 
 BOOST_AUTO_TEST_CASE(RelayResponsePlain) {
-  using namespace kovri::core;
+  using namespace xi2p::core;
   SSUPacketParser parser(relay_response.data(), relay_response.size());
   std::unique_ptr<SSURelayResponsePacket> packet;
   BOOST_CHECK_NO_THROW(packet = parser.ParseRelayResponse());
@@ -483,7 +483,7 @@ BOOST_AUTO_TEST_CASE(RelayResponsePlain) {
 }
 
 BOOST_AUTO_TEST_CASE(RelayIntroPlain) {
-  using namespace kovri::core;
+  using namespace xi2p::core;
   SSUPacketParser parser(relay_intro.data(), relay_intro.size());
   std::unique_ptr<SSURelayIntroPacket> packet;
   BOOST_CHECK_NO_THROW(packet = parser.ParseRelayIntro());
@@ -499,7 +499,7 @@ BOOST_AUTO_TEST_CASE(RelayIntroPlain) {
 }
 
 BOOST_AUTO_TEST_CASE(DataOneFragmentPlain) {
-  using namespace kovri::core;
+  using namespace xi2p::core;
   SSUPacketParser parser(data_single_fragment.data(), data_single_fragment.size());
   std::unique_ptr<SSUDataPacket> packet;
   BOOST_CHECK_NO_THROW(packet = parser.ParseData());
@@ -507,7 +507,7 @@ BOOST_AUTO_TEST_CASE(DataOneFragmentPlain) {
 }
 
 BOOST_AUTO_TEST_CASE(DataMultFragmentsPlain) {
-  using namespace kovri::core;
+  using namespace xi2p::core;
   SSUPacketParser parser(data_multi_fragment.data(), data_multi_fragment.size());
   std::unique_ptr<SSUDataPacket> packet;
   BOOST_CHECK_NO_THROW(packet = parser.ParseData());
@@ -525,7 +525,7 @@ BOOST_AUTO_TEST_SUITE_END()
 BOOST_FIXTURE_TEST_SUITE(SSUPacketBuilderTests, SSUTestVectorsFixture)
 
 BOOST_AUTO_TEST_CASE(SSUHeaderPlain) {
-  using namespace kovri::core;
+  using namespace xi2p::core;
 
   SSUHeader header(
       SSUPayloadType::SessionRequest,
@@ -544,7 +544,7 @@ BOOST_AUTO_TEST_CASE(SSUHeaderPlain) {
 }
 
 BOOST_AUTO_TEST_CASE(SSUHeaderExtendedOptions) {
-  using namespace kovri::core;
+  using namespace xi2p::core;
 
   SSUHeader header(
       SSUPayloadType::SessionRequest,
@@ -565,7 +565,7 @@ BOOST_AUTO_TEST_CASE(SSUHeaderExtendedOptions) {
 }
 
 BOOST_AUTO_TEST_CASE(SessionRequestPlain) {
-  using namespace kovri::core;
+  using namespace xi2p::core;
 
   SSUSessionRequestPacket packet;
   packet.SetDhX(&session_request.at(0));
@@ -581,7 +581,7 @@ BOOST_AUTO_TEST_CASE(SessionRequestPlain) {
 }
 
 BOOST_AUTO_TEST_CASE(SessionCreatedPacket) {
-  using namespace kovri::core;
+  using namespace xi2p::core;
 
   SSUSessionCreatedPacket packet;
   packet.SetDhY(&session_created.at(0));

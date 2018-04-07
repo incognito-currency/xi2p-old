@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2015-2017, The Kovri I2P Router Project
+# Copyright (c) 2017-2018, The Xi2p I2P Router Project
 #
 # All rights reserved.
 #
@@ -42,8 +42,8 @@ while true; do
     _container_name="${docker_base_name}${_seq}"
     IFS=$'\n'
 
-    # Get statistics from kovri instances
-    stats=$(/usr/bin/kovri-util control stats --host $_host --log-to-console 0)
+    # Get statistics from xi2p instances
+    stats=$(/usr/bin/xi2p-util control stats --host $_host --log-to-console 0)
     if [[ $? -ne 0 ]]; then
         echo "Instance $_seq is not accessible"
         continue

@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -39,7 +39,7 @@
 
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 //
@@ -49,7 +49,7 @@ namespace client {
 I2PTunnelConnection::I2PTunnelConnection(
     I2PService* owner,
     std::shared_ptr<boost::asio::ip::tcp::socket> socket,
-    std::shared_ptr<const kovri::core::LeaseSet> lease_set,
+    std::shared_ptr<const xi2p::core::LeaseSet> lease_set,
     std::uint16_t port)
     : I2PServiceHandler(owner),
       m_Socket(socket),
@@ -63,7 +63,7 @@ I2PTunnelConnection::I2PTunnelConnection(
 I2PTunnelConnection::I2PTunnelConnection(
     I2PService* owner,
     std::shared_ptr<boost::asio::ip::tcp::socket> socket,
-    std::shared_ptr<kovri::client::Stream> stream)
+    std::shared_ptr<xi2p::client::Stream> stream)
     : I2PServiceHandler(owner),
       m_Socket(socket),
       m_Stream(stream),
@@ -72,7 +72,7 @@ I2PTunnelConnection::I2PTunnelConnection(
 
 I2PTunnelConnection::I2PTunnelConnection(
     I2PService* owner,
-    std::shared_ptr<kovri::client::Stream> stream,
+    std::shared_ptr<xi2p::client::Stream> stream,
     std::shared_ptr<boost::asio::ip::tcp::socket> socket,
     const boost::asio::ip::tcp::endpoint& target,
     bool quiet)
@@ -230,7 +230,7 @@ void I2PTunnelConnection::HandleConnect(
 
 I2PTunnelConnectionHTTP::I2PTunnelConnectionHTTP(
     I2PService* owner,
-    std::shared_ptr<kovri::client::Stream> stream,
+    std::shared_ptr<xi2p::client::Stream> stream,
     std::shared_ptr<boost::asio::ip::tcp::socket> socket,
     const boost::asio::ip::tcp::endpoint& target,
     const std::string& host)
@@ -281,7 +281,7 @@ void I2PTunnelConnectionHTTP::Write(
 
  I2PClientTunnelHandler::I2PClientTunnelHandler(
       I2PClientTunnel* parent,
-      kovri::core::IdentHash destination,
+      xi2p::core::IdentHash destination,
       std::uint16_t destination_port,
       std::shared_ptr<boost::asio::ip::tcp::socket> socket)
     : I2PServiceHandler(parent),
@@ -300,7 +300,7 @@ void I2PClientTunnelHandler::Handle() {
 }
 
 void I2PClientTunnelHandler::HandleStreamRequestComplete(
-    std::shared_ptr<kovri::client::Stream> stream) {
+    std::shared_ptr<xi2p::client::Stream> stream) {
   if (stream) {
     if (Kill())
       return;
@@ -357,13 +357,13 @@ void I2PClientTunnel::Stop() {
 }
 
 // TODO(unassigned): HACK: maybe we should create a caching IdentHash provider in AddressBook?
-std::unique_ptr<const kovri::core::IdentHash> I2PClientTunnel::GetDestIdentHash() {
+std::unique_ptr<const xi2p::core::IdentHash> I2PClientTunnel::GetDestIdentHash() {
   if (!m_DestinationIdentHash) {
-    kovri::core::IdentHash ident_hash;
-    AddressBook& book = kovri::client::context.GetAddressBook();
+    xi2p::core::IdentHash ident_hash;
+    AddressBook& book = xi2p::client::context.GetAddressBook();
     std::string dest = GetTunnelAttributes().dest;
     if (book.CheckAddressIdentHashFound(dest, ident_hash)) {
-      m_DestinationIdentHash = std::make_unique<kovri::core::IdentHash>(ident_hash);
+      m_DestinationIdentHash = std::make_unique<xi2p::core::IdentHash>(ident_hash);
     } else {
       LOG(warning)
         << "I2PClientTunnel: remote destination " << dest << " not found";
@@ -531,7 +531,7 @@ void I2PServerTunnel::Accept() {
 }
 
 void I2PServerTunnel::HandleAccept(
-    std::shared_ptr<kovri::client::Stream> stream) {
+    std::shared_ptr<xi2p::client::Stream> stream) {
   if (stream) {
     if (!EnforceACL(stream))
       return;
@@ -543,7 +543,7 @@ void I2PServerTunnel::HandleAccept(
 }
 
 bool I2PServerTunnel::EnforceACL(
-    std::shared_ptr<kovri::client::Stream> stream) {
+    std::shared_ptr<xi2p::client::Stream> stream) {
   if (GetACL().empty()) {
     LOG(debug) << "I2PServerTunnel: ACL empty, continuing";
     return true;
@@ -575,7 +575,7 @@ bool I2PServerTunnel::EnforceACL(
 }
 
 void I2PServerTunnel::CreateI2PConnection(
-    std::shared_ptr<kovri::client::Stream> stream) {
+    std::shared_ptr<xi2p::client::Stream> stream) {
   auto conn =
     std::make_shared<I2PTunnelConnection>(
         this,
@@ -594,7 +594,7 @@ I2PServerTunnelHTTP::I2PServerTunnelHTTP(
           local_destination) {}
 
 void I2PServerTunnelHTTP::CreateI2PConnection(
-    std::shared_ptr<kovri::client::Stream> stream) {
+    std::shared_ptr<xi2p::client::Stream> stream) {
   auto conn =
     std::make_shared<I2PTunnelConnectionHTTP>(
         this,
@@ -607,4 +607,4 @@ void I2PServerTunnelHTTP::CreateI2PConnection(
 }
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p

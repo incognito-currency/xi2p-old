@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -54,7 +54,7 @@
 #include "core/util/exception.h"
 #include "core/util/queue.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 /// @class NetDbTraits
@@ -162,7 +162,7 @@ class NetDb : public NetDbTraits {
       const IdentHash& ident,
       const std::uint8_t* buf,
       std::uint16_t len,
-      std::shared_ptr<kovri::core::InboundTunnel> from);
+      std::shared_ptr<xi2p::core::InboundTunnel> from);
 
   std::shared_ptr<RouterInfo> FindRouter(
       const IdentHash& ident) const;
@@ -260,17 +260,17 @@ class NetDb : public NetDbTraits {
   std::unique_ptr<std::thread> m_Thread;
 
   // of I2NPDatabaseStoreMsg
-  kovri::core::Queue<std::shared_ptr<const I2NPMessage>> m_Queue;
+  xi2p::core::Queue<std::shared_ptr<const I2NPMessage>> m_Queue;
 
   friend class NetDbRequests;
   NetDbRequests m_Requests;
 
-  kovri::core::Exception m_Exception;
+  xi2p::core::Exception m_Exception;
 };
 
 extern NetDb netdb;
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_NET_DB_IMPL_H_

@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2015-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -39,7 +39,7 @@
 
 #include "core/util/byte_stream.h"
 
-namespace core = kovri::core;
+namespace core = xi2p::core;
 
 struct ByteStreamFixture
 {

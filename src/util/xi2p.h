@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -42,14 +42,14 @@
 #include "core/util/exception.h"
 
 /**
- * @class KovriCommand
- * @brief class for command kovri
+ * @class Xi2pCommand
+ * @brief class for command xi2p
  */
 
-class KovriCommand : public Command
+class Xi2pCommand : public Command
 {
  public:
-  KovriCommand();
+  Xi2pCommand();
 
   void PrintUsage(const std::string& cmd_name) const;
 
@@ -57,15 +57,15 @@ class KovriCommand : public Command
 
   std::string GetName(void) const
   {
-    return "kovri";
+    return "xi2p";
   }
 
  private:
   /// @brief Exception dispatcher
-  kovri::core::Exception m_Exception;
+  xi2p::core::Exception m_Exception;
 
-  /// @brief Kovri instance
-  std::unique_ptr<kovri::client::Instance> m_Client;
+  /// @brief Xi2p instance
+  std::unique_ptr<xi2p::client::Instance> m_Client;
 
  private:
   /// @brief Signal handler

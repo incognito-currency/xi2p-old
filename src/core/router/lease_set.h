@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -40,7 +40,7 @@
 
 #include "core/router/identity.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 // TODO(unassigned): remove this forward declaration
@@ -67,7 +67,7 @@ class LeaseSet : public RoutingDestination {
       std::size_t len);
 
   explicit LeaseSet(
-      const kovri::core::TunnelPool& pool);
+      const xi2p::core::TunnelPool& pool);
 
   ~LeaseSet() {}
 
@@ -129,6 +129,6 @@ class LeaseSet : public RoutingDestination {
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_LEASE_SET_H_

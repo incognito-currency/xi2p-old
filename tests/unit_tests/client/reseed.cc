@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -217,8 +217,8 @@ struct SU3Fixture {
   };
 
   // Map the signature for verification
-  kovri::core::PublicKey pubkey = signing_key.data();
-  std::map<std::string, kovri::core::PublicKey> x509 {
+  xi2p::core::PublicKey pubkey = signing_key.data();
+  std::map<std::string, xi2p::core::PublicKey> x509 {
     { "anonimal@mail.i2p", pubkey },
   };
 };
@@ -244,7 +244,7 @@ class SU3FixtureImpl : SU3Fixture {
     std::vector<unsigned char> bad_bytes = good_bytes;
     std::fill_n(bad_bytes.begin() + offset, amount, byte);
     std::string str(bad_bytes.begin(), bad_bytes.end());
-    kovri::client::SU3 su3(str, x509);
+    xi2p::client::SU3 su3(str, x509);
     return su3.SU3Impl();
   }
 };

@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -40,7 +40,7 @@
 #include <thread>
 #include <vector>
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 template<typename Element>
@@ -189,6 +189,6 @@ class MsgQueue : public Queue<Msg *> {
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_UTIL_QUEUE_H_

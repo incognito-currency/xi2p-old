@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -37,7 +37,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 inline std::uint64_t GetMillisecondsSinceEpoch() {
@@ -56,6 +56,6 @@ inline std::uint64_t GetSecondsSinceEpoch() {
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_UTIL_TIMESTAMP_H_

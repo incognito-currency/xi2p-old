@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -68,7 +68,7 @@ template <class T>
 void Range<T>::WithinBounds() {
   for (T i = 0; i < /*Arbitrary value*/ 100; i++) {
     repeated = result;
-    result = kovri::core::RandInRange32(min, max);
+    result = xi2p::core::RandInRange32(min, max);
     if (result < min || result > max)
       throw std::out_of_range(std::string("RandInRange: returned ") + std::to_string(result));
     if (result == repeated)
@@ -84,7 +84,7 @@ void Range<T>::WithinBounds() {
 template <class T>
 void Range<T>::OuterBounds(T low, T high) {
   for (T i = 0; i < max; i++) {
-    result = kovri::core::RandInRange32(low, high);
+    result = xi2p::core::RandInRange32(low, high);
     if (result != low && result != high)
       tally++;
     if (tally == max)

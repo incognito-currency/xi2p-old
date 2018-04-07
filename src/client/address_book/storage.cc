@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -34,23 +34,23 @@
 
 #include <fstream>
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 AddressBookStorage::AddressBookStorage() {
-  kovri::core::EnsurePath(GetAddressesPath());
+  xi2p::core::EnsurePath(GetAddressesPath());
 }
 
 bool AddressBookStorage::GetAddress(
-    const kovri::core::IdentHash& ident,
-    kovri::core::IdentityEx& address) const {
+    const xi2p::core::IdentHash& ident,
+    xi2p::core::IdentityEx& address) const {
   auto filename = GetAddressesPath() / (ident.ToBase32() + ".b32");
   std::ifstream file(filename.string(), std::ifstream::binary);
   if (!file)
     return false;
   file.seekg(0, std::ios::end);
   const std::size_t len = file.tellg();
-  if (len < kovri::core::DEFAULT_IDENTITY_SIZE) {
+  if (len < xi2p::core::DEFAULT_IDENTITY_SIZE) {
     LOG(error)
       << "AddressBookStorage: file " << filename << " is too short. " << len;
     return false;
@@ -65,11 +65,11 @@ bool AddressBookStorage::GetAddress(
   return true;
 }
 
-void AddressBookStorage::AddAddress(const kovri::core::IdentityEx& address)
+void AddressBookStorage::AddAddress(const xi2p::core::IdentityEx& address)
 {
   auto filename =
       GetAddressesPath() / (address.GetIdentHash().ToBase32() + ".b32");
-  kovri::core::OutputFileStream file(filename.string(), std::ofstream::binary);
+  xi2p::core::OutputFileStream file(filename.string(), std::ofstream::binary);
   if (!file.Good())
     throw std::runtime_error("failed to open file for address writing");
   const std::size_t len = address.GetFullLen();
@@ -82,7 +82,7 @@ void AddressBookStorage::AddAddress(const kovri::core::IdentityEx& address)
 /**
 // TODO(unassigned): currently unused
 void AddressBookStorage::RemoveAddress(
-    const kovri::core::IdentHash& ident) {
+    const xi2p::core::IdentHash& ident) {
   auto filename = GetPath() / (ident.ToBase32() + ".b32");
   if (boost::filesystem::exists(filename))
     boost::filesystem::remove(filename);
@@ -90,7 +90,7 @@ void AddressBookStorage::RemoveAddress(
 **/
 
 std::size_t AddressBookStorage::Load(
-    std::map<std::string, kovri::core::IdentHash>& addresses) {
+    std::map<std::string, xi2p::core::IdentHash>& addresses) {
   std::size_t num = 0;
   auto filename = core::GetPath(core::Path::AddressBook) / GetDefaultAddressesFilename();
   std::ifstream file(filename.string());
@@ -108,7 +108,7 @@ std::size_t AddressBookStorage::Load(
       if (pos != std::string::npos) {
         std::string name = host.substr(0, pos++);
         std::string addr = host.substr(pos);
-        kovri::core::IdentHash ident;
+        xi2p::core::IdentHash ident;
         if (!addr.empty())
           {
             ident.FromBase32(addr);
@@ -123,7 +123,7 @@ std::size_t AddressBookStorage::Load(
 }
 
 std::size_t AddressBookStorage::Save(
-    const std::map<std::string, kovri::core::IdentHash>& addresses) {
+    const std::map<std::string, xi2p::core::IdentHash>& addresses) {
   std::size_t num = 0;
   auto filename = core::GetPath(core::Path::AddressBook)/ GetDefaultAddressesFilename();
   std::ofstream file(filename.string(), std::ofstream::out);
@@ -140,4 +140,4 @@ std::size_t AddressBookStorage::Save(
 }
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p

@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -45,7 +45,7 @@
 
 #include "client/api/i2p_control/session.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 const std::size_t I2P_CONTROL_MAX_REQUEST_SIZE = 1024;
@@ -104,6 +104,6 @@ class I2PControlService {
 };
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_API_I2P_CONTROL_SERVER_H_

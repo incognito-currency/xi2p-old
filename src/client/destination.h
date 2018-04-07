@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -55,7 +55,7 @@
 
 #include "core/util/exception.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 const std::uint8_t PROTOCOL_TYPE_STREAMING = 6;
@@ -79,17 +79,17 @@ const int DEFAULT_OUTBOUND_TUNNELS_QUANTITY = 5;
 const char I2CP_PARAM_EXPLICIT_PEERS[] = "explicitPeers";
 const int STREAM_REQUEST_TIMEOUT = 60;  // in seconds
 
-typedef std::function<void (std::shared_ptr<kovri::client::Stream> stream)> StreamRequestComplete;
+typedef std::function<void (std::shared_ptr<xi2p::client::Stream> stream)> StreamRequestComplete;
 
-class ClientDestination : public kovri::core::GarlicDestination {
-  typedef std::function<void (std::shared_ptr<kovri::core::LeaseSet> leaseSet)> RequestComplete;
+class ClientDestination : public xi2p::core::GarlicDestination {
+  typedef std::function<void (std::shared_ptr<xi2p::core::LeaseSet> leaseSet)> RequestComplete;
   // leaseSet = nullptr means not found
   struct LeaseSetRequest {
     LeaseSetRequest(
         boost::asio::io_service& service)
         : request_time(0),
           request_timeout_timer(service) {}
-    std::set<kovri::core::IdentHash> excluded;
+    std::set<xi2p::core::IdentHash> excluded;
     std::uint64_t request_time;
     boost::asio::deadline_timer request_timeout_timer;
     RequestComplete request_complete;
@@ -97,7 +97,7 @@ class ClientDestination : public kovri::core::GarlicDestination {
 
  public:
   ClientDestination(
-      const kovri::core::PrivateKeys& keys,
+      const xi2p::core::PrivateKeys& keys,
       bool is_public,
       const std::map<std::string, std::string>* params = nullptr);
 
@@ -115,7 +115,7 @@ class ClientDestination : public kovri::core::GarlicDestination {
     return m_Service;
   }
 
-  std::shared_ptr<kovri::core::TunnelPool> GetTunnelPool() {
+  std::shared_ptr<xi2p::core::TunnelPool> GetTunnelPool() {
     return m_Pool;
   }
 
@@ -125,32 +125,32 @@ class ClientDestination : public kovri::core::GarlicDestination {
            m_Pool->GetOutboundTunnels().size() > 0;
   }
 
-  std::shared_ptr<const kovri::core::LeaseSet> FindLeaseSet(
-      const kovri::core::IdentHash& ident);
+  std::shared_ptr<const xi2p::core::LeaseSet> FindLeaseSet(
+      const xi2p::core::IdentHash& ident);
 
   bool RequestDestination(
-      const kovri::core::IdentHash& dest,
+      const xi2p::core::IdentHash& dest,
       RequestComplete request_complete = nullptr);
 
   // streaming
-  std::shared_ptr<kovri::client::StreamingDestination> CreateStreamingDestination(
+  std::shared_ptr<xi2p::client::StreamingDestination> CreateStreamingDestination(
       std::uint16_t port);  // additional
 
-  std::shared_ptr<kovri::client::StreamingDestination> GetStreamingDestination(
+  std::shared_ptr<xi2p::client::StreamingDestination> GetStreamingDestination(
       std::uint16_t port = 0) const;
 
   // following methods operate with default streaming destination
   void CreateStream(
       StreamRequestComplete stream_request_complete,
-      const kovri::core::IdentHash& dest,
+      const xi2p::core::IdentHash& dest,
       std::uint16_t port = 0);
 
-  std::shared_ptr<kovri::client::Stream> CreateStream(
-      std::shared_ptr<const kovri::core::LeaseSet> remote,
+  std::shared_ptr<xi2p::client::Stream> CreateStream(
+      std::shared_ptr<const xi2p::core::LeaseSet> remote,
       std::uint16_t port = 0);
 
   void AcceptStreams(
-      const kovri::client::StreamingDestination::Acceptor& acceptor);
+      const xi2p::client::StreamingDestination::Acceptor& acceptor);
 
   void StopAcceptingStreams();
 
@@ -164,7 +164,7 @@ class ClientDestination : public kovri::core::GarlicDestination {
   DatagramDestination* CreateDatagramDestination();
 
   // implements LocalDestination
-  const kovri::core::PrivateKeys& GetPrivateKeys() const {
+  const xi2p::core::PrivateKeys& GetPrivateKeys() const {
     return m_Keys;
   }
 
@@ -177,16 +177,16 @@ class ClientDestination : public kovri::core::GarlicDestination {
   }
 
   // implements GarlicDestination
-  std::shared_ptr<const kovri::core::LeaseSet> GetLeaseSet();
+  std::shared_ptr<const xi2p::core::LeaseSet> GetLeaseSet();
 
-  std::shared_ptr<kovri::core::TunnelPool> GetTunnelPool() const {
+  std::shared_ptr<xi2p::core::TunnelPool> GetTunnelPool() const {
     return m_Pool;
   }
 
   void HandleI2NPMessage(
       const std::uint8_t* buf,
       std::size_t len,
-      std::shared_ptr<kovri::core::InboundTunnel> from);
+      std::shared_ptr<xi2p::core::InboundTunnel> from);
 
   // override GarlicDestination
   bool SubmitSessionKey(
@@ -194,10 +194,10 @@ class ClientDestination : public kovri::core::GarlicDestination {
       const std::uint8_t* tag);
 
   void ProcessGarlicMessage(
-      std::shared_ptr<kovri::core::I2NPMessage> msg);
+      std::shared_ptr<xi2p::core::I2NPMessage> msg);
 
   void ProcessDeliveryStatusMessage(
-      std::shared_ptr<kovri::core::I2NPMessage> msg);
+      std::shared_ptr<xi2p::core::I2NPMessage> msg);
 
   void SetLeaseSetUpdated();
 
@@ -225,20 +225,20 @@ class ClientDestination : public kovri::core::GarlicDestination {
       std::size_t len);
 
   void HandleDeliveryStatusMessage(
-      std::shared_ptr<kovri::core::I2NPMessage> msg);
+      std::shared_ptr<xi2p::core::I2NPMessage> msg);
 
   void RequestLeaseSet(
-      const kovri::core::IdentHash& dest,
+      const xi2p::core::IdentHash& dest,
       RequestComplete request_complete);
 
   bool SendLeaseSetRequest(
-      const kovri::core::IdentHash& dest,
-      std::shared_ptr<const kovri::core::RouterInfo> next_floodfill,
+      const xi2p::core::IdentHash& dest,
+      std::shared_ptr<const xi2p::core::RouterInfo> next_floodfill,
       LeaseSetRequest* request);
 
   void HandleRequestTimoutTimer(
       const boost::system::error_code& ecode,
-      const kovri::core::IdentHash& dest);
+      const xi2p::core::IdentHash& dest);
 
   void HandleCleanupTimer(
       const boost::system::error_code& ecode);
@@ -251,36 +251,36 @@ class ClientDestination : public kovri::core::GarlicDestination {
   boost::asio::io_service m_Service;
   boost::asio::io_service::work m_Work;
 
-  kovri::core::PrivateKeys m_Keys;
+  xi2p::core::PrivateKeys m_Keys;
   std::uint8_t m_EncryptionPublicKey[256], m_EncryptionPrivateKey[256];
 
-  std::map<kovri::core::IdentHash,
-           std::shared_ptr<kovri::core::LeaseSet>> m_RemoteLeaseSets;
+  std::map<xi2p::core::IdentHash,
+           std::shared_ptr<xi2p::core::LeaseSet>> m_RemoteLeaseSets;
 
-  std::map<kovri::core::IdentHash,
+  std::map<xi2p::core::IdentHash,
            LeaseSetRequest *> m_LeaseSetRequests;
 
-  std::shared_ptr<kovri::core::TunnelPool> m_Pool;
-  std::shared_ptr<kovri::core::LeaseSet> m_LeaseSet;
+  std::shared_ptr<xi2p::core::TunnelPool> m_Pool;
+  std::shared_ptr<xi2p::core::LeaseSet> m_LeaseSet;
 
   bool m_IsPublic;
 
   std::uint32_t m_PublishReplyToken;
-  std::set<kovri::core::IdentHash> m_ExcludedFloodfills;  // for publishing
+  std::set<xi2p::core::IdentHash> m_ExcludedFloodfills;  // for publishing
 
-  std::shared_ptr<kovri::client::StreamingDestination> m_StreamingDestination;  // default
+  std::shared_ptr<xi2p::client::StreamingDestination> m_StreamingDestination;  // default
 
   std::map<std::uint16_t,
-           std::shared_ptr<kovri::client::StreamingDestination>> m_StreamingDestinationsByPorts;
+           std::shared_ptr<xi2p::client::StreamingDestination>> m_StreamingDestinationsByPorts;
 
   DatagramDestination* m_DatagramDestination;
 
   boost::asio::deadline_timer m_PublishConfirmationTimer, m_CleanupTimer;
 
-  kovri::core::Exception m_Exception;
+  xi2p::core::Exception m_Exception;
 };
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_DESTINATION_H_

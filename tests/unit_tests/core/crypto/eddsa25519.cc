@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -57,20 +57,20 @@ struct EDDSAFixture {
     0xed, 0x62
   };
 
-  kovri::core::EDDSA25519Verifier verifier;
-  kovri::core::EDDSA25519Signer signer;
+  xi2p::core::EDDSA25519Verifier verifier;
+  xi2p::core::EDDSA25519Signer signer;
 };
 
 BOOST_FIXTURE_TEST_CASE(EdDSA25519KeyLength, EDDSAFixture) {
   BOOST_CHECK_EQUAL(
       verifier.GetPublicKeyLen(),
-      kovri::core::EDDSA25519_PUBLIC_KEY_LENGTH);
+      xi2p::core::EDDSA25519_PUBLIC_KEY_LENGTH);
 }
 
 BOOST_FIXTURE_TEST_CASE(EdDSA25519SignatureLength, EDDSAFixture) {
   BOOST_CHECK_EQUAL(
       verifier.GetSignatureLen(),
-      kovri::core::EDDSA25519_SIGNATURE_LENGTH);
+      xi2p::core::EDDSA25519_SIGNATURE_LENGTH);
 }
 
 BOOST_FIXTURE_TEST_CASE(EdDSA25519Sign, EDDSAFixture) {

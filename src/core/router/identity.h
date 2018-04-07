@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -48,13 +48,13 @@
 #include "core/util/exception.h"
 #include "core/util/tag.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 typedef Tag<32> IdentHash;
 
 inline std::string GetB32Address(
-    const kovri::core::IdentHash& ident) {
+    const xi2p::core::IdentHash& ident) {
   return ident.ToBase32().append(".b32.i2p");
 }
 
@@ -202,7 +202,7 @@ class IdentityEx {
  private:
   Identity m_StandardIdentity;
   IdentHash m_IdentHash;
-  mutable std::unique_ptr<kovri::core::Verifier> m_Verifier;
+  mutable std::unique_ptr<xi2p::core::Verifier> m_Verifier;
   std::uint16_t m_ExtendedLen;
   std::unique_ptr<std::uint8_t[]> m_ExtendedBuffer;
   core::Exception m_Exception;
@@ -269,7 +269,7 @@ class PrivateKeys {  // for eepsites
   std::uint8_t m_PrivateKey[256];
   // assume private key doesn't exceed 1024 bytes
   std::uint8_t m_SigningPrivateKey[1024];
-  std::unique_ptr<kovri::core::Signer> m_Signer;
+  std::unique_ptr<xi2p::core::Signer> m_Signer;
 };
 
 // kademlia
@@ -311,16 +311,16 @@ class RoutingDestination {
 
   virtual bool IsDestination() const = 0;  // for garlic
 
-  std::unique_ptr<const kovri::core::ElGamalEncryption>& GetElGamalEncryption() const {
+  std::unique_ptr<const xi2p::core::ElGamalEncryption>& GetElGamalEncryption() const {
     if (!m_ElGamalEncryption)
       m_ElGamalEncryption.reset(
-          new kovri::core::ElGamalEncryption(GetEncryptionPublicKey()));
+          new xi2p::core::ElGamalEncryption(GetEncryptionPublicKey()));
     return m_ElGamalEncryption;
   }
 
  private:
   // use lazy initialization
-  mutable std::unique_ptr<const kovri::core::ElGamalEncryption> m_ElGamalEncryption;
+  mutable std::unique_ptr<const xi2p::core::ElGamalEncryption> m_ElGamalEncryption;
 };
 
 class LocalDestination {
@@ -353,6 +353,6 @@ class LocalDestination {
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_IDENTITY_H_

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2017, The Kovri I2P Router Project
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project
  *
  * All rights reserved.
  *
@@ -40,7 +40,7 @@
 
 #include "core/util/byte_stream.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 /// @enum SSUSize
 /// @brief Constants used to represent sizes in SSU
@@ -368,11 +368,11 @@ class SSUSessionConfirmedPacket : public SSUPacket {
   /// @brief Sets Alice's remote router identity fragment
   /// @note Assumes content is valid (based on position)
   void SetRemoteRouterIdentity(
-      const kovri::core::IdentityEx& identity);
+      const xi2p::core::IdentityEx& identity);
 
   /// @return Reference to the router identity to be included in the
   ///         SessionConfirmed message
-  kovri::core::IdentityEx& GetRemoteRouterIdentity();
+  xi2p::core::IdentityEx& GetRemoteRouterIdentity();
 
   /// @brief Sets 4 byte signed-on timestamp
   /// @note Assumes content is valid (based on position)
@@ -397,7 +397,7 @@ class SSUSessionConfirmedPacket : public SSUPacket {
   std::size_t GetSize() const;
 
  private:
-  kovri::core::IdentityEx m_RemoteIdentity;
+  xi2p::core::IdentityEx m_RemoteIdentity;
   std::uint8_t* m_Signature;
   std::uint32_t m_SignedOnTime;
 };
@@ -730,7 +730,7 @@ class SSUSessionDestroyedPacket : public SSUPacket {};
 
 /// @class SSUPacketParser
 /// @brief Constitutes SSU packet parsing
-class SSUPacketParser : private kovri::core::InputByteStream {
+class SSUPacketParser : private xi2p::core::InputByteStream {
  public:
   SSUPacketParser() = default;
 
@@ -790,7 +790,7 @@ class SSUPacketParser : private kovri::core::InputByteStream {
 
 /// @class SSUPacketBuilder
 /// @brief Constitutes SSU packet building
-class SSUPacketBuilder final : public kovri::core::OutputByteStream {
+class SSUPacketBuilder final : public xi2p::core::OutputByteStream {
  public:
   SSUPacketBuilder() = default;
 
@@ -863,6 +863,6 @@ class SSUPacketBuilder final : public kovri::core::OutputByteStream {
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_TRANSPORTS_SSU_PACKET_H_

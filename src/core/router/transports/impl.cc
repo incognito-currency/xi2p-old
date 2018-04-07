@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -43,7 +43,7 @@
 
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 DHKeysPairSupplier::DHKeysPairSupplier(
@@ -92,8 +92,8 @@ void DHKeysPairSupplier::CreateDHKeysPairs(
   // TODO(anonimal): this try block should be handled entirely by caller
   try {
     for (std::size_t i = 0; i < num; i++) {
-      auto pair = std::make_unique<kovri::core::DHKeysPair>();
-      kovri::core::DiffieHellman().GenerateKeyPair(
+      auto pair = std::make_unique<xi2p::core::DHKeysPair>();
+      xi2p::core::DiffieHellman().GenerateKeyPair(
           pair->private_key.data(),
           pair->public_key.data());
       std::unique_lock<std::mutex>  l(m_AcquiredMutex);
@@ -120,7 +120,7 @@ std::unique_ptr<DHKeysPair> DHKeysPairSupplier::Acquire() {
   auto pair = std::make_unique<DHKeysPair>();
   // TODO(anonimal): this try block should be larger or handled entirely by caller
   try {
-    kovri::core::DiffieHellman().GenerateKeyPair(
+    xi2p::core::DiffieHellman().GenerateKeyPair(
         pair->private_key.data(),
         pair->public_key.data());
   } catch (...) {
@@ -249,7 +249,7 @@ void Transports::Run() {
 
 void Transports::UpdateBandwidth() {
   LOG(debug) << "Transports: updating bandwidth";
-  const std::uint64_t ts = kovri::core::GetMillisecondsSinceEpoch();
+  const std::uint64_t ts = xi2p::core::GetMillisecondsSinceEpoch();
   if (m_LastBandwidthUpdateTime > 0) {
     auto delta = ts - m_LastBandwidthUpdateTime;
     if (delta > 0) {
@@ -276,16 +276,16 @@ bool Transports::IsBandwidthExceeded() const {
 }
 
 void Transports::SendMessage(
-    const kovri::core::IdentHash& ident,
-    std::shared_ptr<kovri::core::I2NPMessage> msg) {
+    const xi2p::core::IdentHash& ident,
+    std::shared_ptr<xi2p::core::I2NPMessage> msg) {
   SendMessages(
       ident,
-      std::vector<std::shared_ptr<kovri::core::I2NPMessage>> {msg});
+      std::vector<std::shared_ptr<xi2p::core::I2NPMessage>> {msg});
 }
 
 void Transports::SendMessages(
-    const kovri::core::IdentHash& ident,
-    const std::vector<std::shared_ptr<kovri::core::I2NPMessage>>& msgs) {
+    const xi2p::core::IdentHash& ident,
+    const std::vector<std::shared_ptr<xi2p::core::I2NPMessage>>& msgs) {
   LOG(debug) << "Transports: sending messages";
   m_Service.post(
       std::bind(
@@ -296,23 +296,23 @@ void Transports::SendMessages(
 }
 
 void Transports::PostMessages(
-    kovri::core::IdentHash ident,
-    std::vector<std::shared_ptr<kovri::core::I2NPMessage>> msgs) {
+    xi2p::core::IdentHash ident,
+    std::vector<std::shared_ptr<xi2p::core::I2NPMessage>> msgs) {
   LOG(debug) << "Transports: posting messages";
   if (ident == context.GetRouterInfo().GetIdentHash()) {
     // we send it to ourself
     for (auto msg : msgs)
-      kovri::core::HandleI2NPMessage(msg);
+      xi2p::core::HandleI2NPMessage(msg);
     return;
   }
   auto it = m_Peers.find(ident);
   if (it == m_Peers.end()) {
     bool connected = false;
     try {
-      auto router = kovri::core::netdb.FindRouter(ident);
+      auto router = xi2p::core::netdb.FindRouter(ident);
       it = m_Peers.insert(std::make_pair(
           ident,
-          Peer{ 0, router, {}, kovri::core::GetSecondsSinceEpoch(), {} })).first;
+          Peer{ 0, router, {}, xi2p::core::GetSecondsSinceEpoch(), {} })).first;
       connected = ConnectToPeer(ident, it->second);
     } catch (const std::exception& ex) {
       LOG(error) << "Transports: " << __func__ << ", '" << ex.what() << "'";
@@ -329,11 +329,11 @@ void Transports::PostMessages(
 }
 
 bool Transports::ConnectToPeer(
-    const kovri::core::IdentHash& ident,
+    const xi2p::core::IdentHash& ident,
     Peer& peer) {
   if (!peer.router) {  // We don't have the RI
     LOG(debug) << "Transports: RI not found, requesting";
-    kovri::core::netdb.RequestDestination(
+    xi2p::core::netdb.RequestDestination(
         ident,
         std::bind(
             &Transports::RequestComplete,
@@ -371,7 +371,7 @@ bool Transports::ConnectToPeer(
 }
 
 bool Transports::ConnectToPeerNTCP(
-    const kovri::core::IdentHash& ident,
+    const xi2p::core::IdentHash& ident,
     Peer& peer) {
   if (!m_NTCPServer)
     return false;  // NTCP not supported
@@ -410,8 +410,8 @@ bool Transports::ConnectToPeerSSU(Peer& peer) {
 }
 
 void Transports::RequestComplete(
-    std::shared_ptr<const kovri::core::RouterInfo> router,
-    const kovri::core::IdentHash& ident) {
+    std::shared_ptr<const xi2p::core::RouterInfo> router,
+    const xi2p::core::IdentHash& ident) {
   m_Service.post(
       std::bind(
           &Transports::HandleRequestComplete,
@@ -421,8 +421,8 @@ void Transports::RequestComplete(
 }
 
 void Transports::HandleRequestComplete(
-    std::shared_ptr<const kovri::core::RouterInfo> router,
-    const kovri::core::IdentHash& ident) {
+    std::shared_ptr<const xi2p::core::RouterInfo> router,
+    const xi2p::core::IdentHash& ident) {
   auto it = m_Peers.find(ident);
   if (it != m_Peers.end()) {
     if (router) {
@@ -440,7 +440,7 @@ void Transports::HandleRequestComplete(
 
 void Transports::NTCPResolve(
     const std::string& addr,
-    const kovri::core::IdentHash& ident) {
+    const xi2p::core::IdentHash& ident) {
   auto resolver =
     std::make_shared<boost::asio::ip::tcp::resolver>(m_Service);
   resolver->async_resolve(
@@ -459,7 +459,7 @@ void Transports::NTCPResolve(
 void Transports::HandleNTCPResolve(
     const boost::system::error_code& ecode,
     boost::asio::ip::tcp::resolver::iterator it,
-    kovri::core::IdentHash ident,
+    xi2p::core::IdentHash ident,
     std::shared_ptr<boost::asio::ip::tcp::resolver>) {
   auto it1 = m_Peers.find(ident);
   if (it1 != m_Peers.end()) {
@@ -484,7 +484,7 @@ void Transports::HandleNTCPResolve(
 
 // TODO(unassigned): why is this never called anywhere?
 void Transports::CloseSession(
-    std::shared_ptr<const kovri::core::RouterInfo> router) {
+    std::shared_ptr<const xi2p::core::RouterInfo> router) {
   if (!router)
     return;
   LOG(debug)
@@ -498,7 +498,7 @@ void Transports::CloseSession(
 }
 
 void Transports::PostCloseSession(
-    std::shared_ptr<const kovri::core::RouterInfo> router) {
+    std::shared_ptr<const xi2p::core::RouterInfo> router) {
   auto ssu_session =
     m_SSUServer ? m_SSUServer->FindSession(router) : nullptr;
   // try SSU first
@@ -527,12 +527,12 @@ void Transports::DetectExternalIP() {
   context.SetState(RouterState::Testing);
   // TODO(unassigned): Why 5 times? (make constant)
   for (int i = 0; i < 5; i++) {
-    auto router = kovri::core::netdb.GetRandomPeerTestRouter();
+    auto router = xi2p::core::netdb.GetRandomPeerTestRouter();
     if (router && router->HasSSU()) {
       m_SSUServer->GetSession(router, true);  // peer test
     } else {
       // if not peer test capable routers found pick any
-      router = kovri::core::netdb.GetRandomRouter();
+      router = xi2p::core::netdb.GetRandomRouter();
       if (router && router->HasSSU())
         m_SSUServer->GetSession(router);  // no peer test
     }
@@ -566,7 +566,7 @@ void Transports::PeerConnected(
           std::make_pair(
               ident,
               Peer{ 0, nullptr, { session },
-              kovri::core::GetSecondsSinceEpoch(), {} }));
+              xi2p::core::GetSecondsSinceEpoch(), {} }));
     }
   });
 }
@@ -590,7 +590,7 @@ void Transports::PeerDisconnected(
 }
 
 bool Transports::IsConnected(
-    const kovri::core::IdentHash& ident) const {
+    const xi2p::core::IdentHash& ident) const {
   LOG(debug) << "Transports: testing if connected";
   auto it = m_Peers.find(ident);
   if (it != m_Peers.end()) {
@@ -605,7 +605,7 @@ void Transports::HandlePeerCleanupTimer(
     const boost::system::error_code& ecode) {
   LOG(debug) << "Transports: handling peer cleanup timer";
   if (ecode != boost::asio::error::operation_aborted) {
-    auto ts = kovri::core::GetSecondsSinceEpoch();
+    auto ts = xi2p::core::GetSecondsSinceEpoch();
     for (auto it = m_Peers.begin(); it != m_Peers.end();) {
       if (it->second.sessions.empty() &&
           ts > it->second.creation_time + SESSION_CREATION_TIMEOUT) {
@@ -633,7 +633,7 @@ void Transports::HandlePeerCleanupTimer(
   }
 }
 
-std::shared_ptr<const kovri::core::RouterInfo> Transports::GetRandomPeer() const {
+std::shared_ptr<const xi2p::core::RouterInfo> Transports::GetRandomPeer() const {
   LOG(debug) << "Transports: getting random peer";
   if (m_Peers.empty())  // ensure m.Peers.size() >= 1
     return nullptr;
@@ -641,13 +641,13 @@ std::shared_ptr<const kovri::core::RouterInfo> Transports::GetRandomPeer() const
   auto it = m_Peers.begin();
   std::advance(
       it,
-      kovri::core::RandInRange32(0, s - 1));
+      xi2p::core::RandInRange32(0, s - 1));
   return it->second.router;
 }
 
 // TODO(anonimal): optimize (will alter design)
 std::string Transports::GetFormattedSessionInfo(
-    std::shared_ptr<const kovri::core::RouterInfo>& router) const {
+    std::shared_ptr<const xi2p::core::RouterInfo>& router) const {
   if (router) {
     std::ostringstream info;
     info << " [" << router->GetIdentHashAbbreviation() << "] ";
@@ -657,5 +657,5 @@ std::string Transports::GetFormattedSessionInfo(
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 

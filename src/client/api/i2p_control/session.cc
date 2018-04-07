@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -49,18 +49,18 @@
 
 #include "version.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 JsonObject TunnelToJsonObject(
-    kovri::core::Tunnel* tunnel) {
+    xi2p::core::Tunnel* tunnel) {
   JsonObject obj;
   std::stringstream ss;
   tunnel->GetTunnelConfig()->Print(ss);  // TODO(unassigned): use a JsonObject
   obj["layout"] = JsonObject(ss.str());
   const auto state = tunnel->GetState();
-  if (state == kovri::core::e_TunnelStateFailed)
+  if (state == xi2p::core::e_TunnelStateFailed)
      obj["state"] = JsonObject("failed");
-  else if (state == kovri::core::e_TunnelStateExpiring)
+  else if (state == xi2p::core::e_TunnelStateExpiring)
      obj["state"] = JsonObject("expiring");
   return obj;
 }
@@ -168,7 +168,7 @@ bool I2PControlSession::Authenticate(
       response->SetError(ErrorCode::NonexistentToken);
       return false;
     }
-  else if (kovri::core::GetSecondsSinceEpoch() - it->second > TOKEN_LIFETIME)
+  else if (xi2p::core::GetSecondsSinceEpoch() - it->second > TOKEN_LIFETIME)
     {
       response->SetError(ErrorCode::ExpiredToken);
       return false;
@@ -179,7 +179,7 @@ bool I2PControlSession::Authenticate(
 std::string I2PControlSession::GenerateToken() const {
   // Generate random data for token
   std::array<std::uint8_t, TOKEN_SIZE> rand {{}};
-  kovri::core::RandBytes(rand.data(), TOKEN_SIZE);
+  xi2p::core::RandBytes(rand.data(), TOKEN_SIZE);
   // Create base16 token from random data
   std::stringstream token;
   for (std::size_t i(0); i < rand.size(); i++)
@@ -214,7 +214,7 @@ void I2PControlSession::HandleAuthenticate(
   m_Tokens.insert(
       std::make_pair(
         token,
-        kovri::core::GetSecondsSinceEpoch()));
+        xi2p::core::GetSecondsSinceEpoch()));
 }
 
 void I2PControlSession::HandleEcho(const Request& request, Response* response)
@@ -262,13 +262,13 @@ void I2PControlSession::HandleRouterInfo(
           case RouterInfo::BWIn1S:
             response->SetParam(
                 pair.first,
-                static_cast<double>(kovri::core::transports.GetInBandwidth()));
+                static_cast<double>(xi2p::core::transports.GetInBandwidth()));
             break;
 
           case RouterInfo::BWOut1S:
             response->SetParam(
                 pair.first,
-                static_cast<double>(kovri::core::transports.GetOutBandwidth()));
+                static_cast<double>(xi2p::core::transports.GetOutBandwidth()));
             break;
 
           case RouterInfo::NetStatus:
@@ -354,7 +354,7 @@ void I2PControlSession::HandleRouterManager(
 void I2PControlSession::HandleTunnelsInList(Response* response)
 {
   JsonObject list;
-  for (auto pair : kovri::core::tunnels.GetInboundTunnels()) {
+  for (auto pair : xi2p::core::tunnels.GetInboundTunnels()) {
     const std::string id = std::to_string(pair.first);
     list[id] = TunnelToJsonObject(pair.second.get());
     list[id]["bytes"] = JsonObject(
@@ -366,7 +366,7 @@ void I2PControlSession::HandleTunnelsInList(Response* response)
 void I2PControlSession::HandleTunnelsOutList(Response* response)
 {
   JsonObject list;
-  for (auto tunnel : kovri::core::tunnels.GetOutboundTunnels()) {
+  for (auto tunnel : xi2p::core::tunnels.GetOutboundTunnels()) {
     const std::string id = std::to_string(
         tunnel->GetTunnelID());
     list[id] = TunnelToJsonObject(tunnel.get());
@@ -387,7 +387,7 @@ void I2PControlSession::HandleShutdown(Response* response)
       [this](
         const boost::system::error_code&) {
       std::lock_guard<std::mutex> lock(m_ShutdownMutex);
-      kovri::client::context.RequestShutdown();
+      xi2p::client::context.RequestShutdown();
       });
 }
 
@@ -396,7 +396,7 @@ void I2PControlSession::HandleShutdownGraceful(Response* response)
   // Stop accepting tunnels
   core::context.SetAcceptsTunnels(false);
   // Get tunnel expiry time
-  std::uint64_t timeout = kovri::core::tunnels.GetTransitTunnelsExpirationTimeout();
+  std::uint64_t timeout = xi2p::core::tunnels.GetTransitTunnelsExpirationTimeout();
   LOG(info)
     << "I2PControlSession: graceful shutdown requested."
     << "Will shutdown after " << timeout << " seconds";
@@ -409,7 +409,7 @@ void I2PControlSession::HandleShutdownGraceful(Response* response)
       [this](
         const boost::system::error_code&) {
       std::lock_guard<std::mutex> lock(m_ShutdownMutex);
-      kovri::client::context.RequestShutdown();
+      xi2p::client::context.RequestShutdown();
       });
 }
 
@@ -428,7 +428,7 @@ void I2PControlSession::ExpireTokens(
     return;  // Do not restart timer, shutting down
   StartExpireTokensJob();
   LOG(debug) << "I2PControlSession: expiring tokens";
-  const std::uint64_t now = kovri::core::GetSecondsSinceEpoch();
+  const std::uint64_t now = xi2p::core::GetSecondsSinceEpoch();
   std::lock_guard<std::mutex> lock(m_TokensMutex);
   for (auto it = m_Tokens.begin(); it != m_Tokens.end(); ) {
     if (now - it->second > TOKEN_LIFETIME)
@@ -450,4 +450,4 @@ void I2PControlSession::StartExpireTokensJob() {
 }
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p

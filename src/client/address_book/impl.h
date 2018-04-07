@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -55,7 +55,7 @@
 #include "core/util/filesystem.h"
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 class AddressBookSubscriber;
@@ -92,13 +92,13 @@ class AddressBook : public AddressBookDefaults {
   /// @notes Used for in-net downloads only
   bool CheckAddressIdentHashFound(
       const std::string& address,
-      kovri::core::IdentHash& ident);
+      xi2p::core::IdentHash& ident);
 
   /// @brief Finds address within loaded subscriptions
   /// @returns Unique pointer to identity hash of loaded address
   /// @param address Const reference to address
   /// @notes Used for in-net downloads only
-  std::unique_ptr<const kovri::core::IdentHash> GetLoadedAddressIdentHash(
+  std::unique_ptr<const xi2p::core::IdentHash> GetLoadedAddressIdentHash(
       const std::string& address);
 
   /// @brief Used for destination to fetch subscription(s) from publisher(s)
@@ -107,18 +107,9 @@ class AddressBook : public AddressBookDefaults {
     return m_SharedLocalDestination;
   }
 
-  /// @brief Insert address into in-memory storage
-  /// @param host Human-readable hostname to insert
-  /// @param address Hash of address to insert
-  /// @notes Throws if host or address are duplicates
-  void InsertAddress(
-      const std::string& host,
-      const kovri::core::IdentHash& address);
-
   /// @brief Inserts address into address book from HTTP Proxy jump service
   /// @param address Const reference to human-readable address
   /// @param base64 Const reference to Base64 address
-  // TODO(oneiric): remove after separating HTTP Proxy from Address Book
   void InsertAddressIntoStorage(
       const std::string& address,
       const std::string& base64);
@@ -145,7 +136,7 @@ class AddressBook : public AddressBookDefaults {
   /// @brief Validates subscription, saves hosts to file
   /// @param stream Stream to process
   /// @return Vector of paired hostname to identity
-  const std::map<std::string, kovri::core::IdentityEx>
+  const std::map<std::string, xi2p::core::IdentityEx>
   ValidateSubscription(std::istream& stream);
 
   /// @brief Sets the download state as complete and resets timer as needed
@@ -160,25 +151,25 @@ class AddressBook : public AddressBookDefaults {
   /// @param ident Const reference to identity hash
   /// @return Identity hash's .b32.i2p address
   std::string GetB32AddressFromIdentHash(
-      const kovri::core::IdentHash& ident) {
+      const xi2p::core::IdentHash& ident) {
     return GetB32Address(ident);
   }
 
   /**
   // TODO(unassigned): currently unused
   std::string ToAddress(
-      const kovri::core::IdentityEx& ident) {
+      const xi2p::core::IdentityEx& ident) {
     return ToAddress(ident.GetAddressIdentHash());
   }
 
   // TODO(unassigned): currently unused
   void InsertAddress(
-      const kovri::core::IdentityEx& address);
+      const xi2p::core::IdentityEx& address);
 
   // TODO(unassigned): currently unused
   bool GetAddress(
       const std::string& address,
-      kovri::core::IdentityEx& identity);
+      xi2p::core::IdentityEx& identity);
   **/
 
  private:
@@ -224,7 +215,7 @@ class AddressBook : public AddressBookDefaults {
 
   /// @var m_Addresses
   /// @brief Map of human readable addresses to identity hashes
-  std::map<std::string, kovri::core::IdentHash> m_Addresses;
+  std::map<std::string, xi2p::core::IdentHash> m_Addresses;
 
   /// @var m_Storage
   /// @brief Unique pointer to address book storage implementation
@@ -281,6 +272,6 @@ class AddressBookSubscriber {
 };
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_ADDRESS_BOOK_IMPL_H_

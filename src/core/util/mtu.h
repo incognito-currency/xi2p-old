@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -39,7 +39,7 @@
 
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 // TODO(anonimal): enum refactor
@@ -51,6 +51,6 @@ std::uint16_t GetMTU(
     const boost::asio::ip::address& local_address);
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif // SRC_CORE_UTIL_MTU_H_

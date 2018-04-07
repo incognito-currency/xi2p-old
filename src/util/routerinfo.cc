@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -39,11 +39,10 @@
 #include "core/util/exception.h"
 #include "core/util/filesystem.h"
 #include "core/util/log.h"
-#include "core/util/config.h"
 #include "version.h"  // NOLINT(build/include)
 
 namespace bpo = boost::program_options;
-namespace core = kovri::core;
+namespace core = xi2p::core;
 
 RouterInfoCommand::RouterInfoCommand()
 {
@@ -54,9 +53,7 @@ RouterInfoCommand::RouterInfoCommand()
   bpo::options_description create_options("Create options");
   create_options.add_options()(
       "create,c", bpo::bool_switch()->default_value(false))(
-      "host",
-      bpo::value<core::Configuration::ListParameter<std::string, 2>>()->default_value(
-          core::Configuration::ListParameter<std::string, 2>("127.0.0.1")))(
+      "host", bpo::value<std::string>()->default_value("127.0.0.1"))(
       "port", bpo::value<int>()->default_value(0))(
       "floodfill,f",
       bpo::value<bool>()->default_value(false)->value_name("bool"))(
@@ -77,10 +74,8 @@ void RouterInfoCommand::PrintUsage(const std::string& name) const
 {
   LOG(info) << "Syntax: " << name << m_Options;
   LOG(info) << "Example: " << name << " routerInfo-(...).dat";
-  LOG(info) << "or: " << name
-            << " --create --host "
-               "192.168.1.1,2a01:e35:8b5c:b240:71a2:6750:8d4:47fa --port 10100 "
-               "--floodfill 1 --bandwidth P";
+  LOG(info) << "or: " << name << " --create --host 192.168.1.1 --port 10100 "
+                                 "--floodfill 1 --bandwidth P";
 }
 
 bool RouterInfoCommand::Impl(
@@ -121,7 +116,7 @@ bool RouterInfoCommand::Impl(
                             "for creation";
               return false;
             }
-          auto hosts = vm["host"].as<core::Configuration::ListParameter<std::string, 2>>();
+          auto host = vm["host"].as<std::string>();
           auto port = vm["port"].defaulted() ? core::RandInRange32(
                                                    core::RouterInfo::MinPort,
                                                    core::RouterInfo::MaxPort)
@@ -139,14 +134,12 @@ bool RouterInfoCommand::Impl(
           // Generate private key
           core::PrivateKeys keys = core::PrivateKeys::CreateRandomKeys(
               core::DEFAULT_ROUTER_SIGNING_KEY_TYPE);
-
-          // Read and fill the RI points
-          std::vector<std::pair<std::string, std::uint16_t>> points;
-          for (const auto& host : hosts.values)
-            points.emplace_back(host, port);
           // Create router info
           core::RouterInfo routerInfo(
-              keys, points, std::make_pair(has_ntcp, has_ssu), caps);
+              keys,
+              std::make_pair(host, port),
+              std::make_pair(has_ntcp, has_ssu),
+              caps);
           // Set capabilities after creation to allow for disabling
           if (vm["ssuintroducer"].as<bool>())
             caps |= core::RouterInfo::Cap::SSUIntroducer;

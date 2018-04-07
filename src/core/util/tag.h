@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -41,7 +41,7 @@
 
 #include "core/crypto/radix.h"
 
-namespace kovri
+namespace xi2p
 {
 namespace core
 {
@@ -149,6 +149,6 @@ class Tag
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_UTIL_TAG_H_

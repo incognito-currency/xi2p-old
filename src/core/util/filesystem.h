@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -45,7 +45,7 @@
 
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 /// @class StringStream
@@ -321,10 +321,10 @@ const boost::filesystem::path EnsurePath(const boost::filesystem::path& path);
 /// @brief Key for directory paths
 enum struct Path : std::uint8_t
 {
-  /// @brief Kovri default data directory
+  /// @brief Xi2p default data directory
   DefaultData,
 
-  /// @brief Kovri data directory
+  /// @brief Xi2p data directory
   Data,
 
   /// @brief Core data directory
@@ -361,13 +361,13 @@ enum struct Path : std::uint8_t
 /// @return Filesystem paths
 /// @param path Key of which path to return
 /// @notes On custom path, or default path:
-///   Windows < Vista: C:\Documents and Settings\Username\Application Data\Kovri
-///   Windows >= Vista: C:\Users\Username\AppData\Roaming\Kovri
-///   OS X: ~/Library/Application Support/Kovri
-///   *nix: ~/.kovri
+///   Windows < Vista: C:\Documents and Settings\Username\Application Data\Xi2p
+///   Windows >= Vista: C:\Users\Username\AppData\Roaming\Xi2p
+///   OS X: ~/Library/Application Support/Xi2p
+///   *nix: ~/.xi2p
 boost::filesystem::path GetPath(Path path);
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_UTIL_FILESYSTEM_H_

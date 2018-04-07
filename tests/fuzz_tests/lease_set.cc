@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -31,7 +31,7 @@
 #include "tests/fuzz_tests/lease_set.h"
 #include "core/util/log.h"
 
-namespace kovri
+namespace xi2p
 {
 namespace fuzz
 {
@@ -46,13 +46,13 @@ int LeaseSet::Impl(const uint8_t* data, size_t size)
   try
     {
       if (!m_LeaseSet)
-        m_LeaseSet.reset(new kovri::core::LeaseSet(data, size));
+        m_LeaseSet.reset(new xi2p::core::LeaseSet(data, size));
       else
         m_LeaseSet->Update(data, size);
     }
   catch (...)
     {
-      kovri::core::Exception ex;
+      xi2p::core::Exception ex;
       ex.Dispatch(__func__);
       return 0;
     }
@@ -60,4 +60,4 @@ int LeaseSet::Impl(const uint8_t* data, size_t size)
 }
 
 }  // namespace fuzz
-}  // namespace kovri
+}  // namespace xi2p

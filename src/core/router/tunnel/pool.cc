@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -43,13 +43,13 @@
 #include "core/util/log.h"
 #include "core/util/timestamp.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 // TODO(anonimal): bytestream refactor
 
 TunnelPool::TunnelPool(
-    kovri::core::GarlicDestination* local_destination,
+    xi2p::core::GarlicDestination* local_destination,
     int num_inbound_hops,
     int num_outbound_hops,
     int num_inbound_tunnels,
@@ -66,7 +66,7 @@ TunnelPool::~TunnelPool() {
 }
 
 void TunnelPool::SetExplicitPeers(
-    std::shared_ptr<std::vector<kovri::core::IdentHash> > explicit_peers) {
+    std::shared_ptr<std::vector<xi2p::core::IdentHash> > explicit_peers) {
   m_ExplicitPeers = explicit_peers;
   if (m_ExplicitPeers) {
     int size = m_ExplicitPeers->size();
@@ -184,7 +184,7 @@ typename TTunnels::value_type TunnelPool::GetNextTunnel(
     typename TTunnels::value_type excluded) const {
   if (tunnels.empty ())
     return nullptr;
-  std::uint32_t ind = kovri::core::RandInRange32(0, tunnels.size() / 2);
+  std::uint32_t ind = xi2p::core::RandInRange32(0, tunnels.size() / 2);
   std::uint32_t i = 0;
   typename TTunnels::value_type tunnel = nullptr;
   for (auto it : tunnels) {
@@ -283,7 +283,7 @@ void TunnelPool::TestTunnels() {
       it2++;
     }
     if (!failed) {
-      std::uint32_t msg_ID = kovri::core::Rand<std::uint32_t>();
+      std::uint32_t msg_ID = xi2p::core::Rand<std::uint32_t>();
       m_Tests[msg_ID] = std::make_pair(*it1, *it2);
       (*it1)->SendTunnelDataMsg(
           (*it2)->GetNextIdentHash(),
@@ -319,7 +319,7 @@ void TunnelPool::ProcessDeliveryStatus(
       it->second.second->SetState(e_TunnelStateEstablished);
     LOG(debug)
       << "TunnelPool: tunnel test " << it->first
-      << " successful: " << kovri::core::GetMillisecondsSinceEpoch() - timestamp
+      << " successful: " << xi2p::core::GetMillisecondsSinceEpoch() - timestamp
       << " milliseconds";
     m_Tests.erase(it);
   } else {
@@ -330,20 +330,20 @@ void TunnelPool::ProcessDeliveryStatus(
   }
 }
 
-std::shared_ptr<const kovri::core::RouterInfo> TunnelPool::SelectNextHop(
-    std::shared_ptr<const kovri::core::RouterInfo> prev_hop) const {
+std::shared_ptr<const xi2p::core::RouterInfo> TunnelPool::SelectNextHop(
+    std::shared_ptr<const xi2p::core::RouterInfo> prev_hop) const {
   // TODO(unassigned): implement it better
   bool is_exploratory = (m_LocalDestination == &context);
   auto hop = is_exploratory ?
-    kovri::core::netdb.GetRandomRouter(prev_hop) :
-    kovri::core::netdb.GetHighBandwidthRandomRouter(prev_hop);
+    xi2p::core::netdb.GetRandomRouter(prev_hop) :
+    xi2p::core::netdb.GetHighBandwidthRandomRouter(prev_hop);
   if (!hop || hop->GetProfile ()->IsBad())
-    hop = kovri::core::netdb.GetRandomRouter();
+    hop = xi2p::core::netdb.GetRandomRouter();
   return hop;
 }
 
 bool TunnelPool::SelectPeers(
-    std::vector<std::shared_ptr<const kovri::core::RouterInfo> >& hops,
+    std::vector<std::shared_ptr<const xi2p::core::RouterInfo> >& hops,
     bool is_inbound) {
   if (m_ExplicitPeers)
     return SelectExplicitPeers(hops, is_inbound);
@@ -351,8 +351,8 @@ bool TunnelPool::SelectPeers(
   int num_hops = is_inbound ?
     m_NumInboundHops :
     m_NumOutboundHops;
-  if (kovri::core::transports.GetNumPeers() > 25) {
-    auto r = kovri::core::transports.GetRandomPeer();
+  if (xi2p::core::transports.GetNumPeers() > 25) {
+    auto r = xi2p::core::transports.GetRandomPeer();
     if (r && !r->GetProfile()->IsBad()) {
       prev_hop = r;
       hops.push_back(r);
@@ -372,22 +372,22 @@ bool TunnelPool::SelectPeers(
 }
 
 bool TunnelPool::SelectExplicitPeers(
-    std::vector<std::shared_ptr<const kovri::core::RouterInfo> >& hops,
+    std::vector<std::shared_ptr<const xi2p::core::RouterInfo> >& hops,
     bool is_inbound) {
   int size = m_ExplicitPeers->size();
   std::vector<int> peer_indicies;
   for (int i = 0; i < size; i++)
     peer_indicies.push_back(i);
-  kovri::core::Shuffle(peer_indicies.begin(), peer_indicies.end());
+  xi2p::core::Shuffle(peer_indicies.begin(), peer_indicies.end());
   int num_hops = is_inbound ? m_NumInboundHops : m_NumOutboundHops;
   for (int i = 0; i < num_hops; i++) {
     auto& ident = (*m_ExplicitPeers)[peer_indicies[i]];
-    auto r = kovri::core::netdb.FindRouter(ident);
+    auto r = xi2p::core::netdb.FindRouter(ident);
     if (r) {
       hops.push_back(r);
     } else {
       LOG(debug) << "TunnelPool: can't find router for " << ident.ToBase64();
-      kovri::core::netdb.RequestDestination(ident);
+      xi2p::core::netdb.RequestDestination(ident);
       return false;
     }
   }
@@ -399,7 +399,7 @@ void TunnelPool::CreateInboundTunnel() {
   if (!outbound_tunnel)
     outbound_tunnel = tunnels.GetNextOutboundTunnel();
   LOG(debug) << "TunnelPool: creating destination inbound tunnel";
-  std::vector<std::shared_ptr<const kovri::core::RouterInfo> > hops;
+  std::vector<std::shared_ptr<const xi2p::core::RouterInfo> > hops;
   if (SelectPeers(hops, true)) {
     std::reverse(hops.begin(), hops.end());
     auto tunnel = tunnels.CreateTunnel<InboundTunnel> (
@@ -430,7 +430,7 @@ void TunnelPool::CreateOutboundTunnel() {
     inbound_tunnel = tunnels.GetNextInboundTunnel();
   if (inbound_tunnel) {
     LOG(debug) << "TunnelPool: creating destination outbound tunnel";
-    std::vector<std::shared_ptr<const kovri::core::RouterInfo> > hops;
+    std::vector<std::shared_ptr<const xi2p::core::RouterInfo> > hops;
     if (SelectPeers(hops, false)) {
       auto tunnel = tunnels.CreateTunnel<OutboundTunnel> (
         std::make_shared<TunnelConfig> (
@@ -475,4 +475,4 @@ void TunnelPool::CreatePairedInboundTunnel(
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

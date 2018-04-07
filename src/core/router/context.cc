@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -37,8 +37,6 @@
 
 #include <fstream>
 #include <tuple>
-#include <vector>
-#include <utility>
 
 #include "core/router/i2np.h"
 #include "core/router/info.h"
@@ -48,9 +46,8 @@
 #include "core/util/filesystem.h"
 #include "core/util/mtu.h"
 #include "core/util/timestamp.h"
-#include "core/util/config.h"
 
-namespace kovri
+namespace xi2p
 {
 namespace core
 {
@@ -78,7 +75,7 @@ void RouterContext::Initialize(const boost::program_options::variables_map& map)
 
   // Set host/port for RI creation/updating
   // Note: host/port sanity checks done during configuration construction
-  auto hosts = m_Opts["host"].as<core::Configuration::ListParameter<std::string, 2>>();  // TODO(anonimal): fix default host
+  auto host = m_Opts["host"].as<std::string>();  // TODO(anonimal): fix default host
   auto port = m_Opts["port"].defaulted()
                   ? RandInRange32(RouterInfo::MinPort, RouterInfo::MaxPort)
                   : m_Opts["port"].as<int>();
@@ -111,15 +108,10 @@ void RouterContext::Initialize(const boost::program_options::variables_map& map)
       m_Keys.ToBuffer(buf.data(), buf.size());
       keys.Write(buf.data(), buf.size());
 
-      // Read and fill the RI points
-      std::vector<std::pair<std::string, std::uint16_t>> points;
-      for (const auto& host : hosts.values)
-        points.emplace_back(host, port);
-
       LOG(debug) << "RouterContext: creating RI from in-memory keys";
       core::RouterInfo router(
           m_Keys,
-          points,
+          std::make_pair(host, port),
           std::make_pair(has_ntcp, has_ssu));  // TODO(anonimal): brittle, see TODO in header
 
       // Update context RI
@@ -135,35 +127,16 @@ void RouterContext::Initialize(const boost::program_options::variables_map& map)
       LOG(debug) << "RouterContext: updating existing RI " << info_path;
       core::RouterInfo router(info_path);
 
-      for (const auto& host : hosts.values)
-        {
-          const auto& address = boost::asio::ip::address::from_string(host);
-
-          // NTCP
-          if (has_ntcp && !router.GetNTCPAddress(address.is_v6()))
-            {
-              LOG(debug)
-                  << "RouterContext: enable-ntcp present and no transport "
-                     "found in existing routerInfo for host "
-                  << host;
-              router.AddAddress(std::make_tuple(Transport::NTCP, host, port));
-            }
-          // SSU
-          if (has_ssu && !router.GetSSUAddress(address.is_v6()))
-            {
-              LOG(debug)
-                  << "RouterContext: enable-ssu present and no transport "
-                     "found in existing routerInfo for host "
-                  << host;
-              router.AddAddress(
-                  std::make_tuple(Transport::SSU, host, port),
-                  router.GetIdentHash());
-            }
-        }
-
+      // NTCP
+      if (has_ntcp && !router.GetNTCPAddress())
+        router.AddAddress(std::make_tuple(Transport::NTCP, host, port));
       if (!has_ntcp)
         RemoveTransport(core::RouterInfo::Transport::NTCP);
 
+      // SSU
+      if (has_ssu && !router.GetSSUAddress())
+        router.AddAddress(
+            std::make_tuple(Transport::SSU, host, port), router.GetIdentHash());
       if (!has_ssu)
         {
           RemoveTransport(core::RouterInfo::Transport::SSU);
@@ -186,7 +159,7 @@ void RouterContext::Initialize(const boost::program_options::variables_map& map)
         SetReachable();
     }
 
-  LOG(info) << "RouterContext: will listen on host " << hosts.raw_data;
+  LOG(info) << "RouterContext: will listen on host " << host;
   LOG(info) << "RouterContext: will listen on port " << port;
 
   // TODO(anonimal): we don't want a flurry of micro-managed setter functions
@@ -239,7 +212,7 @@ void RouterContext::UpdateRouterInfo() {
   m_RouterInfo.CreateBuffer(m_Keys);
   m_RouterInfo.SaveToFile(
       (core::GetPath(core::Path::Core) / GetTrait(Trait::InfoFile)).string());
-  m_LastUpdateTime = kovri::core::GetSecondsSinceEpoch();
+  m_LastUpdateTime = xi2p::core::GetSecondsSinceEpoch();
 }
 
 void RouterContext::UpdateAddress(
@@ -274,7 +247,7 @@ void RouterContext::UpdateAddress(
 }
 
 bool RouterContext::AddIntroducer(
-    const kovri::core::RouterInfo& routerInfo,
+    const xi2p::core::RouterInfo& routerInfo,
     std::uint32_t tag) {
   bool ret = false;
   auto address = routerInfo.GetSSUAddress();
@@ -378,10 +351,10 @@ void RouterContext::UpdateStats() {
     // update routers and leasesets
     m_RouterInfo.SetOption(
         GetTrait(Trait::LeaseSets),
-        boost::lexical_cast<std::string>(kovri::core::netdb.GetNumLeaseSets()));
+        boost::lexical_cast<std::string>(xi2p::core::netdb.GetNumLeaseSets()));
     m_RouterInfo.SetOption(
         GetTrait(Trait::Routers),
-        boost::lexical_cast<std::string>(kovri::core::netdb.GetNumRouters()));
+        boost::lexical_cast<std::string>(xi2p::core::netdb.GetNumRouters()));
     UpdateRouterInfo();
   }
 }
@@ -402,8 +375,8 @@ void RouterContext::RemoveTransport(
         & ~core::RouterInfo::Cap::SSUIntroducer);
 }
 
-std::shared_ptr<kovri::core::TunnelPool> RouterContext::GetTunnelPool() const {
-  return kovri::core::tunnels.GetExploratoryPool();
+std::shared_ptr<xi2p::core::TunnelPool> RouterContext::GetTunnelPool() const {
+  return xi2p::core::tunnels.GetExploratoryPool();
 }
 
 // TODO(anonimal): no real reason to have message handling here, despite inheritance
@@ -411,24 +384,24 @@ std::shared_ptr<kovri::core::TunnelPool> RouterContext::GetTunnelPool() const {
 void RouterContext::HandleI2NPMessage(
     const std::uint8_t* buf,
     std::size_t,
-    std::shared_ptr<kovri::core::InboundTunnel> from) {
-  kovri::core::HandleI2NPMessage(
+    std::shared_ptr<xi2p::core::InboundTunnel> from) {
+  xi2p::core::HandleI2NPMessage(
       CreateI2NPMessage(
         buf,
-        kovri::core::GetI2NPMessageLength(buf),
+        xi2p::core::GetI2NPMessageLength(buf),
         from));
 }
 
 void RouterContext::ProcessGarlicMessage(
-    std::shared_ptr<kovri::core::I2NPMessage> msg) {
+    std::shared_ptr<xi2p::core::I2NPMessage> msg) {
   std::unique_lock<std::mutex> l(m_GarlicMutex);
-  kovri::core::GarlicDestination::ProcessGarlicMessage(msg);
+  xi2p::core::GarlicDestination::ProcessGarlicMessage(msg);
 }
 
 void RouterContext::ProcessDeliveryStatusMessage(
-    std::shared_ptr<kovri::core::I2NPMessage> msg) {
+    std::shared_ptr<xi2p::core::I2NPMessage> msg) {
   std::unique_lock<std::mutex> l(m_GarlicMutex);
-  kovri::core::GarlicDestination::ProcessDeliveryStatusMessage(msg);
+  xi2p::core::GarlicDestination::ProcessDeliveryStatusMessage(msg);
 }
 
 std::uint64_t RouterContext::GetUptime() const
@@ -437,4 +410,4 @@ std::uint64_t RouterContext::GetUptime() const
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

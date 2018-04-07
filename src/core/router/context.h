@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -47,7 +47,7 @@
 #include "core/router/identity.h"
 #include "core/router/info.h"
 
-namespace kovri
+namespace xi2p
 {
 namespace core
 {
@@ -73,15 +73,15 @@ class RouterContext : public RouterInfoTraits, public GarlicDestination {
   void Initialize(const boost::program_options::variables_map& map);
 
   // @return This RouterContext's RouterInfo
-  kovri::core::RouterInfo& GetRouterInfo() {
+  xi2p::core::RouterInfo& GetRouterInfo() {
     return m_RouterInfo;
   }
 
   // @return This RouterContext's RouterInfo wrapped in a smart pointer
-  std::shared_ptr<const kovri::core::RouterInfo> GetSharedRouterInfo() const  {
-    return std::shared_ptr<const kovri::core::RouterInfo>(
+  std::shared_ptr<const xi2p::core::RouterInfo> GetSharedRouterInfo() const  {
+    return std::shared_ptr<const xi2p::core::RouterInfo>(
         &m_RouterInfo,
-        [](const kovri::core::RouterInfo *) {});
+        [](const xi2p::core::RouterInfo *) {});
   }
 
   // @return How long this RouterContext has been online in seconds since epoch
@@ -126,7 +126,7 @@ class RouterContext : public RouterInfoTraits, public GarlicDestination {
   // @param routerInfo the RouterInfo to use in the Introducer
   // @param tag
   bool AddIntroducer(
-      const kovri::core::RouterInfo& routerInfo,
+      const xi2p::core::RouterInfo& routerInfo,
       std::uint32_t tag);
 
   // Remove and SSU introducer given its endpoint.
@@ -179,7 +179,7 @@ class RouterContext : public RouterInfoTraits, public GarlicDestination {
   void UpdateStats();
 
   // implements LocalDestination
-  const kovri::core::PrivateKeys& GetPrivateKeys() const {
+  const xi2p::core::PrivateKeys& GetPrivateKeys() const {
     return m_Keys;
   }
 
@@ -194,23 +194,23 @@ class RouterContext : public RouterInfoTraits, public GarlicDestination {
   void SetLeaseSetUpdated() {}
 
   // implements GarlicDestination
-  std::shared_ptr<const kovri::core::LeaseSet> GetLeaseSet() {
+  std::shared_ptr<const xi2p::core::LeaseSet> GetLeaseSet() {
     return nullptr;
   }
 
-  std::shared_ptr<kovri::core::TunnelPool> GetTunnelPool() const;
+  std::shared_ptr<xi2p::core::TunnelPool> GetTunnelPool() const;
 
   void HandleI2NPMessage(
       const std::uint8_t* buf,
       std::size_t len,
-      std::shared_ptr<kovri::core::InboundTunnel> from);
+      std::shared_ptr<xi2p::core::InboundTunnel> from);
 
   // override GarlicDestination
   void ProcessGarlicMessage(
-      std::shared_ptr<kovri::core::I2NPMessage> msg);
+      std::shared_ptr<xi2p::core::I2NPMessage> msg);
 
   void ProcessDeliveryStatusMessage(
-      std::shared_ptr<kovri::core::I2NPMessage> msg);
+      std::shared_ptr<xi2p::core::I2NPMessage> msg);
 
   /// @brief Core router traits/options
   const boost::program_options::variables_map& GetOpts() const
@@ -235,8 +235,8 @@ class RouterContext : public RouterInfoTraits, public GarlicDestination {
   void RemoveTransport(core::RouterInfo::Transport transport);
 
  private:
-  kovri::core::RouterInfo m_RouterInfo;
-  kovri::core::PrivateKeys m_Keys;
+  xi2p::core::RouterInfo m_RouterInfo;
+  xi2p::core::PrivateKeys m_Keys;
   std::uint64_t m_LastUpdateTime;
   bool m_AcceptsTunnels;
   std::uint64_t m_StartupTime;  // in seconds since epoch
@@ -249,6 +249,6 @@ class RouterContext : public RouterInfoTraits, public GarlicDestination {
 extern RouterContext context;
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_CONTEXT_H_

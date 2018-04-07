@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -53,8 +53,8 @@ class BaseCommand : public Command
  protected:
   virtual bool do_process(
       bool encode,
-      kovri::core::InputFileStream* input,
-      kovri::core::OutputFileStream* output) = 0;
+      xi2p::core::InputFileStream* input,
+      xi2p::core::OutputFileStream* output) = 0;
   boost::program_options::options_description m_Desc;
   std::string m_OptType;
   std::string m_OptInfile;
@@ -80,8 +80,8 @@ class Base32Command : public BaseCommand
  protected:
   bool do_process(
       bool encode,
-      kovri::core::InputFileStream* input,
-      kovri::core::OutputFileStream* output);
+      xi2p::core::InputFileStream* input,
+      xi2p::core::OutputFileStream* output);
 };
 
 /**
@@ -103,8 +103,8 @@ class Base64Command : public BaseCommand
  protected:
   bool do_process(
       bool encode,
-      kovri::core::InputFileStream* input,
-      kovri::core::OutputFileStream* output);
+      xi2p::core::InputFileStream* input,
+      xi2p::core::OutputFileStream* output);
 };
 
 #endif  // SRC_UTIL_BASE_H_

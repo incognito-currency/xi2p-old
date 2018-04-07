@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -67,8 +67,8 @@ bool process(
     Encoder encoder,
     Decoder decoder,
     bool encode,
-    kovri::core::InputFileStream* input,
-    kovri::core::OutputFileStream* output)
+    xi2p::core::InputFileStream* input,
+    xi2p::core::OutputFileStream* output)
 {
   std::vector<std::uint8_t> in_buffer;
   std::vector<std::uint8_t> out_buffer;
@@ -100,7 +100,7 @@ bool process(
         }
       catch (...)
         {
-          kovri::core::Exception ex;
+          xi2p::core::Exception ex;
           ex.Dispatch(__func__);
           return false;
         }
@@ -135,7 +135,7 @@ bool BaseCommand::Impl(
     }
   catch (...)
     {
-      kovri::core::Exception ex(GetName().c_str());
+      xi2p::core::Exception ex(GetName().c_str());
       ex.Dispatch(__func__);
       return false;
     }
@@ -165,7 +165,7 @@ bool BaseCommand::Impl(
       return false;
     }
 
-  kovri::core::InputFileStream input(
+  xi2p::core::InputFileStream input(
       m_OptInfile, std::ios::in | std::ios::binary);
   if (input.Fail())
     {
@@ -174,7 +174,7 @@ bool BaseCommand::Impl(
       return false;
     }
 
-  kovri::core::OutputFileStream output(
+  xi2p::core::OutputFileStream output(
       m_OptOutfile, std::ios::out | std::ios::binary);
   if (output.Fail())
     {
@@ -195,12 +195,12 @@ bool BaseCommand::Impl(
 
 bool Base32Command::do_process(
     bool encode,
-    kovri::core::InputFileStream* input,
-    kovri::core::OutputFileStream* output)
+    xi2p::core::InputFileStream* input,
+    xi2p::core::OutputFileStream* output)
 {
   return process(
-      kovri::core::Base32::Encode,
-      kovri::core::Base32::Decode,
+      xi2p::core::Base32::Encode,
+      xi2p::core::Base32::Decode,
       encode,
       input,
       output);
@@ -208,12 +208,12 @@ bool Base32Command::do_process(
 
 bool Base64Command::do_process(
     bool encode,
-    kovri::core::InputFileStream* input,
-    kovri::core::OutputFileStream* output)
+    xi2p::core::InputFileStream* input,
+    xi2p::core::OutputFileStream* output)
 {
   return process(
-      kovri::core::Base64::Encode,
-      kovri::core::Base64::Decode,
+      xi2p::core::Base64::Encode,
+      xi2p::core::Base64::Decode,
       encode,
       input,
       output);

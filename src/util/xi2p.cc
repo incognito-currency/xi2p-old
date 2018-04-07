@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -28,7 +28,7 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               //
  */
 
-#include "util/kovri.h"
+#include "util/xi2p.h"
 
 #include <chrono>
 #include <thread>
@@ -41,25 +41,25 @@
 
 // TODO(unassigned):
 //
-//  Known issues when running kovri from kovri-util:
+//  Known issues when running xi2p from xi2p-util:
 //
 //  1. Because of(?) the Boost.Log singleton (unresolved, see TODOs),
 //  there are duplicate log records. Simply removing the log-to-console
-//  option for either kovri-util or kovri will prevent dups.
+//  option for either xi2p-util or xi2p will prevent dups.
 //
-//  2. Passing log-level to kovri from kovri-util doesn't work (it's not
-//  picked up in the kovri args list...). Possibly another Boost.Log
-//  conflict with kovri-util's implementation.
+//  2. Passing log-level to xi2p from xi2p-util doesn't work (it's not
+//  picked up in the xi2p args list...). Possibly another Boost.Log
+//  conflict with xi2p-util's implementation.
 //
 //  3. cpp-netlib's HTTPS is unavailable (initialization issue?). In the
 //  meantime, reseeding from file works. Note: Boost.Beast will replace
 //  out reliance on the recently abandoned cpp-netlib.
 //
-//  4. Passing --help to kovri option will not provide `kovri --help`
+//  4. Passing --help to xi2p option will not provide `xi2p --help`
 //  options. Some interface work may be needed for resolution.
 //
 //  Other than that, if resources are properly installed
-//  (via `make install` for example), kovri will run as expected.
+//  (via `make install` for example), xi2p will run as expected.
 
 /// @brief Global for signal handler
 bool g_IsRunning;
@@ -67,7 +67,7 @@ bool g_IsRunning;
 /// @brief Global for instance reloading
 bool g_IsReloading;
 
-KovriCommand::KovriCommand() : m_Exception(__func__)
+Xi2pCommand::Xi2pCommand() : m_Exception(__func__)
 {
   // Signal handler
   struct sigaction sa{};
@@ -85,21 +85,21 @@ KovriCommand::KovriCommand() : m_Exception(__func__)
   g_IsReloading = false;
 }
 
-void KovriCommand::PrintUsage(const std::string& name) const
+void Xi2pCommand::PrintUsage(const std::string& name) const
 {
   LOG(info) << "Syntax: " << name;
   LOG(info) << "\t--help (show help options)";
 }
 
-bool KovriCommand::Impl(
+bool Xi2pCommand::Impl(
     const std::string& cmd_name,
     const std::vector<std::string>& args)
 {
   try
     {
       // Create instances
-      kovri::core::Instance core(args);
-      m_Client = std::make_unique<kovri::client::Instance>(core);
+      xi2p::core::Instance core(args);
+      m_Client = std::make_unique<xi2p::client::Instance>(core);
 
       // TODO(anonimal): we want true RAII. See TODOs.
       // Initialize core/client
@@ -140,7 +140,7 @@ bool KovriCommand::Impl(
   return true;
 }
 
-void KovriCommand::Signal(int signal)
+void Xi2pCommand::Signal(int signal)
 {
   switch (signal)
     {

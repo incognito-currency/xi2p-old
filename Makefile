@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2017, The Kovri I2P Router Project
+# Copyright (c) 2017-2018, The Xi2p I2P Router Project
 #
 # All rights reserved.
 #
@@ -26,24 +26,24 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Get custom Kovri data path + set appropriate CMake generator.
+# Get custom Xi2p data path + set appropriate CMake generator.
 # If no path is given, set default path
 system := $(shell uname)
 ifeq ($(KOVRI_DATA_PATH),)
   ifeq ($(system), Linux)
-    data-path = $(HOME)/.kovri
+    data-path = $(HOME)/.xi2p
   endif
   ifeq ($(system), Darwin)
-    data-path = $(HOME)/Library/Application\ Support/Kovri
+    data-path = $(HOME)/Library/Application\ Support/Xi2p
   endif
   ifneq (, $(findstring BSD, $(system))) # We should support other BSD's
-    data-path = $(HOME)/.kovri
+    data-path = $(HOME)/.xi2p
   endif
   ifeq ($(system), DragonFly)
-    data-path = $(HOME)/.kovri
+    data-path = $(HOME)/.xi2p
   endif
   ifneq (, $(findstring MINGW, $(system)))
-    data-path = "$(APPDATA)"\\Kovri
+    data-path = "$(APPDATA)"\\Xi2p
     cmake-gen = -G 'MSYS Makefiles'
   endif
 else
@@ -58,10 +58,10 @@ cmake-debug = $(cmake) -D CMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS
 cmake-release = $(cmake) -D CMAKE_BUILD_TYPE=Release
 
 # TODO(unassigned): cmake-release when we're out of alpha
-cmake-kovri = $(cmake-debug)
-cmake-kovri-util = -D WITH_KOVRI_UTIL=ON
+cmake-xi2p = $(cmake-debug)
+cmake-xi2p-util = -D WITH_KOVRI_UTIL=ON
 
-# Current off-by-default Kovri build options
+# Current off-by-default Xi2p build options
 cmake-upnp       = -D WITH_UPNP=ON
 cmake-optimize   = -D WITH_OPTIMIZE=ON
 cmake-hardening  = -D WITH_HARDENING=ON
@@ -79,7 +79,7 @@ cmake-cpp-netlib-static = -D CPP-NETLIB_STATIC_OPENSSL=ON -D CPP-NETLIB_STATIC_B
 cmake-cpp-netlib-shared = -D CPP-NETLIB_BUILD_SHARED_LIBS=ON
 
 # Android-specific
-cmake-android = -D ANDROID=1 -D KOVRI_DATA_PATH="/data/local/tmp/.kovri"
+cmake-android = -D ANDROID=1 -D KOVRI_DATA_PATH="/data/local/tmp/.xi2p"
 
 # Native
 cmake-native = -DCMAKE_CXX_FLAGS="-march=native"
@@ -144,12 +144,12 @@ release-static-deps:
 #-----------------------------------#
 
 dynamic: shared-deps
-	$(eval cmake-kovri += $(cmake-native))
-	$(call CMAKE,$(build),$(cmake-kovri)) && $(MAKE)
+	$(eval cmake-xi2p += $(cmake-native))
+	$(call CMAKE,$(build),$(cmake-xi2p)) && $(MAKE)
 
 static: deps
-	$(eval cmake-kovri += $(cmake-native) $(cmake-static))
-	$(call CMAKE,$(build),$(cmake-kovri)) && $(MAKE)
+	$(eval cmake-xi2p += $(cmake-native) $(cmake-static))
+	$(call CMAKE,$(build),$(cmake-xi2p)) && $(MAKE)
 
 #-----------------------------------#
 # For  dynamic distribution release #
@@ -157,8 +157,8 @@ static: deps
 
 release: release-deps
 	# TODO(unassigned): cmake release flags + optimizations/hardening when we're out of alpha
-	$(eval cmake-kovri += $(cmake-kovri-util))
-	$(call CMAKE,$(build),$(cmake-kovri)) && $(MAKE)
+	$(eval cmake-xi2p += $(cmake-xi2p-util))
+	$(call CMAKE,$(build),$(cmake-xi2p)) && $(MAKE)
 
 #--------------------------------------------------------------#
 # For static distribution release (website and nightly builds) #
@@ -166,12 +166,12 @@ release: release-deps
 
 release-static: release-static-deps
         # TODO(unassigned): cmake release flags + optimizations/hardening when we're out of alpha
-	$(eval cmake-kovri += $(cmake-static) $(cmake-kovri-util))
-	$(call CMAKE,$(build),$(cmake-kovri)) && $(MAKE)
+	$(eval cmake-xi2p += $(cmake-static) $(cmake-xi2p-util))
+	$(call CMAKE,$(build),$(cmake-xi2p)) && $(MAKE)
 
 release-static-android: release-static-deps
-	$(eval cmake-kovri += $(cmake-static) $(cmake-android) $(cmake-kovri-util))
-	$(call CMAKE,$(build),$(cmake-kovri)) && $(MAKE)
+	$(eval cmake-xi2p += $(cmake-static) $(cmake-android) $(cmake-xi2p-util))
+	$(call CMAKE,$(build),$(cmake-xi2p)) && $(MAKE)
 
 # TODO(unassigned): static UPnP once our UPnP implementation is release-ready
 
@@ -181,69 +181,69 @@ release-static-android: release-static-deps
 
 # Utility binary
 util: deps
-	$(eval cmake-kovri += $(cmake-kovri-util))
-	$(call CMAKE,$(build),$(cmake-kovri)) && $(MAKE)
+	$(eval cmake-xi2p += $(cmake-xi2p-util))
+	$(call CMAKE,$(build),$(cmake-xi2p)) && $(MAKE)
 
 # For API/testnet development
 python: shared-deps
-	$(eval cmake-kovri += $(cmake-python))
-	$(call CMAKE,$(build),$(cmake-kovri)) && $(MAKE)
+	$(eval cmake-xi2p += $(cmake-python))
+	$(call CMAKE,$(build),$(cmake-xi2p)) && $(MAKE)
 
 # Produce vanilla binary with UPnP support
 upnp: deps
-	$(eval cmake-kovri += $(cmake-upnp))
-	$(call CMAKE,$(build),$(cmake-kovri)) && $(MAKE)
+	$(eval cmake-xi2p += $(cmake-upnp))
+	$(call CMAKE,$(build),$(cmake-xi2p)) && $(MAKE)
 
 # Produce optimized, hardened binary *with* UPnP
 all-options: deps
-	$(eval cmake-kovri += $(cmake-optimize) $(cmake-hardening) $(cmake-upnp) $(cmake-kovri-util))
-	$(call CMAKE,$(build),$(cmake-kovri)) && $(MAKE)
+	$(eval cmake-xi2p += $(cmake-optimize) $(cmake-hardening) $(cmake-upnp) $(cmake-xi2p-util))
+	$(call CMAKE,$(build),$(cmake-xi2p)) && $(MAKE)
 
 # Produce optimized, hardened binary *without* UPnP. Note: we need (or very much should have) optimizations with hardening
 optimized-hardened: deps
-	$(eval cmake-kovri += $(cmake-optimize) $(cmake-hardening))
-	$(call CMAKE,$(build),$(cmake-kovri)) && $(MAKE)
+	$(eval cmake-xi2p += $(cmake-optimize) $(cmake-hardening))
+	$(call CMAKE,$(build),$(cmake-xi2p)) && $(MAKE)
 
 # Produce all unit-tests with optimized hardening
 optimized-hardened-tests: deps
-	$(eval cmake-kovri += $(cmake-optimize) $(cmake-hardening) $(cmake-tests))
-	$(call CMAKE,$(build),$(cmake-kovri)) && $(MAKE)
+	$(eval cmake-xi2p += $(cmake-optimize) $(cmake-hardening) $(cmake-tests))
+	$(call CMAKE,$(build),$(cmake-xi2p)) && $(MAKE)
 
 # Produce build with coverage. Note: leaving out hardening because of need for optimizations
 coverage: deps
-	$(eval cmake-kovri += $(cmake-coverage) $(cmake-upnp) $(cmake-kovri-util))
-	$(call CMAKE,$(build),$(cmake-kovri)) && $(MAKE)
+	$(eval cmake-xi2p += $(cmake-coverage) $(cmake-upnp) $(cmake-xi2p-util))
+	$(call CMAKE,$(build),$(cmake-xi2p)) && $(MAKE)
 
 # Produce unit-tests with coverage
 coverage-tests: deps
-	$(eval cmake-kovri += $(cmake-coverage) $(cmake-tests))
-	$(call CMAKE,$(build),$(cmake-kovri)) && $(MAKE)
+	$(eval cmake-xi2p += $(cmake-coverage) $(cmake-tests))
+	$(call CMAKE,$(build),$(cmake-xi2p)) && $(MAKE)
 
 # Produce vanilla unit-tests
 tests: deps
-	$(eval cmake-kovri += $(cmake-tests))
-	$(call CMAKE,$(build),$(cmake-kovri)) && $(MAKE)
+	$(eval cmake-xi2p += $(cmake-tests))
+	$(call CMAKE,$(build),$(cmake-xi2p)) && $(MAKE)
 
 # Produce vanilla fuzzer-tests
 fuzz-tests: deps
 	$(call CMAKE_FUZZER) && $(MAKE)
-	$(eval cmake-kovri += $(cmake-fuzz-tests))
-	$(call CMAKE,$(build),$(cmake-kovri)) && $(MAKE)
+	$(eval cmake-xi2p += $(cmake-fuzz-tests))
+	$(call CMAKE,$(build),$(cmake-xi2p)) && $(MAKE)
 
 # Produce Doxygen documentation
 doxygen:
-	$(eval cmake-kovri += $(cmake-doxygen))
-	$(call CMAKE,$(build),$(cmake-kovri)) && $(MAKE) doc
+	$(eval cmake-xi2p += $(cmake-doxygen))
+	$(call CMAKE,$(build),$(cmake-xi2p)) && $(MAKE) doc
 
 # Produce available CMake build options
 help:
-	$(call CMAKE,$(build),$(cmake-kovri) -LH)
+	$(call CMAKE,$(build),$(cmake-xi2p) -LH)
 
 # Clean all build directories and Doxygen output
 clean:
 	$(eval remove-build = rm -fR $(build) $(build-cpp-netlib) $(build-doxygen) $(build-fuzzer) && cd $(build-cryptopp) && $(MAKE) clean)
 	@if [ "$$FORCE_CLEAN" = "yes" ]; then $(remove-build); \
-	else echo "CAUTION: This will remove the build directories for Kovri and all submodule dependencies, and remove all Doxygen output"; \
+	else echo "CAUTION: This will remove the build directories for Xi2p and all submodule dependencies, and remove all Doxygen output"; \
 	read -r -p "Is this what you wish to do? (y/N)?: " CONFIRM; \
 	  if [ $$CONFIRM = "y" ] || [ $$CONFIRM = "Y" ]; then $(remove-build); \
           else echo "Exiting."; exit 1; \
@@ -252,12 +252,12 @@ clean:
 
 # Install binaries and package
 install:
-	@_install="./pkg/installers/kovri-install.sh"; \
+	@_install="./pkg/installers/xi2p-install.sh"; \
 	if [ -e $$_install ]; then $$_install; else echo "Unable to find $$_install"; exit 1; fi
 
 # Un-install binaries and package
 uninstall:
-	@_install="./pkg/installers/kovri-install.sh"; \
+	@_install="./pkg/installers/xi2p-install.sh"; \
 	if [ -e $$_install ]; then $$_install -u; else echo "Unable to find $$_install"; exit 1; fi
 
 .PHONY: all deps release-deps release-static-deps dynamic static release release-static release-static-android all-options optimized-hardened optimized-hardened-tests coverage coverage-tests tests doxygen help clean install uninstall

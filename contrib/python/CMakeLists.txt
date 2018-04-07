@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015-2017, The Kovri I2P Router Project
+# Copyright (c) 2017-2018, The Xi2p I2P Router Project
 #
 # All rights reserved.
 #
@@ -31,7 +31,7 @@
 include_directories("${CMAKE_SOURCE_DIR}" "${CMAKE_SOURCE_DIR}/src")
 
 set(PYTHON_SRC
-  "kovri.cc"
+  "xi2p.cc"
   "util.cc")
 
 add_library(${PYTHON_NAME} SHARED ${PYTHON_SRC})

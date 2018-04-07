@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -55,7 +55,7 @@
 
 #include "core/util/exception.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 class ClientDestination;  // TODO(unassigned): remove forward declaration
@@ -175,7 +175,7 @@ class Stream : public std::enable_shared_from_this<Stream> {
   Stream(
       boost::asio::io_service& service,
       StreamingDestination& local,
-      std::shared_ptr<const kovri::core::LeaseSet> remote,
+      std::shared_ptr<const xi2p::core::LeaseSet> remote,
       std::uint16_t port = 0);
   // Incoming
   Stream(
@@ -191,11 +191,11 @@ class Stream : public std::enable_shared_from_this<Stream> {
     return m_RecvStreamID;
   }
 
-  std::shared_ptr<const kovri::core::LeaseSet> GetRemoteLeaseSet() const {
+  std::shared_ptr<const xi2p::core::LeaseSet> GetRemoteLeaseSet() const {
     return m_RemoteLeaseSet;
   }
 
-  const kovri::core::IdentityEx& GetRemoteIdentity() const {
+  const xi2p::core::IdentityEx& GetRemoteIdentity() const {
     return m_RemoteIdentity;
   }
 
@@ -316,7 +316,7 @@ class Stream : public std::enable_shared_from_this<Stream> {
   void HandleAckSendTimer(
       const boost::system::error_code& ecode);
 
-  std::shared_ptr<kovri::core::I2NPMessage> CreateDataMessage(
+  std::shared_ptr<xi2p::core::I2NPMessage> CreateDataMessage(
       const std::uint8_t * payload, std::size_t len);
 
  private:
@@ -326,11 +326,11 @@ class Stream : public std::enable_shared_from_this<Stream> {
   StreamStatus m_Status;
   bool m_IsAckSendScheduled;
   StreamingDestination& m_LocalDestination;
-  kovri::core::IdentityEx m_RemoteIdentity;
-  std::shared_ptr<const kovri::core::LeaseSet> m_RemoteLeaseSet;
-  std::shared_ptr<kovri::core::GarlicRoutingSession> m_RoutingSession;
-  kovri::core::Lease m_CurrentRemoteLease;
-  std::shared_ptr<kovri::core::OutboundTunnel> m_CurrentOutboundTunnel;
+  xi2p::core::IdentityEx m_RemoteIdentity;
+  std::shared_ptr<const xi2p::core::LeaseSet> m_RemoteLeaseSet;
+  std::shared_ptr<xi2p::core::GarlicRoutingSession> m_RoutingSession;
+  xi2p::core::Lease m_CurrentRemoteLease;
+  std::shared_ptr<xi2p::core::OutboundTunnel> m_CurrentOutboundTunnel;
   std::queue<Packet*> m_ReceiveQueue;
   std::set<Packet*, PacketCmp> m_SavedPackets;
   std::set<Packet*, PacketCmp> m_SentPackets;
@@ -345,7 +345,7 @@ class Stream : public std::enable_shared_from_this<Stream> {
   int m_NumResendAttempts;
   SendHandler m_SendHandler;
 
-  kovri::core::Exception m_Exception;
+  xi2p::core::Exception m_Exception;
 };
 
 class StreamingDestination {
@@ -353,7 +353,7 @@ class StreamingDestination {
   typedef std::function<void (std::shared_ptr<Stream>)> Acceptor;
 
   StreamingDestination(
-      kovri::client::ClientDestination& owner,
+      xi2p::client::ClientDestination& owner,
       std::uint16_t local_port = 0)
       : m_Owner(owner),
         m_LocalPort(local_port),
@@ -366,7 +366,7 @@ class StreamingDestination {
   void Stop();
 
   std::shared_ptr<Stream> CreateNewOutgoingStream(
-      std::shared_ptr<const kovri::core::LeaseSet> remote,
+      std::shared_ptr<const xi2p::core::LeaseSet> remote,
       std::uint16_t port = 0);
 
   void DeleteStream(
@@ -387,7 +387,7 @@ class StreamingDestination {
     return m_Acceptor != nullptr;
   }
 
-  kovri::client::ClientDestination& GetOwner() {
+  xi2p::client::ClientDestination& GetOwner() {
     return m_Owner;
   }
 
@@ -410,12 +410,12 @@ class StreamingDestination {
   std::shared_ptr<Stream> CreateNewIncomingStream();
 
  private:
-  kovri::client::ClientDestination& m_Owner;
+  xi2p::client::ClientDestination& m_Owner;
   std::uint16_t m_LocalPort;
   std::mutex m_StreamsMutex;
   std::map<std::uint32_t, std::shared_ptr<Stream> > m_Streams;
   Acceptor m_Acceptor;
-  kovri::core::Exception m_Exception;
+  xi2p::core::Exception m_Exception;
 };
 
 //-------------------------------------------------
@@ -470,6 +470,6 @@ void Stream::HandleReceiveTimer(
 }
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_API_STREAMING_H_

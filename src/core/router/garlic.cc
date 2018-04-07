@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -44,14 +44,14 @@
 #include "core/util/log.h"
 #include "core/util/timestamp.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 // TODO(anonimal): bytestream refactor
 
 GarlicRoutingSession::GarlicRoutingSession(
     GarlicDestination* owner,
-    std::shared_ptr<const kovri::core::RoutingDestination> destination,
+    std::shared_ptr<const xi2p::core::RoutingDestination> destination,
     int num_tags,
     bool attach_leaseset)
     : m_Owner(owner),
@@ -64,7 +64,7 @@ GarlicRoutingSession::GarlicRoutingSession(
       m_Exception(__func__) {
   try {
     // create new session tags and session key
-    kovri::core::RandBytes(m_SessionKey, 32);
+    xi2p::core::RandBytes(m_SessionKey, 32);
     m_Encryption.SetKey(m_SessionKey);
   } catch (...) {
     m_Exception.Dispatch();
@@ -87,7 +87,7 @@ GarlicRoutingSession::GarlicRoutingSession(
     memcpy(m_SessionKey, session_key, 32);
     m_Encryption.SetKey(m_SessionKey);
     m_SessionTags.push_back(session_tag);
-    m_SessionTags.back().creation_time = kovri::core::GetSecondsSinceEpoch();
+    m_SessionTags.back().creation_time = xi2p::core::GetSecondsSinceEpoch();
   } catch (...) {
     m_Exception.Dispatch();
     // TODO(anonimal): review if we need to safely break control, ensure exception handling by callers
@@ -105,10 +105,10 @@ GarlicRoutingSession::~GarlicRoutingSession() {
 GarlicRoutingSession::UnconfirmedTags*
 GarlicRoutingSession::GenerateSessionTags() {
   auto tags = new UnconfirmedTags(m_NumTags);
-  tags->tags_creation_time = kovri::core::GetSecondsSinceEpoch();
+  tags->tags_creation_time = xi2p::core::GetSecondsSinceEpoch();
   // TODO(unassigned): change int to std::size_t, adjust related code
   for (int i = 0; i < m_NumTags; i++) {
-    kovri::core::RandBytes(tags->session_tags[i], 32);
+    xi2p::core::RandBytes(tags->session_tags[i], 32);
     tags->session_tags[i].creation_time = tags->tags_creation_time;
   }
   return tags;
@@ -128,7 +128,7 @@ void GarlicRoutingSession::MessageConfirmed(
 void GarlicRoutingSession::TagsConfirmed(std::uint32_t msg_ID) {
   auto it = m_UnconfirmedTagsMsgs.find(msg_ID);
   if (it != m_UnconfirmedTagsMsgs.end()) {
-    std::uint32_t ts = kovri::core::GetSecondsSinceEpoch();
+    std::uint32_t ts = xi2p::core::GetSecondsSinceEpoch();
     UnconfirmedTags* tags = it->second;
     if (ts < tags->tags_creation_time + OUTGOING_TAGS_EXPIRATION_TIMEOUT) {
       // TODO(unassigned): change int to std::size_t, adjust related code
@@ -141,7 +141,7 @@ void GarlicRoutingSession::TagsConfirmed(std::uint32_t msg_ID) {
 }
 
 bool GarlicRoutingSession::CleanupExpiredTags() {
-  std::uint32_t ts = kovri::core::GetSecondsSinceEpoch();
+  std::uint32_t ts = xi2p::core::GetSecondsSinceEpoch();
   for (auto it = m_SessionTags.begin(); it != m_SessionTags.end();) {
     if (ts >= it->creation_time + OUTGOING_TAGS_EXPIRATION_TIMEOUT)
       it = m_SessionTags.erase(it);
@@ -175,7 +175,7 @@ std::shared_ptr<I2NPMessage> GarlicRoutingSession::WrapSingleMessage(
     bool tag_found = false;
     SessionTag tag;
     if (m_NumTags > 0) {
-      std::uint32_t ts = kovri::core::GetSecondsSinceEpoch();
+      std::uint32_t ts = xi2p::core::GetSecondsSinceEpoch();
       while (!m_SessionTags.empty()) {
         if (ts < m_SessionTags.front().creation_time +
             OUTGOING_TAGS_EXPIRATION_TIMEOUT) {
@@ -199,9 +199,9 @@ std::shared_ptr<I2NPMessage> GarlicRoutingSession::WrapSingleMessage(
       // create ElGamal block
       ElGamalBlock eg_block;
       memcpy(eg_block.session_key.data(), m_SessionKey, 32);
-      kovri::core::RandBytes(eg_block.pre_IV.data(), 32);  // Pre-IV
+      xi2p::core::RandBytes(eg_block.pre_IV.data(), 32);  // Pre-IV
       std::array<std::uint8_t, 32> iv;  // IV is first 16 bytes
-      kovri::core::SHA256().CalculateDigest(
+      xi2p::core::SHA256().CalculateDigest(
           iv.data(),
           eg_block.pre_IV.data(),
           iv.size());
@@ -219,7 +219,7 @@ std::shared_ptr<I2NPMessage> GarlicRoutingSession::WrapSingleMessage(
       // session tag
       memcpy(buf, tag, 32);
       std::array<std::uint8_t, 32> iv;  // IV is first 16 bytes
-      kovri::core::SHA256().CalculateDigest(iv.data(), tag, iv.size());
+      xi2p::core::SHA256().CalculateDigest(iv.data(), tag, iv.size());
       m_Encryption.SetIV(iv.data());
       buf += iv.size();
       len += iv.size();
@@ -264,7 +264,7 @@ std::size_t GarlicRoutingSession::CreateAESBlock(
   block_size++;
   std::size_t len = CreateGarlicPayload(buf + block_size, msg, new_tags);
   core::OutputByteStream::Write<std::uint32_t>(payload_size, len);
-  kovri::core::SHA256().CalculateDigest(payload_hash, buf + block_size, len);
+  xi2p::core::SHA256().CalculateDigest(payload_hash, buf + block_size, len);
   block_size += len;
   std::size_t rem = block_size % 16;
   if (rem)
@@ -284,8 +284,8 @@ std::size_t GarlicRoutingSession::CreateGarlicPayload(
     std::uint8_t* payload,
     std::shared_ptr<const I2NPMessage> msg,
     UnconfirmedTags* new_tags) {
-  std::uint64_t ts = kovri::core::GetMillisecondsSinceEpoch() + 5000;  // 5 sec
-  std::uint32_t msg_ID = kovri::core::Rand<std::uint32_t>();
+  std::uint64_t ts = xi2p::core::GetMillisecondsSinceEpoch() + 5000;  // 5 sec
+  std::uint32_t msg_ID = xi2p::core::Rand<std::uint32_t>();
   std::size_t size = 0;
   std::uint8_t* num_cloves = payload + size;
   *num_cloves = 0;
@@ -293,7 +293,7 @@ std::size_t GarlicRoutingSession::CreateGarlicPayload(
   if (m_Owner) {
     // resubmit non-confirmed LeaseSet
     if (m_LeaseSetUpdateStatus == eLeaseSetSubmitted &&
-        kovri::core::GetMillisecondsSinceEpoch() >
+        xi2p::core::GetMillisecondsSinceEpoch() >
         m_LeaseSetSubmissionTime + LEASET_CONFIRMATION_TIMEOUT)
       m_LeaseSetUpdateStatus = eLeaseSetUpdated;
     // attach DeviveryStatus if necessary
@@ -316,7 +316,7 @@ std::size_t GarlicRoutingSession::CreateGarlicPayload(
     if (m_LeaseSetUpdateStatus == eLeaseSetUpdated) {
       m_LeaseSetUpdateStatus = eLeaseSetSubmitted;
       m_LeaseSetUpdateMsgID = msg_ID;
-      m_LeaseSetSubmissionTime = kovri::core::GetMillisecondsSinceEpoch();
+      m_LeaseSetSubmissionTime = xi2p::core::GetMillisecondsSinceEpoch();
       // clove if our leaseset must be attached
       auto leaseset = CreateDatabaseStoreMsg(m_Owner->GetLeaseSet());
       size += CreateGarlicClove(payload + size, leaseset, false);
@@ -344,7 +344,7 @@ std::size_t GarlicRoutingSession::CreateGarlicClove(
     std::uint8_t* buf,
     std::shared_ptr<const I2NPMessage> msg,
     bool is_destination) {
-  std::uint64_t ts = kovri::core::GetMillisecondsSinceEpoch() + 5000;  // 5 sec
+  std::uint64_t ts = xi2p::core::GetMillisecondsSinceEpoch() + 5000;  // 5 sec
   std::size_t size = 0;
   if (is_destination && m_Destination) {
     // delivery instructions flag destination
@@ -359,7 +359,7 @@ std::size_t GarlicRoutingSession::CreateGarlicClove(
   memcpy(buf + size, msg->GetBuffer(), msg->GetLength());
   size += msg->GetLength();
   // CloveID
-  core::OutputByteStream::Write<std::uint32_t>(buf + size, kovri::core::Rand<std::uint32_t>());
+  core::OutputByteStream::Write<std::uint32_t>(buf + size, xi2p::core::Rand<std::uint32_t>());
   size += 4;
   core::OutputByteStream::Write<std::uint64_t>(buf + size, ts);  // Expiration of clove
   size += 8;
@@ -390,8 +390,8 @@ std::size_t GarlicRoutingSession::CreateDeliveryStatusClove(
       if (m_Owner) {
         // encrypt
         std::array<std::uint8_t, 32> key, tag;
-        kovri::core::RandBytes(key.data(), key.size());  // random session key
-        kovri::core::RandBytes(tag.data(), tag.size());  // random session tag
+        xi2p::core::RandBytes(key.data(), key.size());  // random session key
+        xi2p::core::RandBytes(tag.data(), tag.size());  // random session tag
         m_Owner->SubmitSessionKey(key.data(), tag.data());
         GarlicRoutingSession garlic(key.data(), tag.data());
         msg = garlic.WrapSingleMessage(msg);
@@ -399,7 +399,7 @@ std::size_t GarlicRoutingSession::CreateDeliveryStatusClove(
       memcpy(buf + size, msg->GetBuffer(), msg->GetLength());
       size += msg->GetLength();
       // fill clove
-      std::uint64_t ts = kovri::core::GetMillisecondsSinceEpoch() + 5000;  // 5 sec
+      std::uint64_t ts = xi2p::core::GetMillisecondsSinceEpoch() + 5000;  // 5 sec
       // CloveID
       core::OutputByteStream::Write<std::uint32_t>(
           buf + size, core::Rand<std::uint32_t>());
@@ -426,8 +426,8 @@ void GarlicDestination::AddSessionKey(
   // TODO(anonimal): this try block should be handled entirely by caller
   try {
     if (key) {
-      std::uint32_t ts = kovri::core::GetSecondsSinceEpoch();
-      auto decryption = std::make_shared<kovri::core::CBCDecryption>();
+      std::uint32_t ts = xi2p::core::GetSecondsSinceEpoch();
+      auto decryption = std::make_shared<xi2p::core::CBCDecryption>();
       decryption->SetKey(key);
       m_Tags[SessionTag(tag, ts)] = decryption;
     }
@@ -463,7 +463,7 @@ void GarlicDestination::HandleGarlicMessage(
       // tag found. Use AES
       if (length >= 32) {
         std::array<std::uint8_t, 32> iv;  // IV is first 16 bytes
-        kovri::core::SHA256().CalculateDigest(
+        xi2p::core::SHA256().CalculateDigest(
             iv.data(),
             buf,
             iv.size());
@@ -486,15 +486,15 @@ void GarlicDestination::HandleGarlicMessage(
       // tag not found. Use ElGamal
       ElGamalBlock eg_block;
       if (length >= 514 &&
-          kovri::core::ElGamalDecrypt(
+          xi2p::core::ElGamalDecrypt(
               GetEncryptionPrivateKey(),
               buf,
               reinterpret_cast<std::uint8_t *>(&eg_block),
               true)) {
-        auto decryption = std::make_shared<kovri::core::CBCDecryption>();
+        auto decryption = std::make_shared<xi2p::core::CBCDecryption>();
         decryption->SetKey(eg_block.session_key.data());
         std::array<std::uint8_t, 32> iv;  // IV is first 16 bytes
-        kovri::core::SHA256().CalculateDigest(
+        xi2p::core::SHA256().CalculateDigest(
             iv.data(),
             eg_block.pre_IV.data(),
             iv.size());
@@ -506,7 +506,7 @@ void GarlicDestination::HandleGarlicMessage(
       }
     }
     // cleanup expired tags
-    std::uint32_t ts = kovri::core::GetSecondsSinceEpoch();
+    std::uint32_t ts = xi2p::core::GetSecondsSinceEpoch();
     if (ts > m_LastTagsCleanupTime + INCOMING_TAGS_EXPIRATION_TIMEOUT) {
       if (m_LastTagsCleanupTime) {
         int num_expired_tags = 0;
@@ -534,8 +534,8 @@ void GarlicDestination::HandleGarlicMessage(
 void GarlicDestination::HandleAESBlock(
     std::uint8_t* buf,
     std::size_t len,
-    std::shared_ptr<kovri::core::CBCDecryption> decryption,
-    std::shared_ptr<kovri::core::InboundTunnel> from) {
+    std::shared_ptr<xi2p::core::CBCDecryption> decryption,
+    std::shared_ptr<xi2p::core::InboundTunnel> from) {
   // TODO(anonimal): this try block should be handled entirely by caller
   try {
     std::uint16_t const tag_count =
@@ -549,7 +549,7 @@ void GarlicDestination::HandleAESBlock(
           << " exceeds length " << len;
         return;
       }
-      std::uint32_t ts = kovri::core::GetSecondsSinceEpoch();
+      std::uint32_t ts = xi2p::core::GetSecondsSinceEpoch();
       for (int i = 0; i < tag_count; i++)
         m_Tags[SessionTag(buf + i * 32, ts)] = decryption;
     }
@@ -568,7 +568,7 @@ void GarlicDestination::HandleAESBlock(
       buf += 32;  // new session key
     buf++;  // flag
     // payload
-    if (!kovri::core::SHA256().VerifyDigest(payload_hash, buf, payload_size)) {
+    if (!xi2p::core::SHA256().VerifyDigest(payload_hash, buf, payload_size)) {
       // payload hash doesn't match
       LOG(error) << "GarlicDestination: wrong payload hash";
       return;
@@ -585,7 +585,7 @@ void GarlicDestination::HandleAESBlock(
 void GarlicDestination::HandleGarlicPayload(
     std::uint8_t* buf,
     std::size_t len,
-    std::shared_ptr<kovri::core::InboundTunnel> from)
+    std::shared_ptr<xi2p::core::InboundTunnel> from)
 {
   LOG(trace) << "GarlicDestination: " << __func__
              << ": inbound tunnel ID: " << (from ? from->GetTunnelID() : 0)
@@ -655,7 +655,7 @@ void GarlicDestination::HandleGarlicPayload(
         std::uint32_t const gateway_tunnel =
             core::InputByteStream::Read<std::uint32_t>(buf);
         buf += 4;
-        std::shared_ptr<kovri::core::OutboundTunnel> tunnel;
+        std::shared_ptr<xi2p::core::OutboundTunnel> tunnel;
         if (from && from->GetTunnelPool())
           tunnel = from->GetTunnelPool()->GetNextOutboundTunnel();
         if (tunnel) {  // we must send it through an outbound tunnel
@@ -682,7 +682,7 @@ void GarlicDestination::HandleGarlicPayload(
 }
 
 std::shared_ptr<I2NPMessage> GarlicDestination::WrapMessage(
-    std::shared_ptr<const kovri::core::RoutingDestination> destination,
+    std::shared_ptr<const xi2p::core::RoutingDestination> destination,
     std::shared_ptr<I2NPMessage> msg,
     bool attach_leaseset) {
   // 32 tags by default
@@ -691,7 +691,7 @@ std::shared_ptr<I2NPMessage> GarlicDestination::WrapMessage(
 }
 
 std::shared_ptr<GarlicRoutingSession> GarlicDestination::GetRoutingSession(
-    std::shared_ptr<const kovri::core::RoutingDestination> destination,
+    std::shared_ptr<const xi2p::core::RoutingDestination> destination,
     bool attach_leaseset) {
   auto it = m_Sessions.find(destination->GetIdentHash());
   std::shared_ptr<GarlicRoutingSession> session;
@@ -764,4 +764,4 @@ void GarlicDestination::ProcessDeliveryStatusMessage(
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

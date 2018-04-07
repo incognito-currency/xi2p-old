@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -42,7 +42,7 @@
 
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 // TODO(anonimal): bytestream refactor
@@ -53,7 +53,7 @@ TunnelGatewayBuffer::TunnelGatewayBuffer(
       m_CurrentTunnelDataMsg(nullptr),
       m_RemainingSize(0),
       m_Exception(__func__) {
-  kovri::core::RandBytes(
+  xi2p::core::RandBytes(
       m_NonZeroRandomBuffer,
       TUNNEL_DATA_MAX_PAYLOAD_SIZE);
   for (std::size_t i = 0; i < TUNNEL_DATA_MAX_PAYLOAD_SIZE; i++)
@@ -202,10 +202,10 @@ void TunnelGatewayBuffer::CompleteCurrentTunnelDataMessage() {
       m_CurrentTunnelDataMsg->len - TUNNEL_DATA_MSG_SIZE - I2NP_HEADER_SIZE;
     std::uint8_t* buf = m_CurrentTunnelDataMsg->GetPayload();
     core::OutputByteStream::Write<std::uint32_t>(buf, m_TunnelID);
-    kovri::core::RandBytes(buf + 4, 16);  // original IV
+    xi2p::core::RandBytes(buf + 4, 16);  // original IV
     memcpy(payload + size, buf + 4, 16);  // copy IV for checksum
     std::uint8_t hash[32];
-    kovri::core::SHA256().CalculateDigest(hash, payload, size + 16);
+    xi2p::core::SHA256().CalculateDigest(hash, payload, size + 16);
     memcpy(buf + 20, hash, 4);  // checksum
     // TODO(unassigned): review, refactor
     payload[-1] = 0;  // zero
@@ -213,7 +213,7 @@ void TunnelGatewayBuffer::CompleteCurrentTunnelDataMessage() {
     if (padding_size > 0) {
       // non-zero padding
       std::uint32_t random_offset =
-        kovri::core::RandInRange32(
+        xi2p::core::RandInRange32(
           0,
           TUNNEL_DATA_MAX_PAYLOAD_SIZE - padding_size);
       memcpy(
@@ -253,12 +253,12 @@ void TunnelGateway::SendBuffer() {
     tunnel_msg->FillI2NPMessageHeader(I2NPTunnelData);
     m_NumSentBytes += TUNNEL_DATA_MSG_SIZE;
   }
-  kovri::core::transports.SendMessages(
+  xi2p::core::transports.SendMessages(
       m_Tunnel->GetNextIdentHash(),
       tunnel_msgs);
   m_Buffer.ClearTunnelDataMsgs();
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 

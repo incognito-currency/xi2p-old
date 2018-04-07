@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -37,9 +37,9 @@
 #include <string>
 
 #ifdef _WIN32
-#define Daemon kovri::app::DaemonWin32::Instance()
+#define Daemon xi2p::app::DaemonWin32::Instance()
 #else
-#define Daemon kovri::app::DaemonLinux::Instance()
+#define Daemon xi2p::app::DaemonLinux::Instance()
 #endif
 
 #include "client/instance.h"
@@ -50,7 +50,7 @@
 #include "core/util/filesystem.h"
 #include "core/util/log.h"
 
-namespace kovri
+namespace xi2p
 {
 namespace app
 {
@@ -130,6 +130,6 @@ class DaemonLinux : public DaemonSingleton
 #endif
 
 }  // namespace app
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_APP_DAEMON_H_

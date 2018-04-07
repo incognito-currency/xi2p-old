@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2015-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -88,11 +88,11 @@ BOOST_AUTO_TEST_CASE(ValidAlphabet)
 {
   /// @brief RFC 4648 alphabet
   std::string const base32("abcdefghijklmnopqrstuvwxyz234567");
-  BOOST_CHECK_EQUAL(base32, kovri::core::Base32::GetAlphabet());
+  BOOST_CHECK_EQUAL(base32, xi2p::core::Base32::GetAlphabet());
 
   /// @brief I2P-defined alphabet
   std::string const base64("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-~");
-  BOOST_CHECK_EQUAL(base64, kovri::core::Base64::GetAlphabet());
+  BOOST_CHECK_EQUAL(base64, xi2p::core::Base64::GetAlphabet());
 }
 
 BOOST_AUTO_TEST_CASE(Base32DestHash)
@@ -101,12 +101,12 @@ BOOST_AUTO_TEST_CASE(Base32DestHash)
       "s25c75a4upjbbd6gf2q34m4zwksx5zgnzjst4rzoooxxryfo4usq");
 
   std::string const encoded(
-      kovri::core::Base32::Encode(dest_hash.data(), dest_hash.size()));
+      xi2p::core::Base32::Encode(dest_hash.data(), dest_hash.size()));
 
   BOOST_CHECK_EQUAL(base32, encoded);
 
   std::vector<std::uint8_t> const decoded(
-      kovri::core::Base32::Decode(encoded.c_str(), encoded.size()));
+      xi2p::core::Base32::Decode(encoded.c_str(), encoded.size()));
 
   BOOST_CHECK_EQUAL_COLLECTIONS(
       decoded.begin(), decoded.end(), dest_hash.begin(), dest_hash.end());
@@ -117,12 +117,12 @@ BOOST_AUTO_TEST_CASE(Base64DestHash)
   std::string const base64("lrov9Byj0hCPxi6hvjOZsqV-5M3KZT5HLnOveOCu5SU=");
 
   std::string const encoded(
-      kovri::core::Base64::Encode(dest_hash.data(), dest_hash.size()));
+      xi2p::core::Base64::Encode(dest_hash.data(), dest_hash.size()));
 
   BOOST_CHECK_EQUAL(base64, encoded);
 
   std::vector<std::uint8_t> const decoded(
-      kovri::core::Base64::Decode(encoded.c_str(), encoded.size()));
+      xi2p::core::Base64::Decode(encoded.c_str(), encoded.size()));
 
   BOOST_CHECK_EQUAL_COLLECTIONS(
       decoded.begin(), decoded.end(), dest_hash.begin(), dest_hash.end());
@@ -133,12 +133,12 @@ BOOST_AUTO_TEST_CASE(Base64Dest)
   std::string const base64("8fbeyRjtUfDUuyr9f5ZSy~cd-3GMLQxG-o7-OeBGZImvS-E2sdun1mSoLvubufNQig4J-mtC3qYzbE3NIESuuc-FrfjO69nKF0Y7QvxSJ-d8EtC59UAOix-1QSO8oP3QA914s~JImAz8MZEPbK49IWJesvB9dxsFFOA7iomZAlftw9uNE18kgBdGRw36-3tfQdVL8QBkX82hYy~rkIYATL1Zoq~15qiGUFLEG4TcEBmm1s~7qS0JJLN-UwWKT5GEBZm4EGcIcojAQ~Oz3e8KY2IV-NyD0Wa4jiuy28ULd6qqpZVAPNwf8RNeysDAeX4~CaPpZFTYKJKN~6qFpO3xLtcoJ12rMfG6uMwgO-t4QsYvmCt6MTH~kL4gz-mISv5pCGzP907Ih4DI~pkqF90rP0gh~3VIcMfAi1N8FGsZXn8CdVr5cjqIDNPmNbpxnh2iVURDE5yqbOzqTseCbk2ybzvcChTlYujMSEO1Nvxs8VX3pyrq7bcFCyW0qrxis2uKBQAEAAcAAA==");
 
   std::string const encoded(
-      kovri::core::Base64::Encode(dest.data(), dest.size()));
+      xi2p::core::Base64::Encode(dest.data(), dest.size()));
 
   BOOST_CHECK_EQUAL(base64, encoded);
 
   std::vector<std::uint8_t> const decoded(
-      kovri::core::Base64::Decode(encoded.c_str(), encoded.size()));
+      xi2p::core::Base64::Decode(encoded.c_str(), encoded.size()));
 
   BOOST_CHECK_EQUAL_COLLECTIONS(
       decoded.begin(), decoded.end(), dest.begin(), dest.end());
@@ -148,19 +148,19 @@ BOOST_AUTO_TEST_CASE(InvalidEncoding)
 {
   std::string const base32("1!@#$%^&*()_-+=");
   BOOST_REQUIRE_THROW(
-      kovri::core::Base32::Decode(base32.c_str(), base32.size()), std::exception);
+      xi2p::core::Base32::Decode(base32.c_str(), base32.size()), std::exception);
 
   std::string const base64("!@#$%^&*()_-+");
   BOOST_REQUIRE_THROW(
-      kovri::core::Base64::Decode(base64.c_str(), base64.size()), std::exception);
+      xi2p::core::Base64::Decode(base64.c_str(), base64.size()), std::exception);
 }
 
 BOOST_AUTO_TEST_CASE(NullArgs)
 {
-  BOOST_REQUIRE_THROW(kovri::core::Base32::Encode(nullptr, 0), std::exception);
-  BOOST_REQUIRE_THROW(kovri::core::Base32::Decode(nullptr, 0), std::exception);
-  BOOST_REQUIRE_THROW(kovri::core::Base64::Encode(nullptr, 0), std::exception);
-  BOOST_REQUIRE_THROW(kovri::core::Base64::Decode(nullptr, 0), std::exception);
+  BOOST_REQUIRE_THROW(xi2p::core::Base32::Encode(nullptr, 0), std::exception);
+  BOOST_REQUIRE_THROW(xi2p::core::Base32::Decode(nullptr, 0), std::exception);
+  BOOST_REQUIRE_THROW(xi2p::core::Base64::Encode(nullptr, 0), std::exception);
+  BOOST_REQUIRE_THROW(xi2p::core::Base64::Decode(nullptr, 0), std::exception);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

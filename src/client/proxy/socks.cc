@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -44,7 +44,7 @@
 #include "core/router/identity.h"
 
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 static const std::size_t MAX_SOCKS_BUFFER_SIZE = 8192;
@@ -71,7 +71,7 @@ struct SOCKSDNSAddress {
 
 class SOCKSServer;
 class SOCKSHandler
-    : public kovri::client::I2PServiceHandler,
+    : public xi2p::client::I2PServiceHandler,
       public std::enable_shared_from_this<SOCKSHandler> {
  private:
    /// @enum State
@@ -295,11 +295,11 @@ class SOCKSHandler
       const boost::system::error_code & ecode);
 
   void HandleStreamRequestComplete(
-      std::shared_ptr<kovri::client::Stream> stream);
+      std::shared_ptr<xi2p::client::Stream> stream);
 
   std::uint8_t m_SocketBuffer[MAX_SOCKS_BUFFER_SIZE];
   std::shared_ptr<boost::asio::ip::tcp::socket> m_Socket;
-  std::shared_ptr<kovri::client::Stream> m_Stream;
+  std::shared_ptr<xi2p::client::Stream> m_Stream;
   /// @brief Data left to be sent
   std::uint8_t *m_RemainingData;
   std::uint8_t m_Response[7 + MAX_SOCKS_HOSTNAME_SIZE];
@@ -496,7 +496,7 @@ void SOCKSHandler::SOCKSRequestSuccess() {
     break;
     case SOCKS5:
       LOG(info) << "SOCKSHandler: SOCKS5 connection success";
-      auto s = kovri::client::context.GetAddressBook().GetB32AddressFromIdentHash(
+      auto s = xi2p::client::context.GetAddressBook().GetB32AddressFromIdentHash(
           GetOwner()->GetLocalDestination()->GetIdentHash());
       Address address;
       address.dns.FromString(s);
@@ -801,7 +801,7 @@ void SOCKSHandler::SentSOCKSDone(
       return;
     LOG(info) << "SOCKSHandler: new I2PTunnel connection";
     auto connection =
-      std::make_shared<kovri::client::I2PTunnelConnection>(
+      std::make_shared<xi2p::client::I2PTunnelConnection>(
           GetOwner(),
           m_Socket,
           m_Stream);
@@ -829,7 +829,7 @@ void SOCKSHandler::SentSOCKSResponse(
 }
 
 void SOCKSHandler::HandleStreamRequestComplete(
-    std::shared_ptr<kovri::client::Stream> stream) {
+    std::shared_ptr<xi2p::client::Stream> stream) {
   if (stream) {
     m_Stream = stream;
     SOCKSRequestSuccess();
@@ -843,18 +843,18 @@ void SOCKSHandler::HandleStreamRequestComplete(
 
 SOCKSServer::SOCKSServer(
     const std::string& address, int port,
-    std::shared_ptr<kovri::client::ClientDestination> local_destination)
+    std::shared_ptr<xi2p::client::ClientDestination> local_destination)
     : TCPIPAcceptor(
         address,
         port,
         local_destination ?
         local_destination :
-        kovri::client::context.GetSharedLocalDestination()) {}
+        xi2p::client::context.GetSharedLocalDestination()) {}
 
-std::shared_ptr<kovri::client::I2PServiceHandler> SOCKSServer::CreateHandler(
+std::shared_ptr<xi2p::client::I2PServiceHandler> SOCKSServer::CreateHandler(
     std::shared_ptr<boost::asio::ip::tcp::socket> socket) {
   return std::make_shared<SOCKSHandler> (this, socket);
 }
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p

@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -83,7 +83,7 @@ bool SU3FileCommand::Impl(
     }
   catch (...)
     {
-      kovri::core::Exception ex(GetName().c_str());
+      xi2p::core::Exception ex(GetName().c_str());
       ex.Dispatch(__func__);
       return false;
     }
@@ -110,10 +110,10 @@ bool SU3FileCommand::Impl(
       return false;
     }
   // Get trusted certificates
-  std::map<std::string, kovri::core::PublicKey> keys;
+  std::map<std::string, xi2p::core::PublicKey> keys;
   if (vm.count("-k"))
     {
-      kovri::core::X509 x509;
+      xi2p::core::X509 x509;
       boost::filesystem::path path(vm["-k"].as<std::string>());
       LOG(debug) << "su3file: Using cutom certificate " << path;
       // Sanity check
@@ -146,9 +146,9 @@ bool SU3FileCommand::Impl(
       boost::filesystem::path cert_dir_path =
           vm.count("cert-dir")
               ? boost::filesystem::path(vm["cert-dir"].as<std::string>())
-              : kovri::core::GetPath(kovri::core::Path::SU3);
+              : xi2p::core::GetPath(xi2p::core::Path::SU3);
       LOG(debug) << "su3file: Using certificates path " << cert_dir_path;
-      if (!kovri::client::Reseed::ProcessCerts(&keys, cert_dir_path))
+      if (!xi2p::client::Reseed::ProcessCerts(&keys, cert_dir_path))
         {
           LOG(error) << "su3file: Failed to get trusted certificates !";
           return false;
@@ -157,7 +157,7 @@ bool SU3FileCommand::Impl(
 
   // Open input
   LOG(trace) << "su3file: input " << input_name;
-  kovri::core::InputFileStream input(
+  xi2p::core::InputFileStream input(
       input_name, std::ios::in | std::ios::binary);
   if (input.Fail())
     {
@@ -180,7 +180,7 @@ bool SU3FileCommand::Impl(
     }
   // Process SU3
   std::string su3_str(buffer_ptr.get(), buffer_ptr.get() + length);
-  kovri::client::SU3 su3(su3_str, keys);
+  xi2p::client::SU3 su3(su3_str, keys);
   if (!su3.SU3Impl())
     {
       LOG(error) << "su3file: Failed to process input !";
@@ -193,7 +193,7 @@ bool SU3FileCommand::Impl(
       LOG(info) << "Version: " << su3.GetVersion();
       LOG(info) << "Signer: " << su3.GetSignerId();
       LOG(info) << "SigType: "
-                << kovri::core::GetSigningKeyTypeName(su3.GetSignatureType());
+                << xi2p::core::GetSigningKeyTypeName(su3.GetSignatureType());
       LOG(info) << "Content: " << su3.ContentTypeToString(su3.GetContentType());
       LOG(info) << "FileType: " << su3.FileTypeToString(su3.GetFileType());
     }
@@ -203,7 +203,7 @@ bool SU3FileCommand::Impl(
     }
   else if (sub_cmd == "extract")
     {
-      kovri::core::OutputFileStream output(
+      xi2p::core::OutputFileStream output(
           output_name, std::ios::out | std::ios::binary);
       if (output.Fail())
         {

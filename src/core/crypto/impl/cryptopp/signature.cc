@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -52,7 +52,7 @@
 
 #include "core/util/log.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 /**
@@ -151,7 +151,7 @@ void CreateDSARandomKeys(
   std::array<std::uint8_t, DSA_PRIVATE_KEY_LENGTH> key_buf;
   CryptoPP::Integer dsax;
   do {
-    kovri::core::RandBytes(key_buf.data(), DSA_PRIVATE_KEY_LENGTH);
+    xi2p::core::RandBytes(key_buf.data(), DSA_PRIVATE_KEY_LENGTH);
     dsax = CryptoPP::Integer(key_buf.data(), DSA_PRIVATE_KEY_LENGTH);
   } while (dsax.IsZero() || dsax >= dsaq);
   CryptoPP::DSA::PrivateKey private_key;
@@ -752,7 +752,7 @@ class RSARawVerifier {
     CryptoPP::Integer encrypted_signature(
         a_exp_b_mod_c(
             CryptoPP::Integer(signature, key_length),
-            CryptoPP::Integer(kovri::core::rsae),
+            CryptoPP::Integer(xi2p::core::rsae),
             m_Modulus));  // s^e mod n
     std::vector<std::uint8_t> buf(key_length);
     encrypted_signature.Encode(buf.data(), buf.size());
@@ -808,4 +808,4 @@ bool RSASHA5124096RawVerifier::Verify(
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

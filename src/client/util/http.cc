@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -49,7 +49,7 @@
 #include "core/util/byte_stream.h"
 #include "core/util/filesystem.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 namespace http = boost::network::http;
@@ -115,7 +115,7 @@ bool HTTP::DownloadViaClearnet() {
   Options options;
   options.timeout(static_cast<std::uint8_t>(Timeout::Request));
   LOG(debug) << "HTTP: Download Clearnet with timeout : "
-             << kovri::core::GetType(Timeout::Request);
+             << xi2p::core::GetType(Timeout::Request);
   // Ensure that we only download from explicit TLS-enabled hosts
   if (core::context.GetOpts()["enable-https"].as<bool>()) {
     const std::string cert = uri.host() + ".crt";
@@ -179,9 +179,9 @@ bool HTTP::DownloadViaClearnet() {
         SetPath(uri.path());
       }
       // Create response object, send request and receive response
-      LOG(trace) << "HTTP: Request " << kovri::core::LogNetMessageToString(request);
+      LOG(trace) << "HTTP: Request " << xi2p::core::LogNetMessageToString(request);
       Response response = client.get(request);
-      LOG(trace) << "HTTP: Response " << kovri::core::LogNetMessageToString(response);
+      LOG(trace) << "HTTP: Response " << xi2p::core::LogNetMessageToString(response);
       // Test HTTP response status code
       switch (response.status()) {
         // New download or cached version does not match, so re-download
@@ -233,9 +233,9 @@ bool HTTP::DownloadViaI2P()
   // Get URI
   auto uri = GetURI();
   // Reference the only instantiated address book instance in the singleton client context
-  auto& address_book = kovri::client::context.GetAddressBook();
+  auto& address_book = xi2p::client::context.GetAddressBook();
   // For identity hash of URI host
-  kovri::core::IdentHash ident;
+  xi2p::core::IdentHash ident;
   // Get URI host's ident hash then find its lease-set
   if (address_book.CheckAddressIdentHashFound(uri.host(), ident)
       && address_book.GetSharedLocalDestination()) {
@@ -249,7 +249,7 @@ bool HTTP::DownloadViaI2P()
         address_book.GetSharedLocalDestination()->RequestDestination(
             ident,
             [&new_data_received,
-             &lease_set](std::shared_ptr<kovri::core::LeaseSet> ls) {
+             &lease_set](std::shared_ptr<xi2p::core::LeaseSet> ls) {
               lease_set = ls;
               new_data_received.notify_all();
             });
@@ -270,7 +270,7 @@ bool HTTP::DownloadViaI2P()
       PrepareI2PRequest();  // TODO(anonimal): remove after refactor
       // Send request
       auto stream =
-        kovri::client::context.GetAddressBook().GetSharedLocalDestination()->CreateStream(
+        xi2p::client::context.GetAddressBook().GetSharedLocalDestination()->CreateStream(
             lease_set,
             std::stoi(uri.port()));
       stream->Send(
@@ -427,4 +427,4 @@ void HTTP::MergeI2PChunkedResponse(
 }
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p

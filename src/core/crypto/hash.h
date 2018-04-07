@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -36,7 +36,7 @@
 
 #define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1  // For MD5
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 /// @class MD5
@@ -136,6 +136,6 @@ class SHA512 {
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_CRYPTO_HASH_H_

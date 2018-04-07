@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -48,7 +48,7 @@
 
 #include "core/util/exception.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 class TransitTunnel : public TunnelBase {
@@ -70,10 +70,10 @@ class TransitTunnel : public TunnelBase {
 
   // implements TunnelBase
   void SendTunnelDataMsg(
-      std::shared_ptr<kovri::core::I2NPMessage> msg);
+      std::shared_ptr<xi2p::core::I2NPMessage> msg);
 
   void HandleTunnelDataMsg(
-      std::shared_ptr<const kovri::core::I2NPMessage> tunnel_msg);
+      std::shared_ptr<const xi2p::core::I2NPMessage> tunnel_msg);
 
   void EncryptTunnelMsg(
       std::shared_ptr<const I2NPMessage> in,
@@ -83,15 +83,15 @@ class TransitTunnel : public TunnelBase {
     return m_NextTunnelID;
   }
 
-  const kovri::core::IdentHash& GetNextIdentHash() const {
+  const xi2p::core::IdentHash& GetNextIdentHash() const {
     return m_NextIdent;
   }
 
  private:
   std::uint32_t m_TunnelID,
            m_NextTunnelID;
-  kovri::core::IdentHash m_NextIdent;
-  kovri::core::TunnelEncryption m_Encryption;
+  xi2p::core::IdentHash m_NextIdent;
+  xi2p::core::TunnelEncryption m_Encryption;
   core::Exception m_Exception;
 };
 
@@ -117,13 +117,13 @@ class TransitTunnelParticipant : public TransitTunnel {
   }
 
   void HandleTunnelDataMsg(
-      std::shared_ptr<const kovri::core::I2NPMessage> tunnel_msg);
+      std::shared_ptr<const xi2p::core::I2NPMessage> tunnel_msg);
 
   void FlushTunnelDataMsgs();
 
  private:
   std::size_t m_NumTransmittedBytes;
-  std::vector<std::shared_ptr<kovri::core::I2NPMessage> > m_TunnelDataMsgs;
+  std::vector<std::shared_ptr<xi2p::core::I2NPMessage> > m_TunnelDataMsgs;
 };
 
 class TransitTunnelGateway : public TransitTunnel {
@@ -143,7 +143,7 @@ class TransitTunnelGateway : public TransitTunnel {
       m_Gateway(this) {}
 
   void SendTunnelDataMsg(
-      std::shared_ptr<kovri::core::I2NPMessage> msg);
+      std::shared_ptr<xi2p::core::I2NPMessage> msg);
 
   void FlushTunnelDataMsgs();
 
@@ -173,7 +173,7 @@ class TransitTunnelEndpoint : public TransitTunnel {
       m_Endpoint(false) {}  // transit endpoint is always outbound
 
   void HandleTunnelDataMsg(
-      std::shared_ptr<const kovri::core::I2NPMessage> tunnel_msg);
+      std::shared_ptr<const xi2p::core::I2NPMessage> tunnel_msg);
 
   std::size_t GetNumTransmittedBytes() const {
     return m_Endpoint.GetNumReceivedBytes();
@@ -193,6 +193,6 @@ TransitTunnel* CreateTransitTunnel(
     bool is_endpoint);
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_TUNNEL_TRANSIT_H_

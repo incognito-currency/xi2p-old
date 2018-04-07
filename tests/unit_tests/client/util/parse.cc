@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_SUITE(ClientParsing)
 
 BOOST_AUTO_TEST_CASE(ParseACL)
 {
-  std::set<kovri::core::IdentHash> idents;
+  std::set<xi2p::core::IdentHash> idents;
   std::uint8_t count(3);
   std::string acl;
 
@@ -52,11 +52,11 @@ BOOST_AUTO_TEST_CASE(ParseACL)
   for (std::uint8_t i(0); i < count; i++)
     {
       // Note: not a "real" (key-generated) ident hash
-      std::array<std::uint8_t, sizeof(kovri::core::IdentHash)> rand{{}};
-      kovri::core::RandBytes(rand.data(), rand.size());
+      std::array<std::uint8_t, sizeof(xi2p::core::IdentHash)> rand{{}};
+      xi2p::core::RandBytes(rand.data(), rand.size());
 
       // Create hash + insert into set
-      kovri::core::IdentHash hash(rand.data());
+      xi2p::core::IdentHash hash(rand.data());
       idents.insert(hash);
 
       // Log valid b32
@@ -74,14 +74,14 @@ BOOST_AUTO_TEST_CASE(ParseACL)
   LOG(debug) << "ParseACL: " << acl;
 
   // Parse our malformed ACL
-  auto const& parsed_idents = kovri::client::ParseACL(acl);
+  auto const& parsed_idents = xi2p::client::ParseACL(acl);
 
   // Check if parser fixed the ACL and if parsed ACL matches the correct ACL
   BOOST_CHECK(parsed_idents == idents);
 }
 
 struct TunnelFixture {
-  kovri::client::TunnelAttributes tunnel{};
+  xi2p::client::TunnelAttributes tunnel{};
 };
 
 // Test for correct delimiter parsing against plain configuration
@@ -92,7 +92,7 @@ BOOST_AUTO_TEST_CASE(ParseClientDestination) {
   plain->tunnel.dest = "anonimal.i2p";
   plain->tunnel.dest_port = 80;
 
-  kovri::client::ParseClientDestination(&plain->tunnel);
+  xi2p::client::ParseClientDestination(&plain->tunnel);
 
   // Create delimited destination
   auto delimited = std::make_unique<TunnelFixture>();
@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(ParseClientDestination) {
   delimited->tunnel.dest = "anonimal.i2p:80";
   delimited->tunnel.dest_port = 12345;
 
-  kovri::client::ParseClientDestination(&delimited->tunnel);
+  xi2p::client::ParseClientDestination(&delimited->tunnel);
 
   // Both destinations should be equal after being parsed
   BOOST_CHECK_EQUAL(delimited->tunnel.dest, plain->tunnel.dest);
@@ -116,7 +116,7 @@ BOOST_AUTO_TEST_CASE(CatchBadClientDestination) {
   bad->tunnel.dest_port = 80;
 
   BOOST_REQUIRE_THROW(
-      kovri::client::ParseClientDestination(&bad->tunnel),
+      xi2p::client::ParseClientDestination(&bad->tunnel),
       std::exception);
 
   // TODO(unassigned): expand test-case (see TODO in function definition)

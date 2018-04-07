@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -34,7 +34,7 @@
 
 #include <inttypes.h>
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 const std::uint8_t elgp_[256]= {
@@ -95,4 +95,4 @@ const CryptoConstants& GetCryptoConstants() {
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

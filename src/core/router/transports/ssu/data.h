@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -47,7 +47,7 @@
 #include "core/router/info.h"
 #include "core/router/transports/ssu/packet.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 /// @enum SSUDuration
@@ -135,10 +135,10 @@ class SSUData {
   void FlushReceivedMessage();
 
   void Send(
-      std::shared_ptr<kovri::core::I2NPMessage> msg);
+      std::shared_ptr<xi2p::core::I2NPMessage> msg);
 
   void UpdatePacketSize(
-      const kovri::core::IdentHash& remote_ident);
+      const xi2p::core::IdentHash& remote_ident);
 
  private:
   void SendMsgACK(
@@ -174,7 +174,7 @@ class SSUData {
       const boost::system::error_code& ecode);
 
   void AdjustPacketSize(
-      const kovri::core::RouterInfo& remoteRouter);
+      const xi2p::core::RouterInfo& remoteRouter);
 
  private:
   SSUSession& m_Session;
@@ -184,10 +184,10 @@ class SSUData {
   boost::asio::deadline_timer m_ResendTimer, m_DecayTimer,
                               m_IncompleteMessagesCleanupTimer;
   std::size_t m_MaxPacketSize, m_PacketSize;
-  kovri::core::I2NPMessagesHandler m_Handler;
+  xi2p::core::I2NPMessagesHandler m_Handler;
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_TRANSPORTS_SSU_DATA_H_

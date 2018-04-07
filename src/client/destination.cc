@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2013-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -47,13 +47,13 @@
 #include "core/util/log.h"
 #include "core/util/timestamp.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 // TODO(anonimal): bytestream refactor
 
 ClientDestination::ClientDestination(
-    const kovri::core::PrivateKeys& keys,
+    const xi2p::core::PrivateKeys& keys,
     bool is_public,
     const std::map<std::string, std::string> * params)
     : m_IsRunning(false),
@@ -68,14 +68,14 @@ ClientDestination::ClientDestination(
       m_Exception(__func__) {
   // TODO(anonimal): this try block should be handled entirely by caller
   try {
-    kovri::core::GenerateElGamalKeyPair(
+    xi2p::core::GenerateElGamalKeyPair(
         m_EncryptionPrivateKey,
         m_EncryptionPublicKey);
     int inbound_tunnel_len = DEFAULT_INBOUND_TUNNEL_LENGTH,
         outbound_tunnel_len = DEFAULT_OUTBOUND_TUNNEL_LENGTH,
         inbound_tunnels_quantity = DEFAULT_INBOUND_TUNNELS_QUANTITY,
         outbound_tunnels_quantity = DEFAULT_OUTBOUND_TUNNELS_QUANTITY;
-    std::shared_ptr<std::vector<kovri::core::IdentHash> > explicit_peers;
+    std::shared_ptr<std::vector<xi2p::core::IdentHash> > explicit_peers;
     if (params) {
       auto it = params->find(I2CP_PARAM_INBOUND_TUNNEL_LENGTH);
       if (it != params->end()) {
@@ -114,11 +114,11 @@ ClientDestination::ClientDestination(
       }
       it = params->find(I2CP_PARAM_EXPLICIT_PEERS);
       if (it != params->end()) {
-        explicit_peers = std::make_shared<std::vector<kovri::core::IdentHash> >();
+        explicit_peers = std::make_shared<std::vector<xi2p::core::IdentHash> >();
         std::stringstream ss(it->second);
         std::string b64;
         while (std::getline(ss, b64, ',')) {
-          kovri::core::IdentHash ident;
+          xi2p::core::IdentHash ident;
           ident.FromBase64(b64);
           explicit_peers->push_back(ident);
         }
@@ -126,7 +126,7 @@ ClientDestination::ClientDestination(
       }
     }
     m_Pool =
-      kovri::core::tunnels.CreateTunnelPool(
+      xi2p::core::tunnels.CreateTunnelPool(
           this,
           inbound_tunnel_len,
           outbound_tunnel_len,
@@ -137,10 +137,10 @@ ClientDestination::ClientDestination(
     if (m_IsPublic)
       LOG(debug)
         << "ClientDestination: created local address "
-        << kovri::core::GetB32Address(GetIdentHash());
+        << xi2p::core::GetB32Address(GetIdentHash());
     // TODO(unassigned): ???
     m_StreamingDestination =
-      std::make_shared<kovri::client::StreamingDestination> (*this);
+      std::make_shared<xi2p::client::StreamingDestination> (*this);
   } catch (...) {
     m_Exception.Dispatch(__func__);
     // TODO(anonimal): review if we need to safely break control, ensure exception handling by callers
@@ -206,7 +206,7 @@ void ClientDestination::Stop() {
     }
     if (m_Pool) {
       m_Pool->SetLocalDestination(nullptr);
-      kovri::core::tunnels.DeleteTunnelPool(m_Pool);
+      xi2p::core::tunnels.DeleteTunnelPool(m_Pool);
     }
     m_Service.stop();
     if (m_Thread) {
@@ -216,8 +216,8 @@ void ClientDestination::Stop() {
   }
 }
 
-std::shared_ptr<const kovri::core::LeaseSet> ClientDestination::FindLeaseSet(
-    const kovri::core::IdentHash& ident) {
+std::shared_ptr<const xi2p::core::LeaseSet> ClientDestination::FindLeaseSet(
+    const xi2p::core::IdentHash& ident) {
   auto it = m_RemoteLeaseSets.find(ident);
   if (it != m_RemoteLeaseSets.end()) {
     if (it->second->HasNonExpiredLeases())
@@ -225,7 +225,7 @@ std::shared_ptr<const kovri::core::LeaseSet> ClientDestination::FindLeaseSet(
     else
       LOG(debug) << "ClientDestination: all leases of remote LeaseSet expired";
   } else {
-    auto ls = kovri::core::netdb.FindLeaseSet(ident);
+    auto ls = xi2p::core::netdb.FindLeaseSet(ident);
     if (ls) {
       m_RemoteLeaseSets[ident] = ls;
       return ls;
@@ -234,7 +234,7 @@ std::shared_ptr<const kovri::core::LeaseSet> ClientDestination::FindLeaseSet(
   return nullptr;
 }
 
-std::shared_ptr<const kovri::core::LeaseSet> ClientDestination::GetLeaseSet() {
+std::shared_ptr<const xi2p::core::LeaseSet> ClientDestination::GetLeaseSet() {
   if (!m_Pool)
     return nullptr;
   if (!m_LeaseSet)
@@ -243,7 +243,7 @@ std::shared_ptr<const kovri::core::LeaseSet> ClientDestination::GetLeaseSet() {
 }
 
 void ClientDestination::UpdateLeaseSet() {
-  m_LeaseSet.reset(new kovri::core::LeaseSet(*m_Pool));
+  m_LeaseSet.reset(new xi2p::core::LeaseSet(*m_Pool));
 }
 
 bool ClientDestination::SubmitSessionKey(
@@ -261,7 +261,7 @@ bool ClientDestination::SubmitSessionKey(
 }
 
 void ClientDestination::ProcessGarlicMessage(
-    std::shared_ptr<kovri::core::I2NPMessage> msg) {
+    std::shared_ptr<xi2p::core::I2NPMessage> msg) {
   m_Service.post(
       std::bind(
           &ClientDestination::HandleGarlicMessage,
@@ -270,7 +270,7 @@ void ClientDestination::ProcessGarlicMessage(
 }
 
 void ClientDestination::ProcessDeliveryStatusMessage(
-    std::shared_ptr<kovri::core::I2NPMessage> msg) {
+    std::shared_ptr<xi2p::core::I2NPMessage> msg) {
   m_Service.post(
       std::bind(
           &ClientDestination::HandleDeliveryStatusMessage,
@@ -281,41 +281,41 @@ void ClientDestination::ProcessDeliveryStatusMessage(
 void ClientDestination::HandleI2NPMessage(
     const std::uint8_t* buf,
     std::size_t,
-    std::shared_ptr<kovri::core::InboundTunnel> from) {
-  std::uint8_t type_ID = buf[kovri::core::I2NP_HEADER_TYPEID_OFFSET];
+    std::shared_ptr<xi2p::core::InboundTunnel> from) {
+  std::uint8_t type_ID = buf[xi2p::core::I2NP_HEADER_TYPEID_OFFSET];
   switch (type_ID) {
-    case kovri::core::I2NPData:
+    case xi2p::core::I2NPData:
       HandleDataMessage(
-          buf + kovri::core::I2NP_HEADER_SIZE,
+          buf + xi2p::core::I2NP_HEADER_SIZE,
           // TODO(unassigned): unused
           core::InputByteStream::Read<std::uint16_t>(
-              buf + kovri::core::I2NP_HEADER_SIZE_OFFSET));
+              buf + xi2p::core::I2NP_HEADER_SIZE_OFFSET));
       break;
-    case kovri::core::I2NPDeliveryStatus:
+    case xi2p::core::I2NPDeliveryStatus:
       // we assume tunnel tests non-encrypted
       HandleDeliveryStatusMessage(
           CreateI2NPMessage(
               buf,
-              kovri::core::GetI2NPMessageLength(buf),
+              xi2p::core::GetI2NPMessageLength(buf),
               from));
     break;
-    case kovri::core::I2NPDatabaseStore:
+    case xi2p::core::I2NPDatabaseStore:
       HandleDatabaseStoreMessage(
-          buf + kovri::core::I2NP_HEADER_SIZE,
+          buf + xi2p::core::I2NP_HEADER_SIZE,
           core::InputByteStream::Read<std::uint16_t>(
-              buf + kovri::core::I2NP_HEADER_SIZE_OFFSET));
+              buf + xi2p::core::I2NP_HEADER_SIZE_OFFSET));
     break;
-    case kovri::core::I2NPDatabaseSearchReply:
+    case xi2p::core::I2NPDatabaseSearchReply:
       HandleDatabaseSearchReplyMessage(
-          buf + kovri::core::I2NP_HEADER_SIZE,
+          buf + xi2p::core::I2NP_HEADER_SIZE,
           core::InputByteStream::Read<std::uint16_t>(
-              buf + kovri::core::I2NP_HEADER_SIZE_OFFSET));
+              buf + xi2p::core::I2NP_HEADER_SIZE_OFFSET));
     break;
     default:
-      kovri::core::HandleI2NPMessage(
+      xi2p::core::HandleI2NPMessage(
           CreateI2NPMessage(
               buf,
-              kovri::core::GetI2NPMessageLength(buf),
+              xi2p::core::GetI2NPMessageLength(buf),
               from));
   }
 }
@@ -325,16 +325,16 @@ void ClientDestination::HandleDatabaseStoreMessage(
     std::size_t len) {
   std::uint32_t const reply_token = core::InputByteStream::Read<std::uint32_t>(
       buf + core::DATABASE_STORE_REPLY_TOKEN_OFFSET);
-  std::size_t offset = kovri::core::DATABASE_STORE_HEADER_SIZE;
+  std::size_t offset = xi2p::core::DATABASE_STORE_HEADER_SIZE;
   if (reply_token) {
     LOG(debug) << "ClientDestination: reply token is ignored for DatabaseStore";
     offset += 36;
   }
   // LeaseSet
-  std::shared_ptr<kovri::core::LeaseSet> lease_set;
-  if (buf[kovri::core::DATABASE_STORE_TYPE_OFFSET] == 1) {
+  std::shared_ptr<xi2p::core::LeaseSet> lease_set;
+  if (buf[xi2p::core::DATABASE_STORE_TYPE_OFFSET] == 1) {
     LOG(debug) << "ClientDestination: remote LeaseSet";
-    auto it = m_RemoteLeaseSets.find(buf + kovri::core::DATABASE_STORE_KEY_OFFSET);
+    auto it = m_RemoteLeaseSets.find(buf + xi2p::core::DATABASE_STORE_KEY_OFFSET);
     if (it != m_RemoteLeaseSets.end()) {
       lease_set = it->second;
       lease_set->Update(buf + offset, len - offset);
@@ -347,10 +347,10 @@ void ClientDestination::HandleDatabaseStoreMessage(
       }
     } else {
       lease_set =
-        std::make_shared<kovri::core::LeaseSet> (buf + offset, len - offset);
+        std::make_shared<xi2p::core::LeaseSet> (buf + offset, len - offset);
       if (lease_set->IsValid()) {
         LOG(debug) << "ClientDestination: new remote LeaseSet added";
-        m_RemoteLeaseSets[buf + kovri::core::DATABASE_STORE_KEY_OFFSET] = lease_set;
+        m_RemoteLeaseSets[buf + xi2p::core::DATABASE_STORE_KEY_OFFSET] = lease_set;
       } else {
         LOG(error) << "ClientDestination: new remote LeaseSet verification failed";
         lease_set = nullptr;
@@ -359,9 +359,9 @@ void ClientDestination::HandleDatabaseStoreMessage(
   } else {
     LOG(error)
       << "ClientDestination: unexpected client's DatabaseStore type "
-      << buf[kovri::core::DATABASE_STORE_TYPE_OFFSET] << ". Dropped";
+      << buf[xi2p::core::DATABASE_STORE_TYPE_OFFSET] << ". Dropped";
   }
-  auto it1 = m_LeaseSetRequests.find(buf + kovri::core::DATABASE_STORE_KEY_OFFSET);
+  auto it1 = m_LeaseSetRequests.find(buf + xi2p::core::DATABASE_STORE_KEY_OFFSET);
   if (it1 != m_LeaseSetRequests.end()) {
     it1->second->request_timeout_timer.cancel();
     if (it1->second->request_complete)
@@ -374,7 +374,7 @@ void ClientDestination::HandleDatabaseStoreMessage(
 void ClientDestination::HandleDatabaseSearchReplyMessage(
     const std::uint8_t* buf,
     std::size_t) {
-  kovri::core::IdentHash key(buf);
+  xi2p::core::IdentHash key(buf);
   int num = buf[32];  // num
   LOG(debug)
     << "ClientDestination: DatabaseSearchReply for "
@@ -385,8 +385,8 @@ void ClientDestination::HandleDatabaseSearchReplyMessage(
     bool found = false;
     if (request->excluded.size() < MAX_NUM_FLOODFILLS_PER_REQUEST) {
       for (int i = 0; i < num; i++) {
-        kovri::core::IdentHash peer_hash(buf + 33 + i * 32);
-        auto floodfill = kovri::core::netdb.FindRouter(peer_hash);
+        xi2p::core::IdentHash peer_hash(buf + 33 + i * 32);
+        auto floodfill = xi2p::core::netdb.FindRouter(peer_hash);
         if (floodfill) {
           LOG(debug)
             << "ClientDestination: requesting "
@@ -395,7 +395,7 @@ void ClientDestination::HandleDatabaseSearchReplyMessage(
             found = true;
         } else {
           LOG(debug) << "ClientDestination: found new floodfill, requesting it";
-          kovri::core::netdb.RequestDestination(peer_hash);
+          xi2p::core::netdb.RequestDestination(peer_hash);
         }
       }
       if (!found)
@@ -419,20 +419,20 @@ void ClientDestination::HandleDatabaseSearchReplyMessage(
 }
 
 void ClientDestination::HandleDeliveryStatusMessage(
-    std::shared_ptr<kovri::core::I2NPMessage> msg) {
+    std::shared_ptr<xi2p::core::I2NPMessage> msg) {
   std::uint32_t const msg_ID = core::InputByteStream::Read<std::uint32_t>(
-      msg->GetPayload() + kovri::core::DELIVERY_STATUS_MSGID_OFFSET);
+      msg->GetPayload() + xi2p::core::DELIVERY_STATUS_MSGID_OFFSET);
   if (msg_ID == m_PublishReplyToken) {
     LOG(debug) << "ClientDestination: publishing confirmed";
     m_ExcludedFloodfills.clear();
     m_PublishReplyToken = 0;
   } else {
-    kovri::core::GarlicDestination::HandleDeliveryStatusMessage(msg);
+    xi2p::core::GarlicDestination::HandleDeliveryStatusMessage(msg);
   }
 }
 
 void ClientDestination::SetLeaseSetUpdated() {
-  kovri::core::GarlicDestination::SetLeaseSetUpdated();
+  xi2p::core::GarlicDestination::SetLeaseSetUpdated();
   UpdateLeaseSet();
   if (m_IsPublic)
     Publish();
@@ -452,9 +452,9 @@ void ClientDestination::Publish() {
     LOG(error) << "ClientDestination: can't publish LeaseSet, no outbound tunnels";
     return;
   }
-  std::set<kovri::core::IdentHash> excluded;
+  std::set<xi2p::core::IdentHash> excluded;
   auto floodfill =
-    kovri::core::netdb.GetClosestFloodfill(
+    xi2p::core::netdb.GetClosestFloodfill(
         m_LeaseSet->GetIdentHash(),
         m_ExcludedFloodfills);
   if (!floodfill) {
@@ -466,11 +466,11 @@ void ClientDestination::Publish() {
   m_ExcludedFloodfills.insert(floodfill->GetIdentHash());
   LOG(debug)
     << "ClientDestination: publish LeaseSet of " << GetIdentHash().ToBase32();
-  m_PublishReplyToken = kovri::core::Rand<std::uint32_t>();
+  m_PublishReplyToken = xi2p::core::Rand<std::uint32_t>();
   auto msg =
     WrapMessage(
         floodfill,
-        kovri::core::CreateDatabaseStoreMsg(
+        xi2p::core::CreateDatabaseStoreMsg(
             m_LeaseSet,
             m_PublishReplyToken));
   m_PublishConfirmationTimer.expires_from_now(
@@ -540,7 +540,7 @@ void ClientDestination::HandleDataMessage(const std::uint8_t* buf, std::size_t)
 
 void ClientDestination::CreateStream(
     StreamRequestComplete stream_request_complete,
-    const kovri::core::IdentHash& dest,
+    const xi2p::core::IdentHash& dest,
     std::uint16_t port) {
   assert(stream_request_complete);
   auto lease_set = FindLeaseSet(dest);
@@ -553,7 +553,7 @@ void ClientDestination::CreateStream(
     RequestDestination(
         dest,
         [this, stream_request_complete, port](
-          std::shared_ptr<kovri::core::LeaseSet> ls) {
+          std::shared_ptr<xi2p::core::LeaseSet> ls) {
         if (ls)
           stream_request_complete(
               CreateStream(
@@ -565,8 +565,8 @@ void ClientDestination::CreateStream(
   }
 }
 
-std::shared_ptr<kovri::client::Stream> ClientDestination::CreateStream(
-    std::shared_ptr<const kovri::core::LeaseSet> remote,
+std::shared_ptr<xi2p::client::Stream> ClientDestination::CreateStream(
+    std::shared_ptr<const xi2p::core::LeaseSet> remote,
     std::uint16_t port) {
   if (m_StreamingDestination)
     return m_StreamingDestination->CreateNewOutgoingStream(remote, port);
@@ -574,7 +574,7 @@ std::shared_ptr<kovri::client::Stream> ClientDestination::CreateStream(
     return nullptr;
 }
 
-std::shared_ptr<kovri::client::StreamingDestination> ClientDestination::GetStreamingDestination(
+std::shared_ptr<xi2p::client::StreamingDestination> ClientDestination::GetStreamingDestination(
     std::uint16_t port) const {
   if (port) {
     auto it = m_StreamingDestinationsByPorts.find(port);
@@ -586,7 +586,7 @@ std::shared_ptr<kovri::client::StreamingDestination> ClientDestination::GetStrea
 }
 
 void ClientDestination::AcceptStreams(
-    const kovri::client::StreamingDestination::Acceptor& acceptor) {
+    const xi2p::client::StreamingDestination::Acceptor& acceptor) {
   if (m_StreamingDestination)
     m_StreamingDestination->SetAcceptor(acceptor);
 }
@@ -602,10 +602,10 @@ bool ClientDestination::IsAcceptingStreams() const {
   return false;
 }
 
-std::shared_ptr<kovri::client::StreamingDestination> ClientDestination::CreateStreamingDestination(
+std::shared_ptr<xi2p::client::StreamingDestination> ClientDestination::CreateStreamingDestination(
     std::uint16_t port) {
   auto dest =
-    std::make_shared<kovri::client::StreamingDestination> (
+    std::make_shared<xi2p::client::StreamingDestination> (
         *this,
         port);
   if (port)
@@ -622,7 +622,7 @@ DatagramDestination* ClientDestination::CreateDatagramDestination() {
 }
 
 bool ClientDestination::RequestDestination(
-    const kovri::core::IdentHash& dest,
+    const xi2p::core::IdentHash& dest,
     RequestComplete request_complete) {
   if (!m_Pool || !IsReady()) {
     if (request_complete)
@@ -639,11 +639,11 @@ bool ClientDestination::RequestDestination(
 }
 
 void ClientDestination::RequestLeaseSet(
-    const kovri::core::IdentHash& dest,
+    const xi2p::core::IdentHash& dest,
     RequestComplete request_complete) {
-  std::set<kovri::core::IdentHash> excluded;
+  std::set<xi2p::core::IdentHash> excluded;
   auto floodfill =
-    kovri::core::netdb.GetClosestFloodfill(
+    xi2p::core::netdb.GetClosestFloodfill(
         dest,
         excluded);
   if (floodfill) {
@@ -651,7 +651,7 @@ void ClientDestination::RequestLeaseSet(
     request->request_complete = request_complete;
     auto ret =
       m_LeaseSetRequests.insert(
-          std::pair<kovri::core::IdentHash, LeaseSetRequest *>(
+          std::pair<xi2p::core::IdentHash, LeaseSetRequest *>(
             dest,
             request));
     if (ret.second) {  // inserted
@@ -677,8 +677,8 @@ void ClientDestination::RequestLeaseSet(
 }
 
 bool ClientDestination::SendLeaseSetRequest(
-    const kovri::core::IdentHash& dest,
-    std::shared_ptr<const kovri::core::RouterInfo> next_floodfill,
+    const xi2p::core::IdentHash& dest,
+    std::shared_ptr<const xi2p::core::RouterInfo> next_floodfill,
     LeaseSetRequest* request) {
   auto reply_tunnel = m_Pool->GetNextInboundTunnel();
   if (!reply_tunnel)
@@ -688,11 +688,11 @@ bool ClientDestination::SendLeaseSetRequest(
     LOG(error) << "ClientDestination: no outbound tunnels found";
   if (reply_tunnel && outbound_tunnel) {
     request->excluded.insert(next_floodfill->GetIdentHash());
-    request->request_time = kovri::core::GetSecondsSinceEpoch();
+    request->request_time = xi2p::core::GetSecondsSinceEpoch();
     request->request_timeout_timer.cancel();
     std::uint8_t reply_key[32], reply_tag[32];
-    kovri::core::RandBytes(reply_key, 32);  // random session key
-    kovri::core::RandBytes(reply_tag, 32);  // random session tag
+    xi2p::core::RandBytes(reply_key, 32);  // random session key
+    xi2p::core::RandBytes(reply_tag, 32);  // random session tag
     AddSessionKey(reply_key, reply_tag);
     auto msg =
       WrapMessage(
@@ -704,8 +704,8 @@ bool ClientDestination::SendLeaseSetRequest(
             reply_key,
             reply_tag));
     outbound_tunnel->SendTunnelDataMsg({
-        kovri::core::TunnelMessageBlock {
-            kovri::core::e_DeliveryTypeRouter,
+        xi2p::core::TunnelMessageBlock {
+            xi2p::core::e_DeliveryTypeRouter,
             next_floodfill->GetIdentHash(),
             0,
             msg
@@ -728,15 +728,15 @@ bool ClientDestination::SendLeaseSetRequest(
 
 void ClientDestination::HandleRequestTimoutTimer(
     const boost::system::error_code& ecode,
-    const kovri::core::IdentHash& dest) {
+    const xi2p::core::IdentHash& dest) {
   if (ecode != boost::asio::error::operation_aborted) {
     auto it = m_LeaseSetRequests.find(dest);
     if (it != m_LeaseSetRequests.end()) {
       bool done = false;
-      std::uint64_t ts = kovri::core::GetSecondsSinceEpoch();
+      std::uint64_t ts = xi2p::core::GetSecondsSinceEpoch();
       if (ts < it->second->request_time + MAX_LEASESET_REQUEST_TIMEOUT) {
         auto floodfill =
-          kovri::core::netdb.GetClosestFloodfill(
+          xi2p::core::netdb.GetClosestFloodfill(
               dest,
               it->second->excluded);
         if (floodfill)
@@ -790,4 +790,4 @@ void ClientDestination::CleanupRemoteLeaseSets() {
 }
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p

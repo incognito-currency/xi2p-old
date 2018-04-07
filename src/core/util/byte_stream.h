@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2018, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2015-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -42,7 +42,7 @@
 #include <type_traits>
 #include <vector>
 
-namespace kovri
+namespace xi2p
 {
 namespace core
 {
@@ -260,6 +260,6 @@ constexpr auto GetType(T type) noexcept
 }  // namespace
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_UTIL_BYTE_STREAM_H_

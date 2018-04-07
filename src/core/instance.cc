@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2015-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -48,7 +48,7 @@
 
 #include "version.h"
 
-namespace kovri
+namespace xi2p
 {
 namespace core
 {
@@ -61,7 +61,7 @@ Instance::Instance(const std::vector<std::string>& args) try
     core::SetupLogging(m_Config.GetMap());
 
     // Log the banner
-    LOG(info) << "The Kovri I2P Router Project";
+    LOG(info) << "The Xi2p I2P Router Project";
     LOG(info) << KOVRI_VERSION << "-" << KOVRI_GIT_REVISION << " \""
               << KOVRI_CODENAME << "\"";
 
@@ -144,4 +144,4 @@ void Instance::Stop()
 }
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p

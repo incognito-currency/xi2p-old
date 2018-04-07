@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -45,7 +45,7 @@
 
 #include "core/router/identity.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 class I2PServiceHandler;
@@ -58,7 +58,7 @@ class I2PService {
   explicit I2PService(
       std::shared_ptr<ClientDestination> local_destination = nullptr);
   explicit I2PService(
-      kovri::core::SigningKeyType kt);
+      xi2p::core::SigningKeyType kt);
   virtual ~I2PService() { ClearHandlers(); }
   /// @brief add a hander to set
   /// @param conn I2pService pointer handler to add
@@ -175,7 +175,7 @@ class TCPIPAcceptor : public I2PService {
   TCPIPAcceptor(
       const std::string& address,
       std::uint16_t port,
-      kovri::core::SigningKeyType kt)
+      xi2p::core::SigningKeyType kt)
     : I2PService(kt),
       m_Acceptor(
           GetService(),
@@ -231,6 +231,6 @@ class TCPIPAcceptor : public I2PService {
 };
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_SERVICE_H_

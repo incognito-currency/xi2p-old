@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -51,7 +51,7 @@
 
 #include "core/util/filesystem.h"
 
-namespace kovri {
+namespace xi2p {
 namespace client {
 
 /**
@@ -85,7 +85,7 @@ class Reseed {
   /// @param Path for certificate directory
   /// @return False on failure
   static bool ProcessCerts(
-      std::map<std::string, kovri::core::PublicKey>* map,
+      std::map<std::string, xi2p::core::PublicKey>* map,
       const boost::filesystem::path& cert_dir);
 
  private:
@@ -107,10 +107,10 @@ class Reseed {
 
  private:
   // X.509 object used for SU3 verification
-  kovri::core::X509 m_X509;
+  xi2p::core::X509 m_X509;
 
   // X.509 signing keys for SU3 verification
-  std::map<std::string, kovri::core::PublicKey> m_SigningKeys;
+  std::map<std::string, xi2p::core::PublicKey> m_SigningKeys;
 
   // The URI which will be the SU3
   std::string m_Stream;
@@ -146,7 +146,7 @@ class Reseed {
 class SU3 {
  public:
   SU3(const std::string& su3,
-      std::map<std::string, kovri::core::PublicKey>& keys,
+      std::map<std::string, xi2p::core::PublicKey>& keys,
       bool verify = true)
       : m_Stream(su3),
         m_SigningKeys(keys),
@@ -163,7 +163,7 @@ class SU3 {
   /// @brief Extracts Embedded file from SU3 stream
   /// @param Output stream
   /// @return False on failure
-  bool Extract(kovri::core::OutputFileStream* output);
+  bool Extract(xi2p::core::OutputFileStream* output);
 
   /// @brief Get Version
   /// @return version
@@ -185,7 +185,7 @@ class SU3 {
 
   /// @brief Get Signature type
   /// @return signature type
-  kovri::core::SigningKeyType GetSignatureType() const
+  xi2p::core::SigningKeyType GetSignatureType() const
   {
     return m_Data->signature_type;
   }
@@ -264,7 +264,7 @@ class SU3 {
 
   struct Data {
     std::array<char, static_cast<std::uint8_t>(Size::magic_number)> magic_number;
-    kovri::core::SigningKeyType signature_type;
+    xi2p::core::SigningKeyType signature_type;
     std::uint16_t signature_length;
     std::uint8_t version_length;  // Seconds since epoch, in ASCII. $(date +%s)
     std::uint8_t signer_id_length;
@@ -278,10 +278,10 @@ class SU3 {
   };
 
   // Complete SU3 Stream
-  kovri::core::StringStream m_Stream;
+  xi2p::core::StringStream m_Stream;
 
   // X.509 signing keys for SU3 verification
-  std::map<std::string, kovri::core::PublicKey> m_SigningKeys;
+  std::map<std::string, xi2p::core::PublicKey> m_SigningKeys;
 
   /// @brief Enable SU3 verification?
   bool m_Verify;
@@ -291,6 +291,6 @@ class SU3 {
 };
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_RESEED_H_

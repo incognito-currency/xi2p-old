@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -48,7 +48,7 @@
 #include "core/router/transports/ntcp/session.h"
 #include "core/router/transports/session.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 class NTCPServer {
@@ -70,7 +70,7 @@ class NTCPServer {
       std::shared_ptr<NTCPSession> session);
 
   std::shared_ptr<NTCPSession> FindNTCPSession(
-      const kovri::core::IdentHash& ident);
+      const xi2p::core::IdentHash& ident);
 
   void Connect(
       const boost::asio::ip::address& address,
@@ -106,7 +106,7 @@ class NTCPServer {
   std::unique_ptr<boost::asio::ip::tcp::acceptor> m_NTCPAcceptor, m_NTCPV6Acceptor;
 
   std::mutex m_NTCPSessionsMutex;
-  std::map<kovri::core::IdentHash, std::shared_ptr<NTCPSession>> m_NTCPSessions;
+  std::map<xi2p::core::IdentHash, std::shared_ptr<NTCPSession>> m_NTCPSessions;
 
   // IP -> ban expiration time in seconds
   std::map<boost::asio::ip::address, std::uint32_t> m_BanList;
@@ -119,6 +119,6 @@ class NTCPServer {
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_TRANSPORTS_NTCP_SERVER_H_

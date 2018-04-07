@@ -1,5 +1,5 @@
 /**                                                                                           //
- * Copyright (c) 2013-2017, The Kovri I2P Router Project                                      //
+ * Copyright (c) 2017-2018, The Xi2p I2P Router Project                                      //
  *                                                                                            //
  * All rights reserved.                                                                       //
  *                                                                                            //
@@ -42,7 +42,7 @@
 #include "core/router/identity.h"
 #include "core/router/info.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 class RequestedDestination {
@@ -89,7 +89,7 @@ class RequestedDestination {
 
   std::shared_ptr<I2NPMessage> CreateRequestMessage(
       std::shared_ptr<const RouterInfo>,
-      std::shared_ptr<const kovri::core::InboundTunnel> reply_tunnel);
+      std::shared_ptr<const xi2p::core::InboundTunnel> reply_tunnel);
   std::shared_ptr<I2NPMessage> CreateRequestMessage(
       const IdentHash& floodfill);
 
@@ -139,6 +139,6 @@ class NetDbRequests {
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_NET_DB_REQUESTS_H_

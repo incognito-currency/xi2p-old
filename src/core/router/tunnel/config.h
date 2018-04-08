@@ -45,7 +45,7 @@
 
 #include "core/util/exception.h"
 
-namespace kovri {
+namespace xi2p {
 namespace core {
 
 /// @class TunnelAESRecordAttributes
@@ -143,7 +143,7 @@ class TunnelHopConfig {
 class TunnelConfig : public std::enable_shared_from_this<TunnelConfig> {
  public:
   TunnelConfig(
-      std::vector<std::shared_ptr<const kovri::core::RouterInfo> > peers,
+      std::vector<std::shared_ptr<const xi2p::core::RouterInfo> > peers,
       std::shared_ptr<const TunnelConfig> reply_tunnel_config = nullptr);
   ~TunnelConfig();
 
@@ -155,7 +155,7 @@ class TunnelConfig : public std::enable_shared_from_this<TunnelConfig> {
 
   bool IsInbound() const;
 
-  std::vector<std::shared_ptr<const kovri::core::RouterInfo> > GetPeers() const;
+  std::vector<std::shared_ptr<const xi2p::core::RouterInfo> > GetPeers() const;
 
   void Print(
       std::stringstream& s) const;
@@ -176,6 +176,6 @@ class TunnelConfig : public std::enable_shared_from_this<TunnelConfig> {
 };
 
 }  // namespace core
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CORE_ROUTER_TUNNEL_CONFIG_H_

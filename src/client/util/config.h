@@ -46,7 +46,7 @@
 #include "core/util/exception.h"
 #include "core/util/filesystem.h"
 
-namespace kovri
+namespace xi2p
 {
 namespace client
 {
@@ -158,6 +158,6 @@ class Configuration
 };
 
 }  // namespace client
-}  // namespace kovri
+}  // namespace xi2p
 
 #endif  // SRC_CLIENT_UTIL_CONFIG_H_

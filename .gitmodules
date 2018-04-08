@@ -5,6 +5,3 @@
 [submodule "deps/cryptopp"]
 	path = deps/cryptopp
 	url = https://github.com/anonimal/cryptopp.git
-[submodule "docs"]
-	path = docs
-	url = https://github.com/incognito-currency/xi2p-docs.git
